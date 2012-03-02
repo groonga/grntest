@@ -55,10 +55,8 @@ class GroongaTester
 
     @reporter.start_test(test_script_path)
     actual_result = run_groonga_script(test_script_path)
-    result_path_name = test_script_path.to_s.gsub(/\..+?\z/, ".result")
-    result_path = Pathname(result_path_name)
-    if result_path.exist? and test_script_path != result_path
-      expected_result = result_path.open(&:read)
+    expected_result = read_expected_result(test_script_path)
+    if expected_result
       if actual_result == expected_result
         @reporter.pass_test
       else
@@ -119,6 +117,16 @@ class GroongaTester
       output << io.readpartial(65535)
     end
     output
+  end
+
+  def read_expected_result(test_script_path)
+    result_path_name = test_script_path.to_s.gsub(/\..+?\z/, ".result")
+    result_path = Pathname(result_path_name)
+    return nil unless result_path.exist?
+    return nil if test_script_path == result_path
+    result_path.open do |result_file|
+      result_file.read
+    end
   end
 
   def detect_suitable_diff
