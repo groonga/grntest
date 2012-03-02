@@ -27,10 +27,12 @@ class GroongaTester
     @diff = "diff"
     @diff_options = ["-u"]
     @failed_tests = []
+    @reporter = Reporter.new(self)
   end
 
   def run(*targets)
     return if targets.empty?
+    @reporter.start
     targets.each do |target|
       target_path = Pathname(target)
       next unless target_path.exist?
@@ -42,43 +44,26 @@ class GroongaTester
         run_test(target_path)
       end
     end
-    report_summary
+    @reporter.finish
   end
 
   private
   def run_test(test_script_path)
-    test_name = test_script_path.basename
-    print("#{test_name}... ")
+    @reporter.start_test(test_script_path)
     actual_result = run_groonga_script(test_script_path)
     result_path_name = test_script_path.to_s.gsub(/\..+?\z/, ".result")
     result_path = Pathname(result_path_name)
     if result_path.exist? and test_script_path != result_path
       expected_result = result_path.open(&:read)
       if actual_result == expected_result
-        puts("[pass]")
+        @reporter.pass_test
       else
-        puts("[failed]")
-        report_diff(expected_result, actual_result)
-        @failed_tests << test_name
+        @reporter.fail_test(expected_result, actual_result)
       end
     else
-      puts("[pass]")
-      puts(result)
+      @reporter.no_check_test(result)
     end
-  end
-
-  def report_diff(expected_result, actual_result)
-    create_temporary_file("expected", expected_result) do |expected_result_file|
-      create_temporary_file("actual", actual_result) do |actual_result_file|
-        diff_options = @diff_options.dup
-        diff_options.concat(["--label", "(expected)", expected_result_file.path,
-                             "--label", "(actual)", actual_result_file.path])
-        system(@diff, *diff_options)
-      end
-    end
-  end
-
-  def report_summary
+    @reporter.finish_test
   end
 
   def run_groonga_script(script_path)
@@ -110,13 +95,6 @@ class GroongaTester
     end
   end
 
-  def create_temporary_file(key, content)
-    file = Tempfile.new("groonga-test-#{key}")
-    file.print(content)
-    file.close
-    yield file
-  end
-
   def run_groonga(db_path)
     IO.popen([@groonga, "-n", db_path], "r+") do |io|
       begin
@@ -134,6 +112,89 @@ class GroongaTester
       output << io.readpartial(65535)
     end
     output
+  end
+
+  class Reporter
+    def initialize(tester)
+      @tester = tester
+      @term_width = guess_term_width
+      @current_column = 0
+      @output = STDOUT
+      @failed_tests = []
+    end
+
+    def start
+    end
+
+    def start_test(test_script_path)
+      @test_name = test_script_path.basename
+      print("  #{@test_name}")
+      @output.flush
+    end
+
+    def pass_test
+      report_test_result("pass")
+    end
+
+    def fail_test(expected, actual)
+      report_test_result("fail")
+      puts("=" * @term_width)
+      report_diff(expected, actual)
+      puts("=" * @term_width)
+      @failed_tests << @test_name
+    end
+
+    def no_check_test(result)
+      report_test_result("not checked")
+      puts(result)
+    end
+
+    def finish_test
+    end
+
+    def finish
+    end
+
+    private
+    def print(message)
+      @current_column += message.to_s.size
+      @output.print(message)
+    end
+
+    def puts(message)
+      @current_column = 0
+      @output.puts(message)
+    end
+
+    def report_test_result(label)
+      message = " [#{label}]"
+      message = message.rjust(@term_width - @current_column) if @term_width > 0
+      puts(message)
+    end
+
+    def report_diff(expected, actual)
+      create_temporary_file("expected", expected) do |expected_file|
+        create_temporary_file("actual", actual) do |actual_file|
+          diff_options = @tester.diff_options.dup
+          diff_options.concat(["--label", "(expected)", expected_file.path,
+                               "--label", "(actual)", actual_file.path])
+          system(@tester.diff, *diff_options)
+        end
+      end
+    end
+
+    def create_temporary_file(key, content)
+      file = Tempfile.new("groonga-test-#{key}")
+      file.print(content)
+      file.close
+      yield file
+    end
+
+    def guess_term_width
+      Integer(ENV["COLUMNS"] || ENV["TERM_WIDTH"] || 79)
+    rescue ArgumentError
+      0
+    end
   end
 end
 
