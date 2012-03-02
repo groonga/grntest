@@ -42,7 +42,7 @@ class GroongaTester
         run_test(target_path)
       end
     end
-    report
+    report_summary
   end
 
   private
@@ -58,16 +58,7 @@ class GroongaTester
         puts("[pass]")
       else
         puts("[failed]")
-        expected_result_file = Tempfile.new("groonga-test-expected")
-        expected_result_file.print(expected_result)
-        expected_result_file.close
-        actual_result_file = Tempfile.new("groonga-test-actual")
-        actual_result_file.print(actual_result)
-        actual_result_file.close
-        diff_options = @diff_options
-        diff_options.concat(["--label", "(expected)", expected_result_file.path,
-                             "--label", "(actual)", actual_result_file.path])
-        system(@diff, *diff_options)
+        report_diff(expected_result, actual_result)
         @failed_tests << test_name
       end
     else
@@ -76,7 +67,18 @@ class GroongaTester
     end
   end
 
-  def report
+  def report_diff(expected_result, actual_result)
+    create_temporary_file("expected", expected_result) do |expected_result_file|
+      create_temporary_file("actual", actual_result) do |actual_result_file|
+        diff_options = @diff_options.dup
+        diff_options.concat(["--label", "(expected)", expected_result_file.path,
+                             "--label", "(actual)", actual_result_file.path])
+        system(@diff, *diff_options)
+      end
+    end
+  end
+
+  def report_summary
   end
 
   def run_groonga_script(script_path)
@@ -106,6 +108,13 @@ class GroongaTester
     ensure
       FileUtils.rm_rf(path)
     end
+  end
+
+  def create_temporary_file(key, content)
+    file = Tempfile.new("groonga-test-#{key}")
+    file.print(content)
+    file.close
+    yield file
   end
 
   def run_groonga(db_path)
