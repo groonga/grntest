@@ -33,7 +33,7 @@ h2. Thanks
 
 h2. Authors
 
-* Kouhei Sutou <kou@clear-code.com>
+* Kouhei Sutou \<kou@clear-code.com\>
 
 h2. License
 
