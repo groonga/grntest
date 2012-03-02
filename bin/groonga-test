@@ -120,6 +120,8 @@ class GroongaTester
       @term_width = guess_term_width
       @current_column = 0
       @output = STDOUT
+      @n_tests = 0
+      @n_passed_tests = 0
       @failed_tests = []
     end
 
@@ -134,6 +136,7 @@ class GroongaTester
 
     def pass_test
       report_test_result("pass")
+      @n_passed_tests += 1
     end
 
     def fail_test(expected, actual)
@@ -150,9 +153,20 @@ class GroongaTester
     end
 
     def finish_test
+      @n_tests += 1
     end
 
     def finish
+      puts
+      puts("#{@n_tests} tests, " +
+           "#{@n_passed_tests} passes, " +
+           "#{@failed_tests.size} failures.")
+      if @n_tests.zero?
+        pass_ratio = 0
+      else
+        pass_ratio = @n_passed_tests / @n_tests.to_f
+      end
+      puts("%.2g%% passed." % pass_ratio)
     end
 
     private
@@ -161,9 +175,9 @@ class GroongaTester
       @output.print(message)
     end
 
-    def puts(message)
+    def puts(*messages)
       @current_column = 0
-      @output.puts(message)
+      @output.puts(*messages)
     end
 
     def report_test_result(label)
