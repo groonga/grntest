@@ -27,15 +27,15 @@ Groonga-test is a testing framework for groonga. You can write a test for groong
 * English: [groonga-talk@lists.sourceforge.net](https://lists.sourceforge.net/lists/listinfo/groonga-talk)
 * Japanese: [groonga-dev@lists.sourceforge.jp](http://lists.sourceforge.jp/mailman/listinfo/groonga-dev)
 
-h2. Thanks
+## Thanks
 
 * ...
 
-h2. Authors
+## Authors
 
 * Kouhei Sutou \<kou@clear-code.com\>
 
-h2. License
+## License
 
 GPLv3 or later. See license/GPL-3 for details.
 
