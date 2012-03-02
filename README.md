@@ -14,7 +14,7 @@ Groonga-test is a testing framework for groonga. You can write a test for groong
 
 ## Dependencies
 
-* Ruby >= 1.8
+* Ruby
 
 ## Install
 
