@@ -55,6 +55,7 @@ class GroongaTester
 
     @reporter.start_test(test_script_path)
     actual_result = run_groonga_script(test_script_path)
+    actual_result = normalize_result(actual_result)
     expected_result = read_expected_result(test_script_path)
     if expected_result
       if actual_result == expected_result
@@ -107,6 +108,10 @@ class GroongaTester
         io.close unless io.closed?
       end
     end
+  end
+
+  def normalize_result(result)
+    result.gsub(/^\[\[0,[\d\.e\-]+,[\d\.e\-]+\]/, "[[0,0.0,0.0]")
   end
 
   def read_output(io)
