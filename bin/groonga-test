@@ -24,31 +24,35 @@ class GroongaTester
   attr_accessor :groonga, :diff, :diff_options
   def initialize
     @groonga = "groonga"
-    @diff = "diff"
-    @diff_options = ["-u"]
+    detect_suitable_diff
     @failed_tests = []
     @reporter = Reporter.new(self)
   end
 
   def run(*targets)
-    return if targets.empty?
+    succeeded = true
+    return succeeded if targets.empty?
+
     @reporter.start
     targets.each do |target|
       target_path = Pathname(target)
       next unless target_path.exist?
       if target_path.directory?
         Dir.glob(target_path + "**" + "*.test") do |target_file|
-          run_test(Pathname(target_file))
+          succeeded = false unless run_test(Pathname(target_file))
         end
       else
-        run_test(target_path)
+        succeeded = false unless run_test(target_path)
       end
     end
     @reporter.finish
+    succeeded
   end
 
   private
   def run_test(test_script_path)
+    succeeded = true
+
     @reporter.start_test(test_script_path)
     actual_result = run_groonga_script(test_script_path)
     result_path_name = test_script_path.to_s.gsub(/\..+?\z/, ".result")
@@ -59,11 +63,14 @@ class GroongaTester
         @reporter.pass_test
       else
         @reporter.fail_test(expected_result, actual_result)
+        succeeded = false
       end
     else
       @reporter.no_check_test(result)
     end
     @reporter.finish_test
+
+    succeeded
   end
 
   def run_groonga_script(script_path)
@@ -240,4 +247,4 @@ parser.on("--diff-option=OPTION",
 end
 
 targets = parser.parse!
-tester.run(*targets)
+exit(tester.run(*targets))
