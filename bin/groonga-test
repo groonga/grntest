@@ -121,6 +121,24 @@ class GroongaTester
     output
   end
 
+  def detect_suitable_diff
+    if command_exist?("cut-diff")
+      @diff = "cut-diff"
+      @diff_options = []
+    else
+      @diff = "diff"
+      @diff_options = ["-u"]
+    end
+  end
+
+  def command_exist?(name)
+    ENV["PATH"].split(File::PATH_SEPARATOR).each do |path|
+      absolute_path = File.join(path, name)
+      return true if File.executable?(absolute_path)
+    end
+    false
+  end
+
   class Reporter
     def initialize(tester)
       @tester = tester
