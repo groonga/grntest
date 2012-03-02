@@ -1,0 +1,144 @@
+#!/usr/bin/env ruby
+
+require "optparse"
+require "pathname"
+require "fileutils"
+require "tempfile"
+
+class GroongaTester
+  attr_accessor :groonga, :diff, :diff_options
+  def initialize
+    @groonga = "groonga"
+    @diff = "diff"
+    @diff_options = ["-u"]
+    @failed_tests = []
+  end
+
+  def run(*targets)
+    return if targets.empty?
+    targets.each do |target|
+      target_path = Pathname(target)
+      next unless target_path.exist?
+      if target_path.directory?
+        Dir.glob(target_path + "**" + "*.test") do |target_file|
+          run_test(Pathname(target_file))
+        end
+      else
+        run_test(target_path)
+      end
+    end
+    report
+  end
+
+  private
+  def run_test(test_script_path)
+    test_name = test_script_path.basename
+    print("#{test_name}... ")
+    actual_result = run_groonga_script(test_script_path)
+    result_path_name = test_script_path.to_s.gsub(/\..+?\z/, ".result")
+    result_path = Pathname(result_path_name)
+    if result_path.exist? and test_script_path != result_path
+      expected_result = result_path.open(&:read)
+      if actual_result == expected_result
+        puts("[pass]")
+      else
+        puts("[failed]")
+        expected_result_file = Tempfile.new("groonga-test-expected")
+        expected_result_file.print(expected_result)
+        expected_result_file.close
+        actual_result_file = Tempfile.new("groonga-test-actual")
+        actual_result_file.print(actual_result)
+        actual_result_file.close
+        diff_options = @diff_options
+        diff_options.concat(["--label", "(expected)", expected_result_file.path,
+                             "--label", "(actual)", actual_result_file.path])
+        system(@diff, *diff_options)
+        @failed_tests << test_name
+      end
+    else
+      puts("[pass]")
+      puts(result)
+    end
+  end
+
+  def report
+  end
+
+  def run_groonga_script(script_path)
+    result = ""
+    create_temporary_directory do |directory_path|
+      run_groonga(File.join(directory_path, "db")) do |io|
+        script_path.open do |test_file|
+          test_file.each_line do |line|
+            io.print(line)
+            io.flush
+            result << read_output(io)
+          end
+          io.close_write
+        end
+        result << read_output(io, 1)
+      end
+    end
+    result
+  end
+
+  def create_temporary_directory
+    path = "tmp"
+    FileUtils.rm_rf(path)
+    FileUtils.mkdir_p(path)
+    begin
+      yield path
+    ensure
+      FileUtils.rm_rf(path)
+    end
+  end
+
+  def run_groonga(db_path)
+    IO.popen([@groonga, "-n", db_path], "r+") do |io|
+      begin
+        yield io
+      ensure
+        io.close unless io.closed?
+      end
+    end
+  end
+
+  def read_output(io, timeout=0)
+    output = ""
+    while IO.select([io], [], [], timeout)
+      break if io.eof?
+      output << io.readpartial(65535)
+    end
+    output
+  end
+end
+
+tester = GroongaTester.new
+
+parser = OptionParser.new
+parser.banner += " TEST_FILE_OR_DIRECTORY..."
+
+parser.on("--groonga=GROONGA",
+          "Use GROONGA as groonga command",
+          "(#{tester.groonga})") do |groonga|
+  tester.groonga = groonga
+end
+
+parser.on("--diff=DIFF",
+          "Use DIFF as diff command",
+          "(#{tester.diff})") do |diff|
+  tester.diff = diff
+  tester.diff_options.clear
+end
+
+diff_option_is_specified = false
+parser.on("--diff-option=OPTION",
+          "Use OPTION as diff command",
+          "(#{tester.diff_options.join(' ')})") do |option|
+  tester.diff_options.clear if diff_option_is_specified
+  tester.diff_options << option
+  diff_option_is_specified = true
+end
+
+targets = parser.parse!
+tester.run(*targets)
