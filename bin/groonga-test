@@ -83,7 +83,6 @@ class GroongaTester
           end
           io.close_write
         end
-        result << read_output(io, 1)
       end
     end
     result
@@ -110,11 +109,14 @@ class GroongaTester
     end
   end
 
-  def read_output(io, timeout=0)
+  def read_output(io)
     output = ""
+    first_timeout = 1
+    timeout = first_timeout
     while IO.select([io], [], [], timeout)
       break if io.eof?
       output << io.readpartial(65535)
+      timeout = 0
     end
     output
   end
