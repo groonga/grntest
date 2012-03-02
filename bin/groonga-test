@@ -64,7 +64,7 @@ class GroongaTester
         succeeded = false
       end
     else
-      @reporter.no_check_test(result)
+      @reporter.no_check_test(actual_result)
     end
     @reporter.finish_test
 
