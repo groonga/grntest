@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+require "English"
 require "optparse"
 require "pathname"
 require "fileutils"
@@ -76,17 +77,53 @@ class GroongaTester
     result = ""
     create_temporary_directory do |directory_path|
       run_groonga(File.join(directory_path, "db")) do |io|
-        script_path.open do |test_file|
-          test_file.each_line do |line|
-            io.print(line)
-            io.flush
+        result = execute_script(script_path, io)
+        io.close_write
+      end
+    end
+    result
+  end
+
+  def execute_script(script_path, io)
+    result = ""
+    loading = false
+    script_path.open do |script_file|
+      script_file.each_line do |line|
+        case line
+        when /\A\s*\z/
+          next
+        when /\A\s*\#/
+          comment_content = $POSTMATCH
+          case comment_content
+          when /\A\s*include\s+/
+            path = $POSTMATCH.strip
+            next if path.empty?
+            result << execute_script(Pathname(path), io)
+          end
+        else
+          unless loading
+            loading = true if load_command?(line)
+          end
+          result << line
+          io.print(line)
+          io.flush
+          if loading
+            if /\]$/ =~ line
+              current_result = read_output(io)
+              loading = false unless current_result.empty?
+              result << current_result
+            end
+          else
             result << read_output(io)
           end
-          io.close_write
         end
       end
     end
     result
+  end
+
+  def load_command?(line)
+    /\A\s*load\s*/ =~ line
   end
 
   def create_temporary_directory
