@@ -171,12 +171,19 @@ class GroongaTester
   end
 
   class Executer
-    def initialize(groonga, result=[])
+    class Context
+      attr_accessor :logging, :result
+      def initialize
+        @logging = true
+        @result = []
+      end
+    end
+
+    def initialize(groonga, context=nil)
       @groonga = groonga
-      @logging = true
       @loading = false
       @pending_command = ""
-      @result = result
+      @context = context || Context.new
     end
 
     def execute(script_path)
@@ -190,7 +197,7 @@ class GroongaTester
         end
       end
 
-      @result
+      @context.result
     end
 
     private
@@ -236,9 +243,9 @@ class GroongaTester
     def execute_comment(content)
       case content.strip
       when "disable-logging"
-        @logging = false
+        @context.logging = false
       when "enable-logging"
-        @logging = true
+        @context.logging = true
       when /\Ainclude\s+/
         path = $POSTMATCH.strip
         return if path.empty?
@@ -247,7 +254,7 @@ class GroongaTester
     end
 
     def execute_script(path)
-      executer = self.class.new(@groonga, @result)
+      executer = self.class.new(@groonga, @context)
       executer.execute(Pathname(path))
     end
 
@@ -278,9 +285,9 @@ class GroongaTester
     end
 
     def log(tag, content)
-      return unless @logging
+      return unless @context.logging
       return if content.empty?
-      @result << [tag, content]
+      @context.result << [tag, content]
     end
 
     def log_input(content)
