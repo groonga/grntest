@@ -155,7 +155,7 @@ class GroongaTester
   def detect_suitable_diff
     if command_exist?("cut-diff")
       @diff = "cut-diff"
-      @diff_options = []
+      @diff_options = ["--context-lines", "10"]
     else
       @diff = "diff"
       @diff_options = ["-u"]
