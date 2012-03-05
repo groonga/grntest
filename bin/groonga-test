@@ -85,45 +85,8 @@ class GroongaTester
   end
 
   def execute_script(script_path, io)
-    result = ""
-    loading = false
-    script_path.open do |script_file|
-      script_file.each_line do |line|
-        case line
-        when /\A\s*\z/
-          next
-        when /\A\s*\#/
-          comment_content = $POSTMATCH
-          case comment_content
-          when /\A\s*include\s+/
-            path = $POSTMATCH.strip
-            next if path.empty?
-            result << execute_script(Pathname(path), io)
-          end
-        else
-          unless loading
-            loading = true if load_command?(line)
-          end
-          result << line
-          io.print(line)
-          io.flush
-          if loading
-            if /\]$/ =~ line
-              current_result = read_output(io)
-              loading = false unless current_result.empty?
-              result << current_result
-            end
-          else
-            result << read_output(io)
-          end
-        end
-      end
-    end
-    result
-  end
-
-  def load_command?(line)
-    /\A\s*load\s*/ =~ line
+    executer = Executer.new(io)
+    executer.execute(script_path)
   end
 
   def create_temporary_directory
@@ -149,18 +112,6 @@ class GroongaTester
 
   def normalize_result(result)
     result.gsub(/^\[\[0,[\d\.e\-]+,[\d\.e\-]+\]/, "[[0,0.0,0.0]")
-  end
-
-  def read_output(io)
-    output = ""
-    first_timeout = 1
-    timeout = first_timeout
-    while IO.select([io], [], [], timeout)
-      break if io.eof?
-      output << io.readpartial(65535)
-      timeout = 0
-    end
-    output
   end
 
   def read_expected_result(test_script_path)
@@ -189,6 +140,104 @@ class GroongaTester
       return true if File.executable?(absolute_path)
     end
     false
+  end
+
+  class Executer
+    def initialize(groonga)
+      @groonga = groonga
+    end
+
+    def execute(script_path)
+      result = ""
+      @loading = false
+      @pending_command = ""
+      script_path.open do |script_file|
+        script_file.each_line do |line|
+          if @loading
+            execute_line_on_loading(line, result)
+          else
+            execute_line_with_continuation_line_support(line, result)
+          end
+        end
+      end
+      result
+    end
+
+    private
+    def execute_line_on_loading(line, result)
+      result << line
+      @groonga.print(line)
+      @groonga.flush
+      if /\]$/ =~ line
+        current_result = read_output
+        @loading = false unless current_result.empty?
+        result << current_result
+      end
+    end
+
+    def execute_line_with_continuation_line_support(line, result)
+      if /\\$/ =~ line
+        @pending_command << $PREMATCH
+      else
+        if @pending_command.empty?
+          execute_line(line, result)
+        else
+          @pending_command << line
+          execute_line(@pending_command, result)
+          @pending_command.clear
+        end
+      end
+    end
+
+    def execute_line(line, result)
+      case line
+      when /\A\s*\z/
+        # do nothing
+      when /\A\s*\#/
+        comment_content = $POSTMATCH
+        execute_comment(comment_content, result)
+      else
+        execute_command(line, result)
+      end
+    end
+
+    def execute_comment(content, result)
+      case content
+      when /\A\s*include\s+/
+        path = $POSTMATCH.strip
+        return if path.empty?
+        execute_script(path, result)
+      end
+    end
+
+    def execute_script(path, result)
+      executer = self.class.new(@groonga)
+      result << executer.execute(Pathname(path))
+    end
+
+    def execute_command(line, result)
+      @loading = true if load_command?(line)
+      result << line
+      @groonga.print(line)
+      @groonga.flush
+      result << read_output unless @loading
+    end
+
+    def load_command?(line)
+      /\A\s*load\s*/ =~ line
+    end
+
+    def read_output
+      output = ""
+      first_timeout = 1
+      timeout = first_timeout
+      while IO.select([@groonga], [], [], timeout)
+        break if @groonga.eof?
+        output << @groonga.readpartial(65535)
+        timeout = 0
+      end
+      output
+    end
   end
 
   class Reporter
