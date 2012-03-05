@@ -87,38 +87,35 @@ class GroongaTester
       succeeded = true
 
       reporter.start_test(@test_script_path)
-      actual_result = run_groonga_script(@test_script_path)
+      actual_result = run_groonga_script
       actual_result = normalize_result(actual_result)
-      expected_result = read_expected_result(@test_script_path)
+      expected_result = read_expected_result
       if expected_result
         if actual_result == expected_result
           reporter.pass_test
-          remove_reject_file(@test_script_path)
+          remove_reject_file
         else
           reporter.fail_test(expected_result, actual_result)
-          output_actual_result(actual_result, @test_script_path, ".reject")
+          output_reject_file(actual_result)
           succeeded = false
         end
       else
         reporter.no_check_test(actual_result)
-        output_actual_result(actual_result, @test_script_path, ".actual")
+        output_actual_file(actual_result)
       end
       reporter.finish_test
 
       succeeded
     end
 
-    def run_groonga_script(script_path)
+    private
+    def run_groonga_script
       create_temporary_directory do |directory_path|
         run_groonga(File.join(directory_path, "db")) do |io|
-          execute_script(script_path, io)
+          executer = Executer.new(io)
+          executer.execute(@test_script_path)
         end
       end
-    end
-
-    def execute_script(script_path, io)
-      executer = Executer.new(io)
-      executer.execute(script_path)
     end
 
     def create_temporary_directory
@@ -175,26 +172,44 @@ class GroongaTester
       end
     end
 
-    def read_expected_result(test_script_path)
-      result_path_name = test_script_path.to_s.gsub(/\..+?\z/, ".result")
-      result_path = Pathname(result_path_name)
+    def have_extension?
+      not @test_script_path.extname.empty?
+    end
+
+    def related_file_path(extension)
+      path = Pathname(@test_script_path.to_s.gsub(/\.[^.]+\z/, ".#{extension}"))
+      return nil if @test_script_path == path
+      path
+    end
+
+    def read_expected_result
+      return nil unless have_extension?
+      result_path = related_file_path("result")
+      return nil if result_path.nil?
       return nil unless result_path.exist?
-      return nil if test_script_path == result_path
       result_path.open("r:ascii-8bit") do |result_file|
         result_file.read
       end
     end
 
-    def remove_reject_file(test_script_path)
-      reject_path_name = test_script_path.to_s.gsub(/\..+?\z/, ".result")
-      if test_script_path.to_s != reject_path_name
-        FileUtils.rm_rf(reject_path_name)
-      end
+    def remove_reject_file
+      return unless have_extension?
+      reject_path = related_file_path("reject")
+      return if reject_path.nil?
+      FileUtils.rm_rf(reject_path.to_s)
     end
 
-    def output_actual_result(actual_result, test_script_path, suffix)
-      result_path_name = test_script_path.to_s.gsub(/\..+?\z/, suffix)
-      result_path = Pathname(result_path_name)
+    def output_reject_file(actual_result)
+      output_actual_result(actual_result, "reject")
+    end
+
+    def output_actual_file(actual_result)
+      output_actual_result(actual_result, "actual")
+    end
+
+    def output_actual_result(actual_result, suffix)
+      result_path = related_file_path(suffix)
+      return if result_path.nil?
       result_path.open("w:ascii-8bit") do |result_file|
         result_file.print(actual_result)
       end
