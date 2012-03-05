@@ -147,7 +147,7 @@ class GroongaTester
     result_path = Pathname(result_path_name)
     return nil unless result_path.exist?
     return nil if test_script_path == result_path
-    result_path.open do |result_file|
+    result_path.open("r:ascii-8bit") do |result_file|
       result_file.read
     end
   end
