@@ -23,9 +23,10 @@ require "tempfile"
 require "json"
 
 class GroongaTester
-  attr_accessor :groonga, :diff, :diff_options
+  attr_accessor :groonga, :base_directory, :diff, :diff_options
   def initialize
     @groonga = "groonga"
+    @base_directory = "."
     detect_suitable_diff
     @reporter = Reporter.new(self)
   end
@@ -52,7 +53,7 @@ class GroongaTester
 
   private
   def run_test(test_script_path)
-    runner = Runner.new(@groonga, test_script_path)
+    runner = Runner.new(self, test_script_path)
     runner.run(@reporter)
   end
 
@@ -77,8 +78,8 @@ class GroongaTester
   class Runner
     MAX_N_COLUMNS = 79
 
-    def initialize(groonga, test_script_path)
-      @groonga = groonga
+    def initialize(tester, test_script_path)
+      @tester = tester
       @test_script_path = test_script_path
       @max_n_columns = MAX_N_COLUMNS
     end
@@ -112,7 +113,9 @@ class GroongaTester
     def run_groonga_script
       create_temporary_directory do |directory_path|
         run_groonga(File.join(directory_path, "db")) do |io|
-          executer = Executer.new(io)
+          context = Executer::Context.new
+          context.base_directory = @tester.base_directory
+          executer = Executer.new(io, context)
           executer.execute(@test_script_path)
         end
       end
@@ -130,7 +133,7 @@ class GroongaTester
     end
 
     def run_groonga(db_path)
-      IO.popen([@groonga, "-n", db_path], "r+") do |io|
+      IO.popen([@tester.groonga, "-n", db_path], "r+") do |io|
         begin
           yield io
         ensure
@@ -218,9 +221,10 @@ class GroongaTester
 
   class Executer
     class Context
-      attr_accessor :logging, :result
+      attr_accessor :logging, :base_directory, :result
       def initialize
         @logging = true
+        @base_directory = "."
         @n_nested = 0
         @result = []
       end
@@ -336,7 +340,11 @@ class GroongaTester
 
     def execute_script(path)
       executer = self.class.new(@groonga, @context)
-      executer.execute(Pathname(path))
+      script_path = Pathname(path)
+      if script_path.relative?
+        script_path = Pathname(@context.base_directory) + script_path
+      end
+      executer.execute(script_path)
     end
 
     def execute_command(line)
@@ -495,6 +503,12 @@ parser.on("--groonga=GROONGA",
           "Use GROONGA as groonga command",
           "(#{tester.groonga})") do |groonga|
   tester.groonga = groonga
+end
+
+parser.on("--base-directory=DIRECTORY",
+          "Use DIRECTORY as a base directory of relative path",
+          "(#{tester.base_directory})") do |directory|
+  tester.base_directory = directory
 end
 
 parser.on("--diff=DIFF",
