@@ -171,87 +171,93 @@ class GroongaTester
   end
 
   class Executer
-    def initialize(groonga)
+    def initialize(groonga, result=[])
       @groonga = groonga
-    end
-
-    def execute(script_path, result=[])
+      @logging = true
       @loading = false
       @pending_command = ""
+      @result = []
+    end
+
+    def execute(script_path)
       script_path.open("r:ascii-8bit") do |script_file|
         script_file.each_line do |line|
           if @loading
-            execute_line_on_loading(line, result)
+            execute_line_on_loading(line)
           else
-            execute_line_with_continuation_line_support(line, result)
+            execute_line_with_continuation_line_support(line)
           end
         end
       end
-      result
+
+      @result
     end
 
     private
-    def execute_line_on_loading(line, result)
-      result << [:input, line]
+    def execute_line_on_loading(line)
+      log_input(line)
       @groonga.print(line)
       @groonga.flush
       if /\]$/ =~ line
         current_result = read_output
         unless current_result.empty?
           @loading = false
-          result << [:output, current_result]
+          log_output(current_result)
         end
       end
     end
 
-    def execute_line_with_continuation_line_support(line, result)
+    def execute_line_with_continuation_line_support(line)
       if /\\$/ =~ line
         @pending_command << $PREMATCH
       else
         if @pending_command.empty?
-          execute_line(line, result)
+          execute_line(line)
         else
           @pending_command << line
-          execute_line(@pending_command, result)
+          execute_line(@pending_command)
           @pending_command = ""
         end
       end
     end
 
-    def execute_line(line, result)
+    def execute_line(line)
       case line
       when /\A\s*\z/
         # do nothing
       when /\A\s*\#/
         comment_content = $POSTMATCH
-        execute_comment(comment_content, result)
+        execute_comment(comment_content)
       else
-        execute_command(line, result)
+        execute_command(line)
       end
     end
 
-    def execute_comment(content, result)
-      case content
-      when /\A\s*include\s+/
+    def execute_comment(content)
+      case content.strip
+      when "disable-logging"
+        @logging = false
+      when "enable-logging"
+        @logging = true
+      when /\Ainclude\s+/
         path = $POSTMATCH.strip
         return if path.empty?
-        execute_script(path, result)
+        execute_script(path)
       end
     end
 
-    def execute_script(path, result)
-      executer = self.class.new(@groonga)
-      executer.execute(Pathname(path), result)
+    def execute_script(path)
+      executer = self.class.new(@groonga, @result)
+      executer.execute(Pathname(path))
     end
 
-    def execute_command(line, result)
+    def execute_command(line)
       @loading = true if load_command?(line)
-      result << [:input, line]
+      log_input(line)
       @groonga.print(line)
       @groonga.flush
       unless @loading
-        current_result = read_output
-        result << [:output, current_result] unless current_result.empty?
+        log_output(read_output)
       end
     end
 
@@ -269,6 +275,20 @@ class GroongaTester
         timeout = 0
       end
       output
+    end
+
+    def log(tag, content)
+      return unless @logging
+      return if content.empty?
+      @result << [tag, content]
+    end
+
+    def log_input(content)
+      log(:input, content)
+    end
+
+    def log_output(content)
+      log(:output, content)
     end
   end
 
