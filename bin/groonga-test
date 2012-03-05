@@ -23,14 +23,10 @@ require "tempfile"
 require "json"
 
 class GroongaTester
-  MAX_N_COLUMNS = 79
-
-  attr_accessor :groonga, :diff, :diff_options, :max_n_columns
+  attr_accessor :groonga, :diff, :diff_options
   def initialize
     @groonga = "groonga"
     detect_suitable_diff
-    @failed_tests = []
-    @max_n_columns = MAX_N_COLUMNS
     @reporter = Reporter.new(self)
   end
 
@@ -56,110 +52,8 @@ class GroongaTester
 
   private
   def run_test(test_script_path)
-    succeeded = true
-
-    @reporter.start_test(test_script_path)
-    actual_result = run_groonga_script(test_script_path)
-    actual_result = normalize_result(actual_result)
-    expected_result = read_expected_result(test_script_path)
-    if expected_result
-      if actual_result == expected_result
-        @reporter.pass_test
-      else
-        @reporter.fail_test(expected_result, actual_result)
-        output_actual_result(actual_result, test_script_path, ".reject")
-        succeeded = false
-      end
-    else
-      @reporter.no_check_test(actual_result)
-      output_actual_result(actual_result, test_script_path, ".actual")
-    end
-    @reporter.finish_test
-
-    succeeded
-  end
-
-  def run_groonga_script(script_path)
-    create_temporary_directory do |directory_path|
-      run_groonga(File.join(directory_path, "db")) do |io|
-        execute_script(script_path, io)
-      end
-    end
-  end
-
-  def execute_script(script_path, io)
-    executer = Executer.new(io)
-    executer.execute(script_path)
-  end
-
-  def create_temporary_directory
-    path = "tmp"
-    FileUtils.rm_rf(path)
-    FileUtils.mkdir_p(path)
-    begin
-      yield path
-    ensure
-      FileUtils.rm_rf(path)
-    end
-  end
-
-  def run_groonga(db_path)
-    IO.popen([@groonga, "-n", db_path], "r+") do |io|
-      begin
-        yield io
-      ensure
-        io.close unless io.closed?
-      end
-    end
-  end
-
-  def normalize_result(result)
-    normalized_result = ""
-    result.each do |tag, content|
-      case tag
-      when :input
-        normalized_result << content
-      when :output
-        status, *values = JSON.parse(content)
-        normalized_status = normalize_status(status)
-        normalized_output_content = [normalized_status, *values]
-        normalized_output = JSON.generate(normalized_output_content)
-        if normalized_output.bytesize > @max_n_columns
-          normalized_output = JSON.pretty_generate(normalized_output_content)
-        end
-        normalized_output.force_encoding("ASCII-8BIT")
-        normalized_result << "#{normalized_output}\n"
-      end
-    end
-    normalized_result
-  end
-
-  def normalize_status(status)
-    return_code, started_time, elapsed_time, *rest = status
-    if return_code.zero?
-      [0, 0.0, 0.0]
-    else
-      message, bactrace = rest
-      [[return_code, 0.0, 0.0], message]
-    end
-  end
-
-  def read_expected_result(test_script_path)
-    result_path_name = test_script_path.to_s.gsub(/\..+?\z/, ".result")
-    result_path = Pathname(result_path_name)
-    return nil unless result_path.exist?
-    return nil if test_script_path == result_path
-    result_path.open("r:ascii-8bit") do |result_file|
-      result_file.read
-    end
-  end
-
-  def output_actual_result(actual_result, test_script_path, suffix)
-    result_path_name = test_script_path.to_s.gsub(/\..+?\z/, suffix)
-    result_path = Pathname(result_path_name)
-    result_path.open("w:ascii-8bit") do |result_file|
-      result_file.print(actual_result)
-    end
+    runner = Runner.new(@groonga, test_script_path)
+    runner.run(@reporter)
   end
 
   def detect_suitable_diff
@@ -178,6 +72,133 @@ class GroongaTester
       return true if File.executable?(absolute_path)
     end
     false
+  end
+
+  class Runner
+    MAX_N_COLUMNS = 79
+
+    def initialize(groonga, test_script_path)
+      @groonga = groonga
+      @test_script_path = test_script_path
+      @max_n_columns = MAX_N_COLUMNS
+    end
+
+    def run(reporter)
+      succeeded = true
+
+      reporter.start_test(@test_script_path)
+      actual_result = run_groonga_script(@test_script_path)
+      actual_result = normalize_result(actual_result)
+      expected_result = read_expected_result(@test_script_path)
+      if expected_result
+        if actual_result == expected_result
+          reporter.pass_test
+          remove_reject_file(@test_script_path)
+        else
+          reporter.fail_test(expected_result, actual_result)
+          output_actual_result(actual_result, @test_script_path, ".reject")
+          succeeded = false
+        end
+      else
+        reporter.no_check_test(actual_result)
+        output_actual_result(actual_result, @test_script_path, ".actual")
+      end
+      reporter.finish_test
+
+      succeeded
+    end
+
+    def run_groonga_script(script_path)
+      create_temporary_directory do |directory_path|
+        run_groonga(File.join(directory_path, "db")) do |io|
+          execute_script(script_path, io)
+        end
+      end
+    end
+
+    def execute_script(script_path, io)
+      executer = Executer.new(io)
+      executer.execute(script_path)
+    end
+
+    def create_temporary_directory
+      path = "tmp"
+      FileUtils.rm_rf(path)
+      FileUtils.mkdir_p(path)
+      begin
+        yield path
+      ensure
+        FileUtils.rm_rf(path)
+      end
+    end
+
+    def run_groonga(db_path)
+      IO.popen([@groonga, "-n", db_path], "r+") do |io|
+        begin
+          yield io
+        ensure
+          io.close unless io.closed?
+        end
+      end
+    end
+
+    def normalize_result(result)
+      normalized_result = ""
+      result.each do |tag, content|
+        case tag
+        when :input
+          normalized_result << content
+        when :output
+          status, *values = JSON.parse(content)
+          normalized_status = normalize_status(status)
+          normalized_output_content = [normalized_status, *values]
+          normalized_output = JSON.generate(normalized_output_content)
+          if normalized_output.bytesize > @max_n_columns
+            normalized_output = JSON.pretty_generate(normalized_output_content)
+          end
+          normalized_output.force_encoding("ASCII-8BIT")
+          normalized_result << "#{normalized_output}\n"
+        when :error
+          normalized_result << "#{content}\n".force_encoding("ASCII-8BIT")
+        end
+      end
+      normalized_result
+    end
+
+    def normalize_status(status)
+      return_code, started_time, elapsed_time, *rest = status
+      if return_code.zero?
+        [0, 0.0, 0.0]
+      else
+        message, bactrace = rest
+        [[return_code, 0.0, 0.0], message]
+      end
+    end
+
+    def read_expected_result(test_script_path)
+      result_path_name = test_script_path.to_s.gsub(/\..+?\z/, ".result")
+      result_path = Pathname(result_path_name)
+      return nil unless result_path.exist?
+      return nil if test_script_path == result_path
+      result_path.open("r:ascii-8bit") do |result_file|
+        result_file.read
+      end
+    end
+
+    def remove_reject_file(test_script_path)
+      reject_path_name = test_script_path.to_s.gsub(/\..+?\z/, ".result")
+      if test_script_path.to_s != reject_path_name
+        FileUtils.rm_rf(reject_path_name)
+      end
+    end
+
+    def output_actual_result(actual_result, test_script_path, suffix)
+      result_path_name = test_script_path.to_s.gsub(/\..+?\z/, suffix)
+      result_path = Pathname(result_path_name)
+      result_path.open("w:ascii-8bit") do |result_file|
+        result_file.print(actual_result)
+      end
+    end
   end
 
   class Executer
