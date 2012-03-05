@@ -185,7 +185,30 @@ class GroongaTester
       attr_accessor :logging, :result
       def initialize
         @logging = true
+        @n_nested = 0
         @result = []
+      end
+
+      def execute
+        @n_nested += 1
+        yield
+      ensure
+        @n_nested -= 1
+      end
+
+      def top_level?
+        @n_nested == 1
+      end
+    end
+
+    class Error < StandardError
+    end
+
+    class NotExist < Error
+      attr_reader :path
+      def initialize(path)
+        @path = path
+        super("<#{path}> doesn't exist.")
       end
     end
 
@@ -197,12 +220,24 @@ class GroongaTester
     end
 
     def execute(script_path)
-      script_path.open("r:ascii-8bit") do |script_file|
-        script_file.each_line do |line|
-          if @loading
-            execute_line_on_loading(line)
-          else
-            execute_line_with_continuation_line_support(line)
+      unless script_path.exist?
+        raise NotExist.new(script_path)
+      end
+
+      @context.execute do
+        script_path.open("r:ascii-8bit") do |script_file|
+          script_file.each_line do |line|
+            begin
+              if @loading
+                execute_line_on_loading(line)
+              else
+                execute_line_with_continuation_line_support(line)
+              end
+            rescue Error
+              line_info = "#{script_path}:#{script_file.lineno}:#{line.chomp}"
+              log_error("#{line_info}: #{$!.message}")
+              raise unless @context.top_level?
+            end
           end
         end
       end
@@ -297,6 +332,10 @@ class GroongaTester
     def log(tag, content)
       return unless @context.logging
       return if content.empty?
+      log_force(tag, content)
+    end
+
+    def log_force(tag, content)
       @context.result << [tag, content]
     end
 
@@ -306,6 +345,10 @@ class GroongaTester
 
     def log_output(content)
       log(:output, content)
+    end
+
+    def log_error(content)
+      log_force(:error, content)
     end
   end
 
