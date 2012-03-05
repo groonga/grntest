@@ -151,7 +151,7 @@ class GroongaTester
       result = ""
       @loading = false
       @pending_command = ""
-      script_path.open do |script_file|
+      script_path.open("r:ascii-8bit") do |script_file|
         script_file.each_line do |line|
           if @loading
             execute_line_on_loading(line, result)
