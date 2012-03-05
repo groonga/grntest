@@ -67,10 +67,12 @@ class GroongaTester
         @reporter.pass_test
       else
         @reporter.fail_test(expected_result, actual_result)
+        output_actual_result(actual_result, test_script_path, ".reject")
         succeeded = false
       end
     else
       @reporter.no_check_test(actual_result)
+      output_actual_result(actual_result, test_script_path, ".actual")
     end
     @reporter.finish_test
 
@@ -149,6 +151,14 @@ class GroongaTester
     return nil if test_script_path == result_path
     result_path.open("r:ascii-8bit") do |result_file|
       result_file.read
+    end
+  end
+
+  def output_actual_result(actual_result, test_script_path, suffix)
+    result_path_name = test_script_path.to_s.gsub(/\..+?\z/, suffix)
+    result_path = Pathname(result_path_name)
+    result_path.open("w:ascii-8bit") do |result_file|
+      result_file.print(actual_result)
     end
   end
 
