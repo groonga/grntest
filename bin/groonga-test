@@ -176,7 +176,7 @@ class GroongaTester
       @logging = true
       @loading = false
       @pending_command = ""
-      @result = []
+      @result = result
     end
 
     def execute(script_path)
