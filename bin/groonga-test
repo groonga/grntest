@@ -20,13 +20,17 @@ require "optparse"
 require "pathname"
 require "fileutils"
 require "tempfile"
+require "json"
 
 class GroongaTester
-  attr_accessor :groonga, :diff, :diff_options
+  MAX_N_COLUMNS = 79
+
+  attr_accessor :groonga, :diff, :diff_options, :max_n_columns
   def initialize
     @groonga = "groonga"
     detect_suitable_diff
     @failed_tests = []
+    @max_n_columns = MAX_N_COLUMNS
     @reporter = Reporter.new(self)
   end
 
@@ -74,14 +78,11 @@ class GroongaTester
   end
 
   def run_groonga_script(script_path)
-    result = ""
     create_temporary_directory do |directory_path|
       run_groonga(File.join(directory_path, "db")) do |io|
-        result = execute_script(script_path, io)
-        io.close_write
+        execute_script(script_path, io)
       end
     end
-    result
   end
 
   def execute_script(script_path, io)
@@ -111,7 +112,34 @@ class GroongaTester
   end
 
   def normalize_result(result)
-    result.gsub(/^\[\[0,[\d\.e\-]+,[\d\.e\-]+\]/, "[[0,0.0,0.0]")
+    normalized_result = ""
+    result.each do |tag, content|
+      case tag
+      when :input
+        normalized_result << content
+      when :output
+        status, *values = JSON.parse(content)
+        normalized_status = normalize_status(status)
+        normalized_output_content = [normalized_status, *values]
+        normalized_output = JSON.generate(normalized_output_content)
+        if normalized_output.bytesize > @max_n_columns
+          normalized_output = JSON.pretty_generate(normalized_output_content)
+        end
+        normalized_output.force_encoding("ASCII-8BIT")
+        normalized_result << "#{normalized_output}\n"
+      end
+    end
+    normalized_result
+  end
+
+  def normalize_status(status)
+    return_code, started_time, elapsed_time, *rest = status
+    if return_code.zero?
+      [0, 0.0, 0.0]
+    else
+      message, bactrace = rest
+      [[return_code, 0.0, 0.0], message]
+    end
   end
 
   def read_expected_result(test_script_path)
@@ -147,8 +175,7 @@ class GroongaTester
       @groonga = groonga
     end
 
-    def execute(script_path)
-      result = ""
+    def execute(script_path, result=[])
       @loading = false
       @pending_command = ""
       script_path.open("r:ascii-8bit") do |script_file|
@@ -165,13 +192,15 @@ class GroongaTester
 
     private
     def execute_line_on_loading(line, result)
-      result << line
+      result << [:input, line]
       @groonga.print(line)
       @groonga.flush
       if /\]$/ =~ line
         current_result = read_output
-        @loading = false unless current_result.empty?
-        result << current_result
+        unless current_result.empty?
+          @loading = false
+          result << [:output, current_result]
+        end
       end
     end
 
@@ -184,7 +213,7 @@ class GroongaTester
         else
           @pending_command << line
           execute_line(@pending_command, result)
-          @pending_command.clear
+          @pending_command = ""
         end
       end
     end
@@ -212,15 +241,18 @@ class GroongaTester
 
     def execute_script(path, result)
       executer = self.class.new(@groonga)
-      result << executer.execute(Pathname(path))
+      executer.execute(Pathname(path), result)
     end
 
     def execute_command(line, result)
       @loading = true if load_command?(line)
-      result << line
+      result << [:input, line]
       @groonga.print(line)
       @groonga.flush
-      result << read_output unless @loading
+      unless @loading
+        current_result = read_output
+        result << [:output, current_result] unless current_result.empty?
+      end
     end
 
     def load_command?(line)
