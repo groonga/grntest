@@ -402,9 +402,9 @@ class GroongaTester
       if @n_tests.zero?
         pass_ratio = 0
       else
-        pass_ratio = @n_passed_tests / @n_tests.to_f
+        pass_ratio = (@n_passed_tests / @n_tests.to_f) * 100
       end
-      puts("%.2g%% passed." % pass_ratio)
+      puts("%.4g%% passed." % pass_ratio)
     end
 
     private
