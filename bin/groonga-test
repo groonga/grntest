@@ -28,33 +28,33 @@ class GroongaTester
     @groonga = "groonga"
     @base_directory = "."
     detect_suitable_diff
-    @reporter = Reporter.new(self)
   end
 
   def run(*targets)
     succeeded = true
     return succeeded if targets.empty?
 
-    @reporter.start
+    reporter = Reporter.new(self)
+    reporter.start
     targets.each do |target|
       target_path = Pathname(target)
       next unless target_path.exist?
       if target_path.directory?
         Dir.glob(target_path + "**" + "*.test") do |target_file|
-          succeeded = false unless run_test(Pathname(target_file))
+          succeeded = false unless run_test(Pathname(target_file), reporter)
         end
       else
-        succeeded = false unless run_test(target_path)
+        succeeded = false unless run_test(target_path, reporter)
       end
     end
-    @reporter.finish
+    reporter.finish
     succeeded
   end
 
   private
-  def run_test(test_script_path)
+  def run_test(test_script_path, reporter)
     runner = Runner.new(self, test_script_path)
-    runner.run(@reporter)
+    runner.run(reporter)
   end
 
   def detect_suitable_diff
