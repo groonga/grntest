@@ -145,7 +145,7 @@ class GroongaTester
 
     def normalize_result(result)
       normalized_result = ""
-      result.each do |tag, content|
+      result.each do |tag, content, options|
         case tag
         when :input
           normalized_result << content
@@ -389,14 +389,14 @@ class GroongaTester
       output
     end
 
-    def log(tag, content)
+    def log(tag, content, options={})
       return unless @context.logging
       return if content.empty?
-      log_force(tag, content)
+      log_force(tag, content, options)
     end
 
-    def log_force(tag, content)
-      @context.result << [tag, content]
+    def log_force(tag, content, options)
+      @context.result << [tag, content, options]
     end
 
     def log_input(content)
@@ -404,7 +404,9 @@ class GroongaTester
     end
 
     def log_output(content)
-      log(:output, content)
+      log(:output, content,
+          :command => @current_command,
+          :format => @output_format)
     end
 
     def log_error(content)
