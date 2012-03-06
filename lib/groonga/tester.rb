@@ -513,7 +513,7 @@ module Groonga
       end
 
       def log_error(content)
-        log_force(:error, content)
+        log_force(:error, content, {})
       end
     end
 
