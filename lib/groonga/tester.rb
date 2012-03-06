@@ -205,11 +205,18 @@ module Groonga
       def run_groonga(db_path)
         IO.popen([@tester.groonga, "-n", db_path], "r+") do |io|
           begin
+            ensure_groonga_ready(io)
             yield io
           ensure
             io.close unless io.closed?
           end
         end
+      end
+
+      def ensure_groonga_ready(groonga)
+        groonga.print("status\n")
+        groonga.flush
+        groonga.gets
       end
 
       def normalize_result(result)
