@@ -187,7 +187,7 @@ class GroongaTester
 
     def read_expected_result
       return nil unless have_extension?
-      result_path = related_file_path("result")
+      result_path = related_file_path("expected")
       return nil if result_path.nil?
       return nil unless result_path.exist?
       result_path.open("r:ascii-8bit") do |result_file|
