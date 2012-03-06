@@ -150,15 +150,20 @@ class GroongaTester
         when :input
           normalized_result << content
         when :output
-          status, *values = JSON.parse(content)
-          normalized_status = normalize_status(status)
-          normalized_output_content = [normalized_status, *values]
-          normalized_output = JSON.generate(normalized_output_content)
-          if normalized_output.bytesize > @max_n_columns
-            normalized_output = JSON.pretty_generate(normalized_output_content)
+          case options[:format]
+          when "json"
+            status, *values = JSON.parse(content)
+            normalized_status = normalize_status(status)
+            normalized_output_content = [normalized_status, *values]
+            normalized_output = JSON.generate(normalized_output_content)
+            if normalized_output.bytesize > @max_n_columns
+              normalized_output = JSON.pretty_generate(normalized_output_content)
+            end
+            normalized_output.force_encoding("ASCII-8BIT")
+            normalized_result << "#{normalized_output}\n"
+          else
+            normalized_result << "#{content}\n".force_encoding("ASCII-8BIT")
           end
-          normalized_output.force_encoding("ASCII-8BIT")
-          normalized_result << "#{normalized_output}\n"
         when :error
           normalized_result << "#{content}\n".force_encoding("ASCII-8BIT")
         end
