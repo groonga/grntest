@@ -292,12 +292,17 @@ module Groonga
 
    class Executor
      class Context
-       attr_accessor :logging, :base_directory, :result
+       attr_writer :logging
+       attr_accessor :base_directory, :result
        def initialize
          @logging = true
          @base_directory = "."
          @n_nested = 0
          @result = []
+       end
+
+       def logging?
+         @logging
        end
 
        def execute
@@ -323,6 +328,7 @@ module Groonga
        end
      end
 
+     attr_reader :context
      def initialize(groonga, context=nil)
        @groonga = groonga
        @loading = false
@@ -460,7 +466,7 @@ module Groonga
      end
 
      def log(tag, content, options={})
-       return unless @context.logging
+       return unless @context.logging?
        return if content.empty?
        log_force(tag, content, options)
      end
