@@ -21,6 +21,7 @@ require "pathname"
 require "fileutils"
 require "tempfile"
 require "json"
+require "shellwords"
 
 class GroongaTester
   attr_accessor :groonga, :base_directory, :diff, :diff_options
@@ -256,6 +257,8 @@ class GroongaTester
       @groonga = groonga
       @loading = false
       @pending_command = ""
+      @current_command_name = nil
+      @output_format = nil
       @context = context || Context.new
     end
 
@@ -348,7 +351,8 @@ class GroongaTester
     end
 
     def execute_command(line)
-      @loading = true if load_command?(line)
+      extract_command_info(line)
+      @loading = true if @current_command == "load"
       log_input(line)
       @groonga.print(line)
       @groonga.flush
@@ -357,8 +361,20 @@ class GroongaTester
       end
     end
 
-    def load_command?(line)
-      /\A\s*load\s*/ =~ line
+    def extract_command_info(line)
+      words = Shellwords.split(line)
+      @current_command = words.shift
+      if @current_command == "dump"
+        @output_format = "groonga-command"
+      else
+        @output_format = "json"
+        words.each_with_index do |word, i|
+          if /\A--output_format(?:=(.+))?\z/ =~ word
+            @output_format = $1 || words[i + 1]
+            break
+          end
+        end
+      end
     end
 
     def read_output
