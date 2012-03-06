@@ -37,5 +37,12 @@ class TestExecutor < Test::Unit::TestCase
       execute("# disable-logging")
       assert_not_predicate(@context, :logging?)
     end
+
+    def test_enable_logging
+      @context.logging = false
+      assert_not_predicate(@context, :logging?)
+      execute("# enable-logging")
+      assert_predicate(@context, :logging?)
+    end
   end
 end
