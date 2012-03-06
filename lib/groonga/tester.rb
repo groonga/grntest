@@ -485,6 +485,8 @@ module Groonga
         log(:output, content,
             :command => @current_command,
             :format => @output_format)
+        @current_command = nil
+        @output_format = nil
       end
 
       def log_error(content)
