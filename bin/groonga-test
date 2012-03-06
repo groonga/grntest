@@ -26,6 +26,60 @@ require "shellwords"
 class GroongaTester
   VERSION = "1.0.0"
 
+  class << self
+    def run(argv=nil)
+      argv ||= ARGV.dup
+      tester = new
+      catch do |tag|
+        parser = create_option_parser(tester, tag)
+        targets = parser.parse!(argv)
+        tester.run(*targets)
+      end
+    end
+
+    private
+    def create_option_parser(tester, tag)
+      parser = OptionParser.new
+      parser.banner += " TEST_FILE_OR_DIRECTORY..."
+
+      parser.on("--groonga=GROONGA",
+                "Use GROONGA as groonga command",
+                "(#{tester.groonga})") do |groonga|
+        tester.groonga = groonga
+      end
+
+      parser.on("--base-directory=DIRECTORY",
+                "Use DIRECTORY as a base directory of relative path",
+                "(#{tester.base_directory})") do |directory|
+        tester.base_directory = directory
+      end
+
+      parser.on("--diff=DIFF",
+                "Use DIFF as diff command",
+                "(#{tester.diff})") do |diff|
+        tester.diff = diff
+        tester.diff_options.clear
+      end
+
+      diff_option_is_specified = false
+      parser.on("--diff-option=OPTION",
+                "Use OPTION as diff command",
+                "(#{tester.diff_options.join(' ')})") do |option|
+        tester.diff_options.clear if diff_option_is_specified
+        tester.diff_options << option
+        diff_option_is_specified = true
+      end
+
+      parser.on("--version",
+                "Show version and exit") do
+        puts(GroongaTester::VERSION)
+        throw(tag, true)
+      end
+
+      parser
+    end
+  end
+
   attr_accessor :groonga, :base_directory, :diff, :diff_options
   def initialize
     @groonga = "groonga"
@@ -519,44 +573,4 @@ class GroongaTester
   end
 end
 
-tester = GroongaTester.new
-
-parser = OptionParser.new
-parser.banner += " TEST_FILE_OR_DIRECTORY..."
-
-parser.on("--groonga=GROONGA",
-          "Use GROONGA as groonga command",
-          "(#{tester.groonga})") do |groonga|
-  tester.groonga = groonga
-end
-
-parser.on("--base-directory=DIRECTORY",
-          "Use DIRECTORY as a base directory of relative path",
-          "(#{tester.base_directory})") do |directory|
-  tester.base_directory = directory
-end
-
-parser.on("--diff=DIFF",
-          "Use DIFF as diff command",
-          "(#{tester.diff})") do |diff|
-  tester.diff = diff
-  tester.diff_options.clear
-end
-
-diff_option_is_specified = false
-parser.on("--diff-option=OPTION",
-          "Use OPTION as diff command",
-          "(#{tester.diff_options.join(' ')})") do |option|
-  tester.diff_options.clear if diff_option_is_specified
-  tester.diff_options << option
-  diff_option_is_specified = true
-end
-
-parser.on("--version",
-          "Show version and exit") do
-  puts(GroongaTester::VERSION)
-  exit(true)
-end
-
-targets = parser.parse!
-exit(tester.run(*targets))
+exit(GroongaTester.run)
