@@ -24,6 +24,8 @@ require "json"
 require "shellwords"
 
 class GroongaTester
+  VERSION = "1.0.0"
+
   attr_accessor :groonga, :base_directory, :diff, :diff_options
   def initialize
     @groonga = "groonga"
@@ -548,6 +550,12 @@ parser.on("--diff-option=OPTION",
   tester.diff_options.clear if diff_option_is_specified
   tester.diff_options << option
   diff_option_is_specified = true
+end
+
+parser.on("--version",
+          "Show version and exit") do
+  puts(GroongaTester::VERSION)
+  exit(true)
 end
 
 targets = parser.parse!
