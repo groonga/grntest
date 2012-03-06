@@ -442,10 +442,15 @@ module Groonga
         command_line = [@context.groonga_suggest_create_dataset,
                         @context.db_path,
                         dataset_name]
-        log_input(command_line.join(" "))
-        IO.popen(command_line, "r:ascii-8bit") do |io|
-          io.close_write
-          log_output(io.read)
+        packed_command_line = command_line.join(" ")
+        log_input("#{packed_command_line}\n")
+        begin
+          IO.popen(command_line, "r:ascii-8bit") do |io|
+            log_output(io.read)
+          end
+        rescue SystemCallError
+          raise Error.new("failed to run groonga-suggest-create-dataset: " +
+                            "<#{packed_command_line}>: #{$!}")
         end
       end
 
