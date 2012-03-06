@@ -241,7 +241,7 @@ module Groonga
        if return_code.zero?
          [0, 0.0, 0.0]
        else
-         message, bactrace = rest
+         message, backtrace = rest
          [[return_code, 0.0, 0.0], message]
        end
      end
