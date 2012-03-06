@@ -42,10 +42,16 @@ class GroongaTester
       parser = OptionParser.new
       parser.banner += " TEST_FILE_OR_DIRECTORY..."
 
-      parser.on("--groonga=GROONGA",
-                "Use GROONGA as groonga command",
-                "(#{tester.groonga})") do |groonga|
-        tester.groonga = groonga
+      parser.on("--groonga=COMMAND",
+                "Use COMMAND as groonga command",
+                "(#{tester.groonga})") do |command|
+        tester.groonga = command
+      end
+
+      parser.on("--groonga-suggest-create-dataset=COMMAND",
+                "Use COMMAND as groonga_suggest_create_dataset command",
+                "(#{tester.groonga_suggest_create_dataset})") do |command|
+        tester.groonga_suggest_create_dataset = command
       end
 
       parser.on("--base-directory=DIRECTORY",
@@ -80,9 +86,11 @@ class GroongaTester
     end
   end
 
-  attr_accessor :groonga, :base_directory, :diff, :diff_options
+  attr_accessor :groonga, :groonga_suggest_create_dataset
+  attr_accessor :base_directory, :diff, :diff_options
   def initialize
     @groonga = "groonga"
+    @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
     @base_directory = "."
     detect_suitable_diff
   end
