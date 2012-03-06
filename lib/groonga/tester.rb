@@ -466,9 +466,13 @@ module Groonga
       def execute_command(line)
         extract_command_info(line)
         @loading = true if @current_command == "load"
+        begin
+          @groonga.print(line)
+          @groonga.flush
+        rescue SystemCallError
+          raise Error.new("failed to write to groonga: <#{line}>: #{$!}")
+        end
         log_input(line)
-        @groonga.print(line)
-        @groonga.flush
         unless @loading
           log_output(read_output)
         end
