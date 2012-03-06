@@ -23,7 +23,8 @@ require "tempfile"
 require "json"
 require "shellwords"
 
-class GroongaTester
+module Groonga
+class Tester
   VERSION = "1.0.0"
 
   class << self
@@ -579,4 +580,5 @@ class GroongaTester
       0
     end
   end
+end
 end

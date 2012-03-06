@@ -17,4 +17,4 @@
 
 require "groonga/tester"
 
-exit(GroongaTester.run)
+exit(Groonga::Tester.run)
