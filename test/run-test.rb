@@ -24,5 +24,6 @@ test_dir = File.join(base_dir, "test")
 $LOAD_PATH.unshift(lib_dir)
 
 require 'test-unit'
+require 'test/unit/rr'
 
 exit(Test::Unit::AutoRunner.run(true))

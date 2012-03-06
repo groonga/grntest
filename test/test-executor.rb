@@ -18,7 +18,7 @@ require "groonga/tester"
 
 class TestExecutor < Test::Unit::TestCase
   def setup
-    @groonga = StringIO.new
+    @groonga = stub
     @executor = Groonga::Tester::Executor.new(@groonga)
     @context = @executor.context
     @script = Tempfile.new("test-executor")
@@ -43,6 +43,11 @@ class TestExecutor < Test::Unit::TestCase
       assert_not_predicate(@context, :logging?)
       execute("# enable-logging")
       assert_predicate(@context, :logging?)
+    end
+
+    def test_suggest_create_dataset
+      mock(@executor).execute_suggest_create_dataset("shop")
+      execute("# suggest-create-dataset shop")
     end
   end
 end

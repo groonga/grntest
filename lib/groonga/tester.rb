@@ -178,9 +178,13 @@ module Groonga
       private
       def run_groonga_script
         create_temporary_directory do |directory_path|
-          run_groonga(File.join(directory_path, "db")) do |io|
+          db_path = File.join(directory_path, "db")
+          run_groonga(db_path) do |io|
             context = Executor::Context.new
+            context.db_path = db_path
             context.base_directory = @tester.base_directory
+            context.groonga_suggest_create_dataset =
+              @tester.groonga_suggest_create_dataset
             executer = Executor.new(io, context)
             executer.execute(@test_script_path)
           end
@@ -295,10 +299,13 @@ module Groonga
     class Executor
       class Context
         attr_writer :logging
-        attr_accessor :base_directory, :result
+        attr_accessor :base_directory, :db_path, :groonga_suggest_create_dataset
+        attr_accessor :result
         def initialize
           @logging = true
           @base_directory = "."
+          @db_path = "db"
+          @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
           @n_nested = 0
           @result = []
         end
@@ -407,15 +414,31 @@ module Groonga
       end
 
       def execute_comment(content)
-        case content.strip
+        command, *options = Shellwords.split(content)
+        case command
         when "disable-logging"
           @context.logging = false
         when "enable-logging"
           @context.logging = true
-        when /\Ainclude\s+/
-          path = $POSTMATCH.strip
-          return if path.empty?
+        when "suggest-create-dataset"
+          dataset_name = options.first
+          return if dataset_name.nil?
+          execute_suggest_create_dataset(dataset_name)
+        when "include"
+          path = options.first
+          return if path.nil?
           execute_script(path)
+        end
+      end
+
+      def execute_suggest_create_dataset(dataset_name)
+        command_line = [@context.groonga_suggest_create_dataset,
+                        @context.db_path,
+                        dataset_name]
+        log_input(command_line.join(" "))
+        IO.popen(command_line, "r:ascii-8bit") do |io|
+          io.close_write
+          log_output(io.read)
         end
       end
 
