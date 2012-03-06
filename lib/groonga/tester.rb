@@ -238,10 +238,12 @@ module Groonga
 
       def normalize_status(status)
         return_code, started_time, elapsed_time, *rest = status
+        _ = started_time = elapsed_time # for suppress warnings
         if return_code.zero?
           [0, 0.0, 0.0]
         else
           message, backtrace = rest
+          _ = backtrace # for suppress warnings
           [[return_code, 0.0, 0.0], message]
         end
       end
