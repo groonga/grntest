@@ -179,9 +179,9 @@ module Groonga
      def run_groonga_script
        create_temporary_directory do |directory_path|
          run_groonga(File.join(directory_path, "db")) do |io|
-           context = Executer::Context.new
+           context = Executor::Context.new
            context.base_directory = @tester.base_directory
-           executer = Executer.new(io, context)
+           executer = Executor.new(io, context)
            executer.execute(@test_script_path)
          end
        end
@@ -290,7 +290,7 @@ module Groonga
      end
    end
 
-   class Executer
+   class Executor
      class Context
        attr_accessor :logging, :base_directory, :result
        def initialize
