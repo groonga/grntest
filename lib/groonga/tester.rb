@@ -555,6 +555,7 @@ module Groonga
         @output = STDOUT
         @n_tests = 0
         @n_passed_tests = 0
+        @n_not_checked_tests = 0
         @failed_tests = []
       end
 
@@ -583,6 +584,7 @@ module Groonga
       def no_check_test(result)
         report_test_result("not checked")
         puts(result)
+        @n_not_checked_tests += 1
       end
 
       def finish_test
@@ -593,7 +595,8 @@ module Groonga
         puts
         puts("#{@n_tests} tests, " +
              "#{@n_passed_tests} passes, " +
-             "#{@failed_tests.size} failures.")
+             "#{@failed_tests.size} failures, " +
+             "#{@n_not_checked_tests} not checked tests.")
         if @n_tests.zero?
           pass_ratio = 0
         else
