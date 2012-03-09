@@ -102,15 +102,17 @@ module Groonga
 
       reporter = Reporter.new(self)
       reporter.start
-      targets.each do |target|
-        target_path = Pathname(target)
-        next unless target_path.exist?
-        if target_path.directory?
-          Pathname.glob(target_path + "**" + "*.test") do |target_file|
-            succeeded = false unless run_test(target_file, reporter)
+      catch do |tag|
+        targets.each do |target|
+          target_path = Pathname(target)
+          next unless target_path.exist?
+          if target_path.directory?
+            Pathname.glob(target_path + "**" + "*.test") do |target_file|
+              succeeded = false unless run_test(target_file, reporter, tag)
+            end
+          else
+            succeeded = false unless run_test(target_path, reporter, tag)
           end
-        else
-          succeeded = false unless run_test(target_path, reporter)
         end
       end
       reporter.finish
@@ -118,9 +120,11 @@ module Groonga
     end
 
     private
-    def run_test(test_script_path, reporter)
+    def run_test(test_script_path, reporter, tag)
       runner = Runner.new(self, test_script_path)
-      runner.run(reporter)
+      succeeded = runner.run(reporter)
+      throw(tag) if runner.interrupted?
+      succeeded
     end
 
     def detect_suitable_diff
@@ -148,6 +152,7 @@ module Groonga
         @tester = tester
         @test_script_path = test_script_path
         @max_n_columns = MAX_N_COLUMNS
+        @interrupted = false
       end
 
       def run(reporter)
@@ -175,18 +180,27 @@ module Groonga
         succeeded
       end
 
+      def interrupted?
+        @interrupted
+      end
+
       private
       def run_groonga_script
         create_temporary_directory do |directory_path|
           db_path = File.join(directory_path, "db")
           run_groonga(db_path) do |io|
             context = Executor::Context.new
-            context.db_path = db_path
-            context.base_directory = @tester.base_directory
-            context.groonga_suggest_create_dataset =
-              @tester.groonga_suggest_create_dataset
-            executer = Executor.new(io, context)
-            executer.execute(@test_script_path)
+            begin
+              context.db_path = db_path
+              context.base_directory = @tester.base_directory
+              context.groonga_suggest_create_dataset =
+                @tester.groonga_suggest_create_dataset
+              executer = Executor.new(io, context)
+              executer.execute(@test_script_path)
+            rescue Interrupt
+              @interrupted = true
+            end
+            context.result
           end
         end
       end
