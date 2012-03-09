@@ -106,8 +106,8 @@ module Groonga
         target_path = Pathname(target)
         next unless target_path.exist?
         if target_path.directory?
-          Dir.glob(target_path + "**" + "*.test") do |target_file|
-            succeeded = false unless run_test(Pathname(target_file), reporter)
+          Pathname.glob(target_path + "**" + "*.test") do |target_file|
+            succeeded = false unless run_test(target_file, reporter)
           end
         else
           succeeded = false unless run_test(target_path, reporter)
