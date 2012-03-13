@@ -181,7 +181,8 @@ module Groonga
       def run(reporter)
         succeeded = true
 
-        reporter.start_test(@test_script_path)
+        test_name = @test_script_path.basename.to_s
+        reporter.start_test(test_name)
         actual_result = run_groonga_script
         actual_result = normalize_result(actual_result)
         expected_result = read_expected_result
@@ -590,8 +591,8 @@ module Groonga
         @output.flush
       end
 
-      def start_test(test_script_path)
-        @test_name = test_script_path.basename
+      def start_test(test_name)
+        @test_name = test_name
         print("  #{@test_name}")
         @output.flush
       end
