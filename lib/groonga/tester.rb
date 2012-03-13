@@ -107,8 +107,8 @@ module Groonga
           target_path = Pathname(target)
           next unless target_path.exist?
           if target_path.directory?
-            Pathname.glob(target_path + "**" + "*.test") do |target_file|
-              succeeded = false unless run_test(target_file, reporter, tag)
+            unless run_tests_in_directory(target_path, reporter, tag)
+              succeeded = false
             end
           else
             succeeded = false unless run_test(target_path, reporter, tag)
@@ -120,6 +120,29 @@ module Groonga
     end
 
     private
+    def collect_test_files(test_directory)
+      test_files = Pathname.glob(test_directory + "**" + "*.test")
+      grouped_test_files = test_files.group_by do |test_file|
+        test_file.dirname.relative_path_from(test_directory)
+      end
+      grouped_test_files.sort_by do |directory, test_files|
+        directory.to_s
+      end
+    end
+
+    def run_tests_in_directory(test_directory, reporter, tag)
+      succeeded = true
+      collect_test_files(test_directory).each do |directory, test_files|
+        suite_name = directory.to_s
+        reporter.start_suite(suite_name)
+        test_files.sort.each do |test_file|
+          succeeded = false unless run_test(test_file, reporter, tag)
+        end
+        reporter.finish_suite(suite_name)
+      end
+      succeeded
+    end
+
     def run_test(test_script_path, reporter, tag)
       runner = Runner.new(self, test_script_path)
       succeeded = runner.run(reporter)
@@ -562,6 +585,11 @@ module Groonga
       def start
       end
 
+      def start_suite(suite_name)
+        puts(suite_name)
+        @output.flush
+      end
+
       def start_test(test_script_path)
         @test_name = test_script_path.basename
         print("  #{@test_name}")
@@ -589,6 +617,9 @@ module Groonga
 
       def finish_test
         @n_tests += 1
+      end
+
+      def finish_suite(suite_name)
       end
 
       def finish
