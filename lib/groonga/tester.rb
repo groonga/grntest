@@ -199,7 +199,7 @@ module Groonga
           reporter.no_check_test(actual_result)
           output_actual_file(actual_result)
         end
-        reporter.finish_test
+        reporter.finish_test(test_name)
 
         succeeded
       end
@@ -616,7 +616,7 @@ module Groonga
         @n_not_checked_tests += 1
       end
 
-      def finish_test
+      def finish_test(test_name)
         @n_tests += 1
       end
 
