@@ -2,11 +2,11 @@
 
 ## Name
 
-groonga-test
+grntest
 
 ## Description
 
-Groonga-test is a testing framework for groonga. You can write a test for groonga by writing groonga commands and expected result.
+Grntest is a testing framework for groonga. You can write a test for groonga by writing groonga commands and expected result.
 
 ## Usage
 
@@ -19,7 +19,7 @@ Groonga-test is a testing framework for groonga. You can write a test for groong
 ## Install
 
 ```
-% sudo gem install groonga-test
+% sudo gem install grntest
 ```
 
 ### Mailing list
