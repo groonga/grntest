@@ -77,6 +77,12 @@ module Groonga
           diff_option_is_specified = true
         end
 
+        parser.on("--[no-]keep-database",
+                  "Keep used database for debug after test is finished",
+                  "(#{tester.keep_database?})") do |boolean|
+          tester.keep_database = boolean
+        end
+
         parser.on("--version",
                   "Show version and exit") do
           puts(GroongaTester::VERSION)
@@ -89,6 +95,7 @@ module Groonga
 
     attr_accessor :groonga, :groonga_suggest_create_dataset
     attr_accessor :base_directory, :diff, :diff_options
+    attr_writer :keep_database
     def initialize
       @groonga = "groonga"
       @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
@@ -117,6 +124,10 @@ module Groonga
       end
       reporter.finish
       succeeded
+    end
+
+    def keep_database?
+      @keep_database
     end
 
     private
@@ -236,8 +247,17 @@ module Groonga
         begin
           yield path
         ensure
-          FileUtils.rm_rf(path)
+          if @tester.keep_database? and File.exist?(path)
+            FileUtils.rm_rf(keep_database_path)
+            FileUtils.mv(path, keep_database_path)
+          else
+            FileUtils.rm_rf(path)
+          end
         end
+      end
+
+      def keep_database_path
+        @test_script_path.to_s.gsub(/\//, ".")
       end
 
       def run_groonga(db_path)
