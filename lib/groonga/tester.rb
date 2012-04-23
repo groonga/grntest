@@ -286,7 +286,13 @@ module Groonga
           when :output
             case options[:format]
             when "json"
-              status, *values = JSON.parse(content)
+              begin
+                status, *values = JSON.parse(content)
+              rescue JSON::ParserError
+                # extract failed reason from 1st json output.
+                parsestr = content.split("\n")[0]
+                status, *values = JSON.parse(parsestr)
+              end
               normalized_status = normalize_status(status)
               normalized_output_content = [normalized_status, *values]
               normalized_output = JSON.generate(normalized_output_content)
