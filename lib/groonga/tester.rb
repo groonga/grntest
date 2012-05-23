@@ -281,7 +281,10 @@ module Groonga
         }
         pid = Process.spawn(env, *command_line, options)
         begin
-          yield(input_pipe[write], output_pipe[read])
+          groonga_input = input_pipe[write]
+          groonga_output = output_pipe[read]
+          ensure_groonga_ready(groonga_input, groonga_output)
+          yield(groonga_input, groonga_output)
         ensure
           (input_pipe + output_pipe).each do |io|
             io.close unless io.closed?
@@ -290,10 +293,10 @@ module Groonga
         end
       end
 
-      def ensure_groonga_ready(groonga)
-        groonga.print("status\n")
-        groonga.flush
-        groonga.gets
+      def ensure_groonga_ready(input, output)
+        input.print("status\n")
+        input.flush
+        output.gets
       end
 
       def normalize_result(result)
