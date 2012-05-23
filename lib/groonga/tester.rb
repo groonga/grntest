@@ -223,14 +223,14 @@ module Groonga
       def run_groonga_script
         create_temporary_directory do |directory_path|
           db_path = File.join(directory_path, "db")
-          run_groonga(db_path) do |io|
+          run_groonga(db_path) do |input, output|
             context = Executor::Context.new
             begin
               context.db_path = db_path
               context.base_directory = @tester.base_directory
               context.groonga_suggest_create_dataset =
                 @tester.groonga_suggest_create_dataset
-              executer = Executor.new(io, context)
+              executer = Executor.new(input, output, context)
               executer.execute(@test_script_path)
             rescue Interrupt
               @interrupted = true
@@ -261,13 +261,32 @@ module Groonga
       end
 
       def run_groonga(db_path)
-        IO.popen([@tester.groonga, "-n", db_path], "r+") do |io|
-          begin
-            ensure_groonga_ready(io)
-            yield io
-          ensure
+        read = 0
+        write = 1
+        input_pipe = IO.pipe
+        output_pipe = IO.pipe
+
+        input_fd = input_pipe[read].to_i
+        output_fd = output_pipe[write].to_i
+        command_line = [
+          @tester.groonga,
+          "--input-fd", input_fd.to_s,
+          "--output-fd", output_fd.to_s,
+          "-n", db_path,
+        ]
+        env = {}
+        options = {
+          input_fd => input_fd,
+          output_fd => output_fd
+        }
+        pid = Process.spawn(env, *command_line, options)
+        begin
+          yield(input_pipe[write], output_pipe[read])
+        ensure
+          (input_pipe + output_pipe).each do |io|
             io.close unless io.closed?
           end
+          Process.waitpid(pid)
         end
       end
 
@@ -403,8 +422,9 @@ module Groonga
       end
 
       attr_reader :context
-      def initialize(groonga, context=nil)
-        @groonga = groonga
+      def initialize(input, output, context=nil)
+        @input = input
+        @output = output
         @loading = false
         @pending_command = ""
         @current_command_name = nil
@@ -441,8 +461,8 @@ module Groonga
       private
       def execute_line_on_loading(line)
         log_input(line)
-        @groonga.print(line)
-        @groonga.flush
+        @input.print(line)
+        @input.flush
         if /\]$/ =~ line
           current_result = read_output
           unless current_result.empty?
@@ -513,7 +533,7 @@ module Groonga
       end
 
       def execute_script(path)
-        executer = self.class.new(@groonga, @context)
+        executer = self.class.new(@input, @output, @context)
         script_path = Pathname(path)
         if script_path.relative?
           script_path = Pathname(@context.base_directory) + script_path
@@ -525,8 +545,8 @@ module Groonga
         extract_command_info(line)
         @loading = true if @current_command == "load"
         begin
-          @groonga.print(line)
-          @groonga.flush
+          @input.print(line)
+          @input.flush
         rescue SystemCallError
           raise Error.new("failed to write to groonga: <#{line}>: #{$!}")
         end
@@ -556,9 +576,9 @@ module Groonga
         output = ""
         first_timeout = 1
         timeout = first_timeout
-        while IO.select([@groonga], [], [], timeout)
-          break if @groonga.eof?
-          output << @groonga.readpartial(65535)
+        while IO.select([@output], [], [], timeout)
+          break if @output.eof?
+          output << @output.readpartial(65535)
           timeout = 0
         end
         output
