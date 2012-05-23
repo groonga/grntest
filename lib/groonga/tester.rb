@@ -245,7 +245,7 @@ module Groonga
         FileUtils.rm_rf(path)
         FileUtils.mkdir_p(path)
         begin
-          yield path
+          yield(path)
         ensure
           if @tester.keep_database? and File.exist?(path)
             FileUtils.rm_rf(keep_database_path)
@@ -709,7 +709,7 @@ module Groonga
         file = Tempfile.new("groonga-test-#{key}")
         file.print(content)
         file.close
-        yield file
+        yield(file)
       end
 
       def guess_term_width
