@@ -646,9 +646,9 @@ module Groonga
       def finish
         puts
         puts("#{@n_tests} tests, " +
-             "#{@n_passed_tests} passes, " +
-             "#{@failed_tests.size} failures, " +
-             "#{@n_not_checked_tests} not checked tests.")
+               "#{@n_passed_tests} passes, " +
+               "#{@failed_tests.size} failures, " +
+               "#{@n_not_checked_tests} not checked tests.")
         if @n_tests.zero?
           pass_ratio = 0
         else
