@@ -18,8 +18,9 @@ require "groonga/tester"
 
 class TestExecutor < Test::Unit::TestCase
   def setup
-    @groonga = stub
-    @executor = Groonga::Tester::Executor.new(@groonga)
+    input = StringIO.new
+    output = StringIO.new
+    @executor = Groonga::Tester::Executor.new(input, output)
     @context = @executor.context
     @script = Tempfile.new("test-executor")
   end
