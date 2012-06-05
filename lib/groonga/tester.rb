@@ -640,7 +640,6 @@ module Groonga
               load_values = ""
             end
           else
-            last_argument = ""
             command = command.gsub(/,\s/, ",")
             arguments = command.split(/(\s'.+?'\s|\s)/).collect(&:strip)
             now_command = arguments.shift
@@ -650,27 +649,7 @@ module Groonga
               load_values = ""
             end
 
-            arguments_count = 0
-            last_command = ""
-            arguments.each do |argument|
-              next if argument.empty?
-              if argument =~ /\A--/
-                last_command = argument.sub(/\A--/, "")
-                next
-              end
-
-              if last_command.empty?
-                query_parameter =
-                  arguments_name(now_command)[arguments_count]
-              else
-                query_parameter = last_command
-              end
-
-              value = argument.gsub(/'/, "")
-              translated_values << "#{query_parameter}=#{value}"
-              arguments_count += 1
-              last_command = ""
-            end
+            translated_values = translate_arguments(now_command, arguments)
           end
 
           unless loading
@@ -679,13 +658,41 @@ module Groonga
               translated_command << "?#{translated_values.join("&")}"
             end
             translated_commands << translated_command
-            translated_values = []
           end
         end
         translated_commands.join
       end
 
       private
+      def translate_arguments(now_command, arguments)
+        return [] if arguments.empty?
+        translated_values = []
+        last_argument = ""
+
+        arguments_count = 0
+        last_command = ""
+        arguments.each do |argument|
+          next if argument.empty?
+          if argument =~ /\A--/
+            last_command = argument.sub(/\A--/, "")
+            next
+          end
+
+          if last_command.empty?
+            query_parameter =
+              arguments_name(now_command)[arguments_count]
+          else
+            query_parameter = last_command
+          end
+
+          value = argument.gsub(/'/, "")
+          translated_values << "#{query_parameter}=#{value}"
+          arguments_count += 1
+          last_command = ""
+        end
+        translated_values
+      end
+
       def arguments_name(command)
         case command
         when "table_create"
