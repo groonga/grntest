@@ -653,7 +653,7 @@ module Groonga
           end
 
           unless loading
-            translated_command ="/d/#{now_command}"
+            translated_command = "/d/#{now_command}"
             unless translated_values.empty?
               translated_command << "?#{translated_values.join("&")}"
             end
