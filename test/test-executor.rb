@@ -66,7 +66,7 @@ class TestExecutor < Test::Unit::TestCase
         "key_type" => "ShortText",
       }
       actual_command = translate(command)
-      expected_command = build_http_command("table_create", arguments)
+      expected_command = build_url("table_create", arguments)
 
       assert_equal(expected_command, actual_command)
     end
@@ -74,7 +74,7 @@ class TestExecutor < Test::Unit::TestCase
     def test_command_with_argument_name
       command = "select --table Sites"
       actual_command = translate(command)
-      expected_command = build_http_command("select", "table" => "Sites")
+      expected_command = build_url("select", "table" => "Sites")
 
       assert_equal(expected_command, actual_command)
     end
@@ -82,7 +82,7 @@ class TestExecutor < Test::Unit::TestCase
     def test_command_without_arguments
       command = "dump"
       actual_command = translate(command)
-      expected_command = build_http_command(command, {})
+      expected_command = build_url(command, {})
 
       assert_equal(expected_command, actual_command)
     end
@@ -101,7 +101,7 @@ EOF
         translate(line)
       end
 
-      expected_command = build_http_command("load", "table" => "Sites")
+      expected_command = build_url("load", "table" => "Sites")
       expected_command << load_values_query(load_values)
 
       assert_equal(expected_command, actual_commands.join("\n"))
@@ -119,7 +119,7 @@ EOF
         translate(line)
       end
 
-      expected_command = build_http_command("load", "table" => "Sites")
+      expected_command = build_url("load", "table" => "Sites")
       expected_command << load_values_query(load_values)
 
       assert_equal(expected_command, actual_commands.join("\n"))
@@ -132,7 +132,7 @@ EOF
         "output_columns" => "_key,uri",
       }
       actual_command = translate(command)
-      expected_command = build_http_command("select", arguments)
+      expected_command = build_url("select", arguments)
 
       assert_equal(expected_command, actual_command)
     end
@@ -150,11 +150,11 @@ EOF
       @translater.translate_command(command)
     end
 
-    def build_http_command(command, arguments)
-      http_command = "/d/#{command}"
+    def build_url(command, arguments)
+      url = "/d/#{command}"
       query = Rack::Utils.build_query(arguments)
-      http_command << "?#{query}" unless query.empty?
-      http_command
+      url << "?#{query}" unless query.empty?
+      url
     end
 
     def load_values_query(values)

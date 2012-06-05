@@ -627,7 +627,7 @@ module Groonga
 
         translated_values = translate_arguments(now_command, arguments)
         translated_command =
-          build_http_command(now_command, translated_values)
+          build_url(now_command, translated_values)
 
         if now_command == "load"
           translated_command << "&values="
@@ -690,11 +690,11 @@ module Groonga
         end
       end
 
-      def build_http_command(command, arguments)
-        http_command = "/d/#{command}"
+      def build_url(command, arguments)
+        url = "/d/#{command}"
         query = Rack::Utils.build_query(arguments)
-        http_command << "?#{query}" unless query.empty?
-        http_command
+        url << "?#{query}" unless query.empty?
+        url
       end
     end
 
