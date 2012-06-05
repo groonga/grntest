@@ -141,6 +141,7 @@ EOF
       comment = "#this is comment."
       expected_command = comment
       actual_command = translate(comment)
+
       assert_equal(expected_command, actual_command)
     end
 
