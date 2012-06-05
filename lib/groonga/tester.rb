@@ -620,7 +620,8 @@ module Groonga
         command = command.chomp
         return "" if command.empty?
 
-        return command if command =~ /\A(?!\s+)\W/
+        return command if command =~ /\A\s*\#/
+        return Rack::Utils.escape(command) if command =~ /\A(?!\s+)\W/
 
         now_command, *arguments = Shellwords.split(command)
 
@@ -689,16 +690,11 @@ module Groonga
         end
       end
 
-      def build_http_command(now_command, arguments)
-        translated_command = "/d/#{now_command}"
-        unless arguments.empty?
-          translated_command << "?"
-          query = arguments.collect do |parameter, value|
-            "#{parameter}=#{value}"
-          end
-          translated_command << query.join("&")
-        end
-        translated_command
+      def build_http_command(command, arguments)
+        http_command = "/d/#{command}"
+        query = Rack::Utils.build_query(arguments)
+        http_command << "?#{query}" unless query.empty?
+        http_command
       end
     end
 

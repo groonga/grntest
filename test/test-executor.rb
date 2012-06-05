@@ -14,6 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 require "stringio"
+require "rack/utils"
 require "groonga/tester"
 
 class TestExecutor < Test::Unit::TestCase
@@ -59,25 +60,29 @@ class TestExecutor < Test::Unit::TestCase
 
     def test_command
       command = "table_create Site TABLE_HASH_KEY ShortText"
-      expected_command =
-        "/d/table_create?name=Site&flags=TABLE_HASH_KEY&key_type=ShortText"
+      arguments = {
+        "name" => "Site",
+        "flags" => "TABLE_HASH_KEY",
+        "key_type" => "ShortText",
+      }
       actual_command = translate(command)
+      expected_command = build_http_command("table_create", arguments)
 
       assert_equal(expected_command, actual_command)
     end
 
     def test_command_with_argument_name
       command = "select --table Sites"
-      expected_command = "/d/select?table=Sites"
       actual_command = translate(command)
+      expected_command = build_http_command("select", "table" => "Sites")
 
       assert_equal(expected_command, actual_command)
     end
 
     def test_command_without_arguments
       command = "dump"
-      expected_command = "/d/dump"
       actual_command = translate(command)
+      expected_command = build_http_command(command, {})
 
       assert_equal(expected_command, actual_command)
     end
@@ -91,13 +96,13 @@ class TestExecutor < Test::Unit::TestCase
 ["razil","http://razil.jp/"]
 ]
 EOF
-      load_values = load_values.chomp
       commands = "#{load_command}\n#{load_values}"
-
-      expected_command = "/d/load?table=Sites&values=\n#{load_values}"
       actual_commands = commands.lines.collect do |line|
         translate(line)
       end
+
+      expected_command = build_http_command("load", "table" => "Sites")
+      expected_command << load_values_query(load_values)
 
       assert_equal(expected_command, actual_commands.join("\n"))
     end
@@ -109,21 +114,25 @@ EOF
 {"_key": "ruby", "uri": "http://ruby-lang.org/"}
 ]
 EOF
-      load_values = load_values.chomp
       commands = "#{load_command}\n#{load_values}"
-
-      expected_command = "/d/load?table=Sites&values=\n#{load_values}"
       actual_commands = commands.lines.collect do |line|
         translate(line)
       end
+
+      expected_command = build_http_command("load", "table" => "Sites")
+      expected_command << load_values_query(load_values)
 
       assert_equal(expected_command, actual_commands.join("\n"))
     end
 
     def test_command_with_single_quote
       command = "select Sites --output_columns '_key, uri'"
-      expected_command = "/d/select?table=Sites&output_columns=_key,uri"
+      arguments = {
+        "table" => "Sites",
+        "output_columns" => "_key,uri",
+      }
       actual_command = translate(command)
+      expected_command = build_http_command("select", arguments)
 
       assert_equal(expected_command, actual_command)
     end
@@ -138,6 +147,20 @@ EOF
     private
     def translate(command)
       @translater.translate_command(command)
+    end
+
+    def build_http_command(command, arguments)
+      http_command = "/d/#{command}"
+      query = Rack::Utils.build_query(arguments)
+      http_command << "?#{query}" unless query.empty?
+      http_command
+    end
+
+    def load_values_query(values)
+      escaped_values = values.lines.collect do |line|
+        "#{Rack::Utils.escape(line.chomp)}"
+      end
+      "&values=\n#{escaped_values.join("\n")}"
     end
   end
 end
