@@ -83,36 +83,41 @@ class TestExecutor < Test::Unit::TestCase
     end
 
     def test_load_command
-      command = <<EOF
-load --table Sites
+      load_command = "load --table Sites"
+      load_values = <<EOF
 [
 ["_key","uri"],
 ["groonga","http://groonga.org/"],
 ["razil","http://razil.jp/"]
 ]
 EOF
-      expected_command =
-        "/d/load?table=Sites&values=[[\"_key\",\"uri\"]," +
-          "[\"groonga\",\"http://groonga.org/\"]," +
-          "[\"razil\",\"http://razil.jp/\"]]"
-      actual_command = translate(command)
+      load_values = load_values.chomp
+      commands = "#{load_command}\n#{load_values}"
 
-      assert_equal(expected_command, actual_command)
+      expected_command = "/d/load?table=Sites&values=\n#{load_values}"
+      actual_commands = commands.lines.collect do |line|
+        translate(line)
+      end
+
+      assert_equal(expected_command, actual_commands.join("\n"))
     end
 
     def test_load_command_with_json_value
-      command = <<EOF
-load --table Sites
+      load_command = "load --table Sites"
+      load_values = <<EOF
 [
 {"_key": "ruby", "uri": "http://ruby-lang.org/"}
 ]
 EOF
-      expected_command =
-        "/d/load?table=Sites&values=[{\"_key\": \"ruby\", " +
-          "\"uri\": \"http://ruby-lang.org/\"}]"
-      actual_command = translate(command)
+      load_values = load_values.chomp
+      commands = "#{load_command}\n#{load_values}"
 
-      assert_equal(expected_command, actual_command)
+      expected_command = "/d/load?table=Sites&values=\n#{load_values}"
+      actual_commands = commands.lines.collect do |line|
+        translate(line)
+      end
+
+      assert_equal(expected_command, actual_commands.join("\n"))
     end
 
     def test_command_with_single_quote
@@ -123,14 +128,10 @@ EOF
       assert_equal(expected_command, actual_command)
     end
 
-    def test_command_with_comment
+    def test_comment
       comment = "#this is comment."
-      command = "#{comment}\n" +
-        "select --table Sites"
-      expected_command = "#{comment}\n" +
-        "/d/select?table=Sites"
-      actual_command = translate(command)
-
+      expected_command = comment
+      actual_command = translate(comment)
       assert_equal(expected_command, actual_command)
     end
 

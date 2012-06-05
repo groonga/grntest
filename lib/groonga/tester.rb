@@ -616,49 +616,25 @@ module Groonga
     end
 
     class Translater
-      def translate_command(commands)
-        translated_commands = []
-        now_command = ""
-        translated_values = []
-        loading = false
-        load_values = ""
+      def translate_command(command)
+        command = command.chomp
+        return "" if command.empty?
 
-        commands.each_line do |_command|
-          command = _command.chomp
-          next if command.empty?
+        return command if command =~ /\A(?!\s+)\W/
 
-          if command =~ /\A\s*\#/
-            translated_commands << "#{command}\n"
-            next
-          end
+        command = command.gsub(/,\s/, ",")
+        arguments = command.split(/(\s'.+?'\s|\s)/).collect(&:strip)
+        now_command = arguments.shift
 
-          if loading
-            load_values << command
-            if command == "]"
-              translated_values =
-                translated_values.merge("values" => load_values)
-              loading = false
-              load_values = ""
-            end
-          else
-            command = command.gsub(/,\s/, ",")
-            arguments = command.split(/(\s'.+?'\s|\s)/).collect(&:strip)
-            now_command = arguments.shift
+        translated_values = translate_arguments(now_command, arguments)
+        translated_command =
+          build_http_command(now_command, translated_values)
 
-            if now_command == "load"
-              loading = true
-              load_values = ""
-            end
-
-            translated_values = translate_arguments(now_command, arguments)
-          end
-
-          unless loading
-            translated_commands <<
-              build_http_command(now_command, translated_values)
-          end
+        if now_command == "load"
+          translated_command << "&values="
         end
-        translated_commands.join
+
+        translated_command
       end
 
       private
