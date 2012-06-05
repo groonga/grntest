@@ -653,11 +653,8 @@ module Groonga
           end
 
           unless loading
-            translated_command = "/d/#{now_command}"
-            unless translated_values.empty?
-              translated_command << "?#{translated_values.join("&")}"
-            end
-            translated_commands << translated_command
+            translated_commands <<
+              build_http_command(now_command, translated_values)
           end
         end
         translated_commands.join
@@ -714,6 +711,14 @@ module Groonga
         else
           nil
         end
+      end
+
+      def build_http_command(now_command, arguments)
+            translated_command = "/d/#{now_command}"
+            unless arguments.empty?
+              translated_command << "?#{arguments.join("&")}"
+            end
+        translated_command
       end
     end
 
