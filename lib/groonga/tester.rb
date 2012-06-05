@@ -622,9 +622,7 @@ module Groonga
 
         return command if command =~ /\A(?!\s+)\W/
 
-        command = command.gsub(/,\s/, ",")
-        arguments = command.split(/(\s'.+?'\s|\s)/).collect(&:strip)
-        now_command = arguments.shift
+        now_command, *arguments = Shellwords.split(command)
 
         translated_values = translate_arguments(now_command, arguments)
         translated_command =
@@ -659,7 +657,7 @@ module Groonga
             query_parameter = last_command
           end
 
-          value = argument.gsub(/'/, "")
+          value = argument.gsub(/\s/, "")
           translated_values =
             translated_values.merge(query_parameter => value)
           arguments_count += 1
