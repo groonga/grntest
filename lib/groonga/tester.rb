@@ -616,21 +616,22 @@ module Groonga
     end
 
     class Translater
-      def translate_command(command)
-        command = command.chomp
-        return "" if command.empty?
+      def translate_command(line)
+        line = line.chomp
+        return "" if line.empty?
 
-        return Rack::Utils.escape(command) if command =~ /\A(?!\s+)\W/
+        line = line.gsub(/"/, "\\\\\"")
+        json = line[/\[.+\]/]
 
-        now_command, *arguments = Shellwords.split(command)
+        unless json.nil?
+          line[/\[.+\]/] = "--values #{json.gsub(/\s/, "")}"
+        end
+
+        now_command, *arguments = Shellwords.split(line)
 
         translated_values = translate_arguments(now_command, arguments)
         translated_command =
           build_url(now_command, translated_values)
-
-        if now_command == "load"
-          translated_command << "&values="
-        end
 
         translated_command
       end
