@@ -620,7 +620,6 @@ module Groonga
         command = command.chomp
         return "" if command.empty?
 
-        return command if command =~ /\A\s*\#/
         return Rack::Utils.escape(command) if command =~ /\A(?!\s+)\W/
 
         now_command, *arguments = Shellwords.split(command)

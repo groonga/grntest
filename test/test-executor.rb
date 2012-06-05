@@ -137,14 +137,6 @@ EOF
       assert_equal(expected_command, actual_command)
     end
 
-    def test_comment
-      comment = "#this is comment."
-      expected_command = comment
-      actual_command = translate(comment)
-
-      assert_equal(expected_command, actual_command)
-    end
-
     private
     def translate(command)
       @translater.translate_command(command)
