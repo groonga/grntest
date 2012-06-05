@@ -635,7 +635,8 @@ module Groonga
           if loading
             load_values << command
             if command == "]"
-              translated_values << "values=#{load_values}"
+              translated_values =
+                translated_values.merge("values" => load_values)
               loading = false
               load_values = ""
             end
@@ -663,7 +664,7 @@ module Groonga
       private
       def translate_arguments(now_command, arguments)
         return [] if arguments.empty?
-        translated_values = []
+        translated_values = {}
         last_argument = ""
 
         arguments_count = 0
@@ -683,7 +684,8 @@ module Groonga
           end
 
           value = argument.gsub(/'/, "")
-          translated_values << "#{query_parameter}=#{value}"
+          translated_values =
+            translated_values.merge(query_parameter => value)
           arguments_count += 1
           last_command = ""
         end
@@ -716,7 +718,11 @@ module Groonga
       def build_http_command(now_command, arguments)
         translated_command = "/d/#{now_command}"
         unless arguments.empty?
-          translated_command << "?#{arguments.join("&")}"
+          translated_command << "?"
+          query = arguments.collect do |parameter, value|
+            "#{parameter}=#{value}"
+          end
+          translated_command << query.join("&")
         end
         translated_command
       end
