@@ -714,10 +714,10 @@ module Groonga
       end
 
       def build_http_command(now_command, arguments)
-            translated_command = "/d/#{now_command}"
-            unless arguments.empty?
-              translated_command << "?#{arguments.join("&")}"
-            end
+        translated_command = "/d/#{now_command}"
+        unless arguments.empty?
+          translated_command << "?#{arguments.join("&")}"
+        end
         translated_command
       end
     end
