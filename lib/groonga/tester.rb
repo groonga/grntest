@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2012  Kouhei Sutou <kou@clear-code.com>
 #
@@ -611,6 +612,101 @@ module Groonga
 
       def log_error(content)
         log_force(:error, content, {})
+      end
+    end
+
+    class Translater
+      def translate_command(commands)
+        translated_commands = []
+        now_command = ""
+        translated_values = []
+        loading = false
+        load_values = ""
+
+        commands.each_line do |_command|
+          command = _command.chomp
+          next if command.empty?
+
+          if command =~ /\A\s*\#/
+            translated_commands << "#{command}\n"
+            next
+          end
+
+          if loading
+            load_values << command
+            if command == "]"
+              translated_values << "values=#{load_values}"
+              loading = false
+              load_values = ""
+            end
+          else
+            last_argument = ""
+            command = command.gsub(/,\s/, ",")
+            arguments = command.split(/(\s'.+?'\s|\s)/).collect(&:strip)
+            now_command = arguments.shift
+
+            if now_command == "load"
+              loading = true
+              load_values = ""
+            end
+
+            arguments_count = 0
+            last_command = ""
+            arguments.each do |argument|
+              next if argument.empty?
+              if argument =~ /\A--/
+                last_command = argument.sub(/\A--/, "")
+                next
+              end
+
+              if last_command.empty?
+                query_parameter =
+                  arguments_name(now_command)[arguments_count]
+              else
+                query_parameter = last_command
+              end
+
+              value = argument.gsub(/'/, "")
+              translated_values << "#{query_parameter}=#{value}"
+              arguments_count += 1
+              last_command = ""
+            end
+          end
+
+          unless loading
+            translated_command ="/d/#{now_command}"
+            unless translated_values.empty?
+              translated_command << "?#{translated_values.join("&")}"
+            end
+            translated_commands << translated_command
+            translated_values = []
+          end
+        end
+        translated_commands.join
+      end
+
+      private
+      def arguments_name(command)
+        case command
+        when "table_create"
+          ["name", "flags", "key_type", "value_type", "default_tokenizer"]
+        when "column_create"
+          ["table", "name", "flags", "type", "source"]
+        when "load"
+          ["values", "table", "columns", "ifexists", "input_type"]
+        when "select"
+          ["table"]
+        when "suggest"
+          [
+            "types", "table", "column", "query", "sortby",
+            "output_columns", "offset", "limit", "frequency_threshold",
+            "conditional_probability_threshold", "prefix_search"
+          ]
+        when "truncate"
+          ["table"]
+        else
+          nil
+        end
       end
     end
 

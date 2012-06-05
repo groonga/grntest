@@ -51,4 +51,92 @@ class TestExecutor < Test::Unit::TestCase
       execute("# suggest-create-dataset shop")
     end
   end
+
+  class TestTranslate < self
+    def setup
+      @translater = Groonga::Tester::Translater.new
+    end
+
+    def test_command
+      command = "table_create Site TABLE_HASH_KEY ShortText"
+      expected_command =
+        "/d/table_create?name=Site&flags=TABLE_HASH_KEY&key_type=ShortText"
+      actual_command = translate(command)
+
+      assert_equal(expected_command, actual_command)
+    end
+
+    def test_command_with_argument_name
+      command = "select --table Sites"
+      expected_command = "/d/select?table=Sites"
+      actual_command = translate(command)
+
+      assert_equal(expected_command, actual_command)
+    end
+
+    def test_command_without_arguments
+      command = "dump"
+      expected_command = "/d/dump"
+      actual_command = translate(command)
+
+      assert_equal(expected_command, actual_command)
+    end
+
+    def test_load_command
+      command = <<EOF
+load --table Sites
+[
+["_key","uri"],
+["groonga","http://groonga.org/"],
+["razil","http://razil.jp/"]
+]
+EOF
+      expected_command =
+        "/d/load?table=Sites&values=[[\"_key\",\"uri\"]," +
+          "[\"groonga\",\"http://groonga.org/\"]," +
+          "[\"razil\",\"http://razil.jp/\"]]"
+      actual_command = translate(command)
+
+      assert_equal(expected_command, actual_command)
+    end
+
+    def test_load_command_with_json_value
+      command = <<EOF
+load --table Sites
+[
+{"_key": "ruby", "uri": "http://ruby-lang.org/"}
+]
+EOF
+      expected_command =
+        "/d/load?table=Sites&values=[{\"_key\": \"ruby\", " +
+          "\"uri\": \"http://ruby-lang.org/\"}]"
+      actual_command = translate(command)
+
+      assert_equal(expected_command, actual_command)
+    end
+
+    def test_command_with_single_quote
+      command = "select Sites --output_columns '_key, uri'"
+      expected_command = "/d/select?table=Sites&output_columns=_key,uri"
+      actual_command = translate(command)
+
+      assert_equal(expected_command, actual_command)
+    end
+
+    def test_command_with_comment
+      comment = "#this is comment."
+      command = "#{comment}\n" +
+        "select --table Sites"
+      expected_command = "#{comment}\n" +
+        "/d/select?table=Sites"
+      actual_command = translate(command)
+
+      assert_equal(expected_command, actual_command)
+    end
+
+    private
+    def translate(command)
+      @translater.translate_command(command)
+    end
+  end
 end
