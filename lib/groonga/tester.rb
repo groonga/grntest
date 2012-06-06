@@ -330,12 +330,21 @@ module Groonga
         options = {}
         pid = Process.spawn(env, *command_line, options)
         begin
-          open("http://#{host}:#{port}/d/status") do
-          end
           executor = HTTPExecutor.new(host, port, context)
+          n_retried = 0
+          begin
+            executor.send_command("status")
+          rescue SystemCallError
+            n_retried += 1
+            sleep(0.1)
+            retry if n_retried < 10
+            raise
+          end
           yield(executor)
         ensure
-          open("http://#{host}:#{port}/d/shutdown") do
+          begin
+            executor.send_command("shutdown")
+          rescue SystemCallError
           end
           Process.waitpid(pid)
         end
