@@ -67,7 +67,7 @@ class TestExecutor < Test::Unit::TestCase
       assert_equal(expected_url, actual_url)
     end
 
-    def test_command_with_argument_name
+    def test_with_argument_name
       command = "select --table Sites"
       actual_url = convert(command)
       expected_url = build_url("select", "table" => "Sites")
@@ -75,7 +75,7 @@ class TestExecutor < Test::Unit::TestCase
       assert_equal(expected_url, actual_url)
     end
 
-    def test_command_without_arguments
+    def test_without_arguments
       command = "dump"
       actual_url = convert(command)
       expected_url = build_url(command, {})
