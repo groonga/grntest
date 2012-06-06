@@ -639,7 +639,6 @@ module Groonga
 
       private
       def convert_arguments(command, arguments)
-        return [] if arguments.empty?
         converted_values = {}
         last_argument = ""
 
