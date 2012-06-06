@@ -638,7 +638,7 @@ module Groonga
       end
 
       private
-      def translate_arguments(now_command, arguments)
+      def translate_arguments(command, arguments)
         return [] if arguments.empty?
         translated_values = {}
         last_argument = ""
@@ -654,7 +654,7 @@ module Groonga
 
           if last_command.empty?
             query_parameter =
-              arguments_name(now_command)[arguments_count]
+              arguments_name(command)[arguments_count]
           else
             query_parameter = last_command
           end
