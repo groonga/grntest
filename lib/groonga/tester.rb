@@ -624,13 +624,6 @@ module Groonga
         line = @gqtp_command.chomp
         return "" if line.empty?
 
-        line = line.gsub(/"/, "\\\\\"")
-        json = line[/\[.+\]/]
-
-        unless json.nil?
-          line[/\[.+\]/] = "--values #{json.gsub(/\s/, "")}"
-        end
-
         command = nil
         arguments = nil
         load_values = ""
