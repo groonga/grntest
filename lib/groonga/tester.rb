@@ -650,15 +650,15 @@ module Groonga
           end
 
           if last_parameter.nil?
-            query_parameter = arguments_name(command)[n_non_named_arguments]
+            argument_name = arguments_name(command)[n_non_named_arguments]
             n_non_named_arguments += 1
           else
-            query_parameter = last_parameter
+            argument_name = last_parameter
             last_parameter = nil
           end
 
           value = argument
-          named_arguments = named_arguments.merge(query_parameter => value)
+          named_arguments = named_arguments.merge(argument_name => value)
         end
         named_arguments
       end
