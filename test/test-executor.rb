@@ -124,7 +124,7 @@ EOF
       assert_equal(expected_url, actual_url)
     end
 
-    def test_command_with_single_quote
+    def test_value_single_quote
       command = "select Sites --output_columns '_key, uri'"
       arguments = {
         "table" => "Sites",
