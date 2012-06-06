@@ -304,8 +304,8 @@ module Groonga
         begin
           groonga_input = input_pipe[write]
           groonga_output = output_pipe[read]
-          ensure_groonga_ready(groonga_input, groonga_output)
           executor = GQTPExecutor.new(groonga_input, groonga_output, context)
+          executor.ensure_groonga_ready
           yield(executor)
         ensure
           (input_pipe + output_pipe).each do |io|
@@ -331,15 +331,7 @@ module Groonga
         pid = Process.spawn(env, *command_line, options)
         begin
           executor = HTTPExecutor.new(host, port, context)
-          n_retried = 0
-          begin
-            executor.send_command("status")
-          rescue SystemCallError
-            n_retried += 1
-            sleep(0.1)
-            retry if n_retried < 10
-            raise
-          end
+          executor.ensure_groonga_ready
           yield(executor)
         ensure
           begin
@@ -348,12 +340,6 @@ module Groonga
           end
           Process.waitpid(pid)
         end
-      end
-
-      def ensure_groonga_ready(input, output)
-        input.print("status\n")
-        input.flush
-        output.gets
       end
 
       def normalize_result(result)
@@ -668,6 +654,12 @@ module Groonga
         read_output
       end
 
+      def ensure_groonga_ready
+        @input.print("status\n")
+        @input.flush
+        @output.gets
+      end
+
       private
       def read_output
         output = ""
@@ -694,6 +686,18 @@ module Groonga
         url = "http://#{@host}:#{@port}#{converter.to_url}"
         open(url) do |response|
           response.read
+        end
+      end
+
+      def ensure_groonga_ready
+        n_retried = 0
+        begin
+          send_command("status")
+        rescue SystemCallError
+          n_retried += 1
+          sleep(0.1)
+          retry if n_retried < 10
+          raise
         end
       end
     end
