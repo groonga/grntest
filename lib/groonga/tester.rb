@@ -644,7 +644,6 @@ module Groonga
 
         last_parameter = ""
         arguments.each_with_index do |argument, count|
-          next if argument.empty?
           if argument =~ /\A--/
             last_parameter = argument.sub(/\A--/, "")
             next
