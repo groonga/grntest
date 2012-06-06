@@ -318,17 +318,17 @@ module Groonga
       def run_groonga_http(context)
         host = "127.0.0.1"
         port = 50041
+        pid_file = Tempfile.new("groonga.pid")
         command_line = [
           @tester.groonga,
           "--bind-address", host,
           "--port", port.to_s,
           "--protocol", @tester.protocol.to_s,
-          "-s",
+          "--pid-path", pid_file.path,
+          "-d",
           "-n", context.db_path,
         ]
-        env = {}
-        options = {}
-        pid = Process.spawn(env, *command_line, options)
+        system(*command_line)
         begin
           executor = HTTPExecutor.new(host, port, context)
           executor.ensure_groonga_ready
@@ -338,7 +338,6 @@ module Groonga
             executor.send_command("shutdown")
           rescue SystemCallError
           end
-          Process.waitpid(pid)
         end
       end
 
