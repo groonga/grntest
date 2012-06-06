@@ -633,13 +633,13 @@ module Groonga
         end
         arguments.concat(["--values", load_values]) unless load_values.empty?
 
-        converted_values = convert_arguments(command, arguments)
-        build_url(command, converted_values)
+        named_arguments = convert_to_named_arguments(command, arguments)
+        build_url(command, named_arguments)
       end
 
       private
-      def convert_arguments(command, arguments)
-        converted_values = {}
+      def convert_to_named_arguments(command, arguments)
+        named_arguments = {}
         last_argument = ""
 
         last_parameter = ""
@@ -656,10 +656,10 @@ module Groonga
           end
 
           value = argument
-          converted_values = converted_values.merge(query_parameter => value)
+          named_arguments = named_arguments.merge(query_parameter => value)
           last_argument = ""
         end
-        converted_values
+        named_arguments
       end
 
       def arguments_name(command)
@@ -685,9 +685,9 @@ module Groonga
         end
       end
 
-      def build_url(command, arguments)
+      def build_url(command, named_arguments)
         url = "/d/#{command}"
-        query = Rack::Utils.build_query(arguments)
+        query = Rack::Utils.build_query(named_arguments)
         url << "?#{query}" unless query.empty?
         url
       end
