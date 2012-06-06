@@ -158,12 +158,5 @@ EOF
       url << "?#{query}" unless query.empty?
       url
     end
-
-    def load_values_query(values)
-      escaped_values = values.lines.collect do |line|
-        "#{Rack::Utils.escape(line.chomp)}"
-      end
-      "&values=\n#{escaped_values.join("\n")}"
-    end
   end
 end
