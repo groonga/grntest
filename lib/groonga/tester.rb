@@ -56,6 +56,15 @@ module Groonga
           tester.groonga_suggest_create_dataset = command
         end
 
+        available_protocols = [:gqtp, :http]
+        available_protocol_labels = available_protocols.join(", ")
+        parser.on("--protocol=PROTOCOL", available_protocols,
+                  "Use PROTOCOL for communicating groonga",
+                  "[#{available_protocol_labels}]",
+               "(#{tester.protocol})") do |protocol|
+          tester.protocol = protocol
+        end
+
         parser.on("--base-directory=DIRECTORY",
                   "Use DIRECTORY as a base directory of relative path",
                   "(#{tester.base_directory})") do |directory|
@@ -94,12 +103,13 @@ module Groonga
       end
     end
 
-    attr_accessor :groonga, :groonga_suggest_create_dataset
+    attr_accessor :groonga, :groonga_suggest_create_dataset, :protocol
     attr_accessor :base_directory, :diff, :diff_options
     attr_writer :keep_database
     def initialize
       @groonga = "groonga"
       @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
+      @protocol = :gqtp
       @base_directory = "."
       detect_suitable_diff
     end
