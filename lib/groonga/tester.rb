@@ -642,9 +642,8 @@ module Groonga
         converted_values = {}
         last_argument = ""
 
-        arguments_count = 0
         last_parameter = ""
-        arguments.each do |argument|
+        arguments.each_with_index do |argument, count|
           next if argument.empty?
           if argument =~ /\A--/
             last_parameter = argument.sub(/\A--/, "")
@@ -653,7 +652,7 @@ module Groonga
 
           if last_parameter.empty?
             query_parameter =
-              arguments_name(command)[arguments_count]
+              arguments_name(command)[count]
           else
             query_parameter = last_parameter
           end
@@ -661,7 +660,6 @@ module Groonga
           value = argument
           converted_values =
               converted_values.merge(query_parameter => value)
-          arguments_count += 1
           last_argument = ""
         end
         converted_values
