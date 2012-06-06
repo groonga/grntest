@@ -682,7 +682,8 @@ module Groonga
 
       def send_command(command_line)
         converter = CommandFormatConverter.new(command_line)
-        open("http://#{@host}:#{@port}#{converter.to_url}") do |response|
+        url = "http://#{@host}:#{@port}#{converter.to_url}"
+        open(url) do |response|
           response.read
         end
       end
