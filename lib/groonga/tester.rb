@@ -304,7 +304,7 @@ module Groonga
           groonga_input = input_pipe[write]
           groonga_output = output_pipe[read]
           ensure_groonga_ready(groonga_input, groonga_output)
-          executor = Executor.new(groonga_input, groonga_output, context)
+          executor = GQTPExecutor.new(groonga_input, groonga_output, context)
           yield(executor)
         ensure
           (input_pipe + output_pipe).each do |io|
@@ -332,7 +332,7 @@ module Groonga
         begin
           open("http://#{host}:#{port}/d/status") do
           end
-          executor = Executor.new(host, port, context)
+          executor = HTTPExecutor.new(host, port, context)
           yield(executor)
         ensure
           open("http://#{host}:#{port}/d/shutdown") do
@@ -473,9 +473,7 @@ module Groonga
       end
 
       attr_reader :context
-      def initialize(input, output, context=nil)
-        @input = input
-        @output = output
+      def initialize(context=nil)
         @loading = false
         @pending_command = ""
         @current_command_name = nil
@@ -659,6 +657,22 @@ module Groonga
 
       def log_error(content)
         log_force(:error, content, {})
+      end
+    end
+
+    class GQTPExecutor < Executor
+      def initialize(input, output, context=nil)
+        super(context)
+        @input = input
+        @output = output
+      end
+    end
+
+    class HTTPExecutor < Executor
+      def initialize(host, port, context=nil)
+        super(context)
+        @host = host
+        @port = port
       end
     end
 
