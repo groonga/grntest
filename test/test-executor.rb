@@ -54,10 +54,6 @@ class TestExecutor < Test::Unit::TestCase
   end
 
   class TestTranslate < self
-    def setup
-      @converter = Groonga::Tester::CommandFormatConverter.new
-    end
-
     def test_command
       command = "table_create Site TABLE_HASH_KEY ShortText"
       arguments = {
@@ -142,7 +138,8 @@ EOF
 
     private
     def translate(command)
-      @converter.translate_url(command)
+      converter = Groonga::Tester::CommandFormatConverter.new(command)
+      converter.to_url
     end
 
     def build_url(command, arguments)

@@ -616,8 +616,12 @@ module Groonga
     end
 
     class CommandFormatConverter
-      def translate_url(line)
-        line = line.chomp
+      def initialize(gqtp_command)
+        @gqtp_command = gqtp_command
+      end
+
+      def to_url
+        line = @gqtp_command.chomp
         return "" if line.empty?
 
         line = line.gsub(/"/, "\\\\\"")
