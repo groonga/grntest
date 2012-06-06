@@ -657,7 +657,7 @@ module Groonga
             last_argument_name = nil
           end
 
-          named_arguments = named_arguments.merge(argument_name => argument)
+          named_arguments[argument_name] = argument
         end
         named_arguments
       end
