@@ -83,7 +83,7 @@ class TestExecutor < Test::Unit::TestCase
       assert_equal(expected_url, actual_url)
     end
 
-    def test_load_command
+    def test_load_json_array
       load_command = "load --table Sites"
       load_values = <<EOF
 [
@@ -104,7 +104,7 @@ EOF
       assert_equal(expected_url, actual_url)
     end
 
-    def test_load_command_with_json_value
+    def test_load_json_object
       load_command = "load --table Sites"
       load_values = <<EOF
 [
