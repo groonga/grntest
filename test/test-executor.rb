@@ -97,8 +97,8 @@ class TestExecutor < Test::Unit::TestCase
 ]
 EOF
       load_values = load_values.gsub(/\n/, "")
-      commands = "#{load_command} #{load_values}"
-      actual_url = translate(commands)
+      command = "#{load_command} #{load_values}"
+      actual_url = translate(command)
       arguments = {
         "table" => "Sites",
         "values" => load_values
@@ -116,8 +116,8 @@ EOF
 ]
 EOF
       load_values = load_values.gsub(/\n/, "")
-      commands = "#{load_command} #{load_values}"
-      actual_url = translate(commands)
+      command = "#{load_command} #{load_values}"
+      actual_url = translate(command)
 
       arguments = {
         "table" => "Sites",
