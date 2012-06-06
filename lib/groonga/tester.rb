@@ -659,6 +659,7 @@ module Groonga
 
           named_arguments[argument_name] = argument
         end
+
         named_arguments
       end
 
