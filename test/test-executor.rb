@@ -92,8 +92,7 @@ class TestExecutor < Test::Unit::TestCase
 ["razil","http://razil.jp/"]
 ]
 EOF
-      load_values = load_values.gsub(/\n/, "")
-      command = "#{load_command} #{load_values}"
+      command = "#{load_command}\n#{load_values}"
       actual_url = convert(command)
       arguments = {
         "table" => "Sites",
@@ -111,13 +110,12 @@ EOF
 {"_key": "ruby", "uri": "http://ruby-lang.org/"}
 ]
 EOF
-      load_values = load_values.gsub(/\n/, "")
-      command = "#{load_command} #{load_values}"
+      command = "#{load_command}\n#{load_values}"
       actual_url = convert(command)
 
       arguments = {
         "table" => "Sites",
-        "values" => load_values.gsub(/\s/, "")
+        "values" => load_values
       }
       expected_url = build_url("load", arguments)
 
@@ -128,7 +126,7 @@ EOF
       command = "select Sites --output_columns '_key, uri'"
       arguments = {
         "table" => "Sites",
-        "output_columns" => "_key,uri",
+        "output_columns" => "_key, uri",
       }
       actual_url = convert(command)
       expected_url = build_url("select", arguments)

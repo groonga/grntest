@@ -631,10 +631,20 @@ module Groonga
           line[/\[.+\]/] = "--values #{json.gsub(/\s/, "")}"
         end
 
-        now_command, *arguments = Shellwords.split(line)
+        command = nil
+        arguments = nil
+        load_values = ""
+        @gqtp_command.each_line.with_index do |line, i|
+          if i.zero?
+            command, *arguments = Shellwords.split(line)
+          else
+            load_values << line
+          end
+        end
+        arguments.concat(["--values", load_values]) unless load_values.empty?
 
-        translated_values = translate_arguments(now_command, arguments)
-        url = build_url(now_command, translated_values)
+        translated_values = translate_arguments(command, arguments)
+        url = build_url(command, translated_values)
         url
       end
 
@@ -660,7 +670,7 @@ module Groonga
             query_parameter = last_command
           end
 
-          value = argument.gsub(/\s/, "")
+          value = argument
           translated_values =
             translated_values.merge(query_parameter => value)
           arguments_count += 1
