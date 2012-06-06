@@ -338,6 +338,9 @@ module Groonga
             executor.send_command("shutdown")
           rescue SystemCallError
           end
+          while File.exist?(pid_file.path)
+            sleep(0.1)
+          end
         end
       end
 
