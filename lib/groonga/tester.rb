@@ -640,7 +640,6 @@ module Groonga
       private
       def convert_to_named_arguments(command, arguments)
         named_arguments = {}
-        last_argument = ""
 
         last_parameter = ""
         arguments.each_with_index do |argument, count|
@@ -657,7 +656,6 @@ module Groonga
 
           value = argument
           named_arguments = named_arguments.merge(query_parameter => value)
-          last_argument = ""
         end
         named_arguments
       end
