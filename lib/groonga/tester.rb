@@ -641,20 +641,20 @@ module Groonga
       def convert_to_named_arguments(command, arguments)
         named_arguments = {}
 
-        last_parameter = nil
+        last_argument_name = nil
         n_non_named_arguments = 0
         arguments.each do |argument|
           if argument =~ /\A--/
-            last_parameter = argument.sub(/\A--/, "")
+            last_argument_name = argument.sub(/\A--/, "")
             next
           end
 
-          if last_parameter.nil?
+          if last_argument_name.nil?
             argument_name = arguments_name(command)[n_non_named_arguments]
             n_non_named_arguments += 1
           else
-            argument_name = last_parameter
-            last_parameter = nil
+            argument_name = last_argument_name
+            last_argument_name = nil
           end
 
           named_arguments = named_arguments.merge(argument_name => argument)
