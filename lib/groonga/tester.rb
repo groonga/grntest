@@ -621,9 +621,6 @@ module Groonga
       end
 
       def to_url
-        line = @gqtp_command.chomp
-        return "" if line.empty?
-
         command = nil
         arguments = nil
         load_values = ""
