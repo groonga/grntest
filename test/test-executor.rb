@@ -65,26 +65,26 @@ class TestExecutor < Test::Unit::TestCase
         "flags" => "TABLE_HASH_KEY",
         "key_type" => "ShortText",
       }
-      actual_command = translate(command)
+      actual_url = translate(command)
       expected_command = build_url("table_create", arguments)
 
-      assert_equal(expected_command, actual_command)
+      assert_equal(expected_command, actual_url)
     end
 
     def test_command_with_argument_name
       command = "select --table Sites"
-      actual_command = translate(command)
+      actual_url = translate(command)
       expected_command = build_url("select", "table" => "Sites")
 
-      assert_equal(expected_command, actual_command)
+      assert_equal(expected_command, actual_url)
     end
 
     def test_command_without_arguments
       command = "dump"
-      actual_command = translate(command)
+      actual_url = translate(command)
       expected_command = build_url(command, {})
 
-      assert_equal(expected_command, actual_command)
+      assert_equal(expected_command, actual_url)
     end
 
     def test_load_command
@@ -134,10 +134,10 @@ EOF
         "table" => "Sites",
         "output_columns" => "_key,uri",
       }
-      actual_command = translate(command)
+      actual_url = translate(command)
       expected_command = build_url("select", arguments)
 
-      assert_equal(expected_command, actual_command)
+      assert_equal(expected_command, actual_url)
     end
 
     private
