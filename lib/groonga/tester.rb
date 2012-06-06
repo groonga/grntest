@@ -476,6 +476,7 @@ module Groonga
       def initialize(context=nil)
         @loading = false
         @pending_command = ""
+        @pending_load_command = nil
         @current_command_name = nil
         @output_format = nil
         @context = context || Context.new
@@ -509,6 +510,11 @@ module Groonga
 
       private
       def execute_line_on_loading(line)
+        if @pending_load_command
+          log_input(@pending_load_command)
+          @input.print(@pending_load_command)
+          @pending_load_command = nil
+        end
         log_input(line)
         @input.print(line)
         @input.flush
@@ -592,16 +598,12 @@ module Groonga
 
       def execute_command(line)
         extract_command_info(line)
-        @loading = true if @current_command == "load"
-        begin
-          @input.print(line)
-          @input.flush
-        rescue SystemCallError
-          raise Error.new("failed to write to groonga: <#{line}>: #{$!}")
-        end
-        log_input(line)
-        unless @loading
-          log_output(read_output)
+        if @current_command == "load"
+          @loading = true
+          @pending_load_command = line
+        else
+          log_input(line)
+          log_output(send_command(line))
         end
       end
 
@@ -619,18 +621,6 @@ module Groonga
             end
           end
         end
-      end
-
-      def read_output
-        output = ""
-        first_timeout = 1
-        timeout = first_timeout
-        while IO.select([@output], [], [], timeout)
-          break if @output.eof?
-          output << @output.readpartial(65535)
-          timeout = 0
-        end
-        output
       end
 
       def log(tag, content, options={})
@@ -666,6 +656,29 @@ module Groonga
         @input = input
         @output = output
       end
+
+      def send_command(command_line)
+        begin
+          @input.print(command_line)
+          @input.flush
+        rescue SystemCallError
+          raise Error.new("failed to write to groonga: <#{comand_line}>: #{$!}")
+        end
+        read_output
+      end
+
+      private
+      def read_output
+        output = ""
+        first_timeout = 1
+        timeout = first_timeout
+        while IO.select([@output], [], [], timeout)
+          break if @output.eof?
+          output << @output.readpartial(65535)
+          timeout = 0
+        end
+        output
+      end
     end
 
     class HTTPExecutor < Executor
@@ -673,6 +686,13 @@ module Groonga
         super(context)
         @host = host
         @port = port
+      end
+
+      def send_command(command_line)
+        converter = CommandFormatConverter.new(command_line)
+        open("http://#{@host}:#{@port}#{converter.to_url}") do |response|
+          response.read
+        end
       end
     end
 
