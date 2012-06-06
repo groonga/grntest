@@ -54,7 +54,7 @@ class TestExecutor < Test::Unit::TestCase
   end
 
   class TestCommandFormatConveter < self
-    def test_command
+    def test_without_argument_name
       command = "table_create Site TABLE_HASH_KEY ShortText"
       arguments = {
         "name" => "Site",
