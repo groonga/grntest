@@ -75,6 +75,19 @@ class TestExecutor < Test::Unit::TestCase
       assert_equal(expected_url, actual_url)
     end
 
+    def test_non_named_argument_after_named_arguement
+      command = "table_create --flags TABLE_HASH_KEY --key_type ShortText Site"
+      arguments = {
+        "flags" => "TABLE_HASH_KEY",
+        "key_type" => "ShortText",
+        "name" => "Site",
+      }
+      actual_url = convert(command)
+      expected_url = build_url("table_create", arguments)
+
+      assert_equal(expected_url, actual_url)
+    end
+
     def test_without_arguments
       command = "dump"
       actual_url = convert(command)
