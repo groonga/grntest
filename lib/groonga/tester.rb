@@ -630,10 +630,8 @@ module Groonga
         now_command, *arguments = Shellwords.split(line)
 
         translated_values = translate_arguments(now_command, arguments)
-        translated_command =
-          build_url(now_command, translated_values)
-
-        translated_command
+        url = build_url(now_command, translated_values)
+        url
       end
 
       private
