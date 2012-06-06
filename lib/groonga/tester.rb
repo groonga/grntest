@@ -650,15 +650,13 @@ module Groonga
           end
 
           if last_parameter.empty?
-            query_parameter =
-              arguments_name(command)[count]
+            query_parameter = arguments_name(command)[count]
           else
             query_parameter = last_parameter
           end
 
           value = argument
-          converted_values =
-              converted_values.merge(query_parameter => value)
+          converted_values = converted_values.merge(query_parameter => value)
           last_argument = ""
         end
         converted_values
