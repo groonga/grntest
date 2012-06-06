@@ -327,8 +327,7 @@ module Groonga
           "-n", context.db_path,
         ]
         env = {}
-        options = {
-        }
+        options = {}
         pid = Process.spawn(env, *command_line, options)
         begin
           open("http://#{host}:#{port}/d/status") do
