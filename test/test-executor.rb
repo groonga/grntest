@@ -134,7 +134,7 @@ EOF
       assert_equal(expected_url, actual_url)
     end
 
-    def test_value_double_quote
+    def test_value_double_quote_in_single_quote
       command = "select Sites --filter 'uri @ \"ruby\"'"
       arguments = {
         "table" => "Sites",
