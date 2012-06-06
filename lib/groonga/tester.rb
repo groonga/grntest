@@ -615,7 +615,7 @@ module Groonga
       end
     end
 
-    class CommandTranslator
+    class CommandFormatConverter
       def translate_url(line)
         line = line.chomp
         return "" if line.empty?
