@@ -24,6 +24,7 @@ require "tempfile"
 require "json"
 require "shellwords"
 require "open-uri"
+require "cgi/util"
 
 module Groonga
   class Tester
@@ -769,8 +770,14 @@ module Groonga
 
       def build_url(command, named_arguments)
         url = "/d/#{command}"
-        query = Rack::Utils.build_query(named_arguments)
-        url << "?#{query}" unless query.empty?
+        query_parameters = []
+        named_arguments.each do |name, argument|
+          query_parameters << "#{CGI.escape(name)}=#{CGI.escape(argument)}"
+        end
+        unless query_parameters.empty?
+          url << "?"
+          url << query_parameters.join("&")
+        end
         url
       end
     end

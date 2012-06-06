@@ -14,7 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 require "stringio"
-require "rack/utils"
+require "cgi/util"
 require "groonga/tester"
 
 class TestExecutor < Test::Unit::TestCase
@@ -177,10 +177,16 @@ EOF
       converter.to_url
     end
 
-    def build_url(command, arguments)
+    def build_url(command, named_arguments)
       url = "/d/#{command}"
-      query = Rack::Utils.build_query(arguments)
-      url << "?#{query}" unless query.empty?
+      query_parameters = []
+      named_arguments.each do |name, argument|
+        query_parameters << "#{CGI.escape(name)}=#{CGI.escape(argument)}"
+      end
+      unless query_parameters.empty?
+        url << "?"
+        url << query_parameters.join("&")
+      end
       url
     end
   end
