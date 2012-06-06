@@ -633,14 +633,14 @@ module Groonga
         end
         arguments.concat(["--values", load_values]) unless load_values.empty?
 
-        translated_values = translate_arguments(command, arguments)
-        build_url(command, translated_values)
+        converted_values = convert_arguments(command, arguments)
+        build_url(command, converted_values)
       end
 
       private
-      def translate_arguments(command, arguments)
+      def convert_arguments(command, arguments)
         return [] if arguments.empty?
-        translated_values = {}
+        converted_values = {}
         last_argument = ""
 
         arguments_count = 0
@@ -660,12 +660,12 @@ module Groonga
           end
 
           value = argument
-          translated_values =
-            translated_values.merge(query_parameter => value)
+          converted_values =
+              converted_values.merge(query_parameter => value)
           arguments_count += 1
           last_command = ""
         end
-        translated_values
+        converted_values
       end
 
       def arguments_name(command)
