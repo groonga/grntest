@@ -137,7 +137,7 @@ module Groonga
       grouped_test_files = test_files.group_by do |test_file|
         test_file.dirname.relative_path_from(test_directory)
       end
-      grouped_test_files.sort_by do |directory, test_files|
+      grouped_test_files.sort_by do |directory, _|
         directory.to_s
       end
     end
