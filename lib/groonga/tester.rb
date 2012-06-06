@@ -645,7 +645,7 @@ module Groonga
         n_non_named_arguments = 0
         arguments.each do |argument|
           if /\A--/ =~ argument
-            last_argument_name = argument.sub(/\A--/, "")
+            last_argument_name = $POSTMATCH
             next
           end
 
