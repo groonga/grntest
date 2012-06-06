@@ -511,20 +511,12 @@ module Groonga
 
       private
       def execute_line_on_loading(line)
-        if @pending_load_command
-          log_input(@pending_load_command)
-          @input.print(@pending_load_command)
-          @pending_load_command = nil
-        end
         log_input(line)
-        @input.print(line)
-        @input.flush
-        if /\]$/ =~ line
-          current_result = read_output
-          unless current_result.empty?
-            @loading = false
-            log_output(current_result)
-          end
+        @pending_load_command << line
+        if line == "]\n"
+          log_output(send_command(@pending_load_command))
+          @pending_load_command = nil
+          @loading = false
         end
       end
 
@@ -599,11 +591,11 @@ module Groonga
 
       def execute_command(line)
         extract_command_info(line)
+        log_input(line)
         if @current_command == "load"
           @loading = true
-          @pending_load_command = line
+          @pending_load_command = line.dup
         else
-          log_input(line)
           log_output(send_command(line))
         end
       end
