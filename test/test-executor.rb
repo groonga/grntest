@@ -53,7 +53,7 @@ class TestExecutor < Test::Unit::TestCase
     end
   end
 
-  class TestTranslate < self
+  class TestCommandFormatConveter < self
     def test_command
       command = "table_create Site TABLE_HASH_KEY ShortText"
       arguments = {
