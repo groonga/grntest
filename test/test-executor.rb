@@ -21,7 +21,7 @@ class TestExecutor < Test::Unit::TestCase
   def setup
     input = StringIO.new
     output = StringIO.new
-    @executor = Groonga::Tester::Executor.new(input, output)
+    @executor = Groonga::Tester::GQTPExecutor.new(input, output)
     @context = @executor.context
     @script = Tempfile.new("test-executor")
   end
