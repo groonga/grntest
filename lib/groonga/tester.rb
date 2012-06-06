@@ -23,6 +23,7 @@ require "fileutils"
 require "tempfile"
 require "json"
 require "shellwords"
+require "open-uri"
 
 module Groonga
   class Tester
@@ -234,20 +235,19 @@ module Groonga
       def run_groonga_script
         create_temporary_directory do |directory_path|
           db_path = File.join(directory_path, "db")
-          run_groonga(db_path) do |input, output|
-            context = Executor::Context.new
-            begin
-              context.db_path = db_path
-              context.base_directory = @tester.base_directory
-              context.groonga_suggest_create_dataset =
-                @tester.groonga_suggest_create_dataset
-              executer = Executor.new(input, output, context)
+          context = Executor::Context.new
+          begin
+            context.db_path = db_path
+            context.base_directory = @tester.base_directory
+            context.groonga_suggest_create_dataset =
+              @tester.groonga_suggest_create_dataset
+            run_groonga(context) do |executer|
               executer.execute(@test_script_path)
-            rescue Interrupt
-              @interrupted = true
             end
-            context.result
+          rescue Interrupt
+            @interrupted = true
           end
+          context.result
         end
       end
 
@@ -271,16 +271,16 @@ module Groonga
         @test_script_path.to_s.gsub(/\//, ".")
       end
 
-      def run_groonga(db_path, &block)
+      def run_groonga(context, &block)
         case @tester.protocol
         when :gqtp
-          run_groonga_gqtp(db_path, &block)
+          run_groonga_gqtp(context, &block)
         when :http
-          run_groonga_http(db_path, &block)
+          run_groonga_http(context, &block)
         end
       end
 
-      def run_groonga_gqtp(db_path)
+      def run_groonga_gqtp(context)
         read = 0
         write = 1
         input_pipe = IO.pipe
@@ -292,7 +292,7 @@ module Groonga
           @tester.groonga,
           "--input-fd", input_fd.to_s,
           "--output-fd", output_fd.to_s,
-          "-n", db_path,
+          "-n", context.db_path,
         ]
         env = {}
         options = {
@@ -304,10 +304,38 @@ module Groonga
           groonga_input = input_pipe[write]
           groonga_output = output_pipe[read]
           ensure_groonga_ready(groonga_input, groonga_output)
-          yield(groonga_input, groonga_output)
+          executor = Executor.new(groonga_input, groonga_output, context)
+          yield(executor)
         ensure
           (input_pipe + output_pipe).each do |io|
             io.close unless io.closed?
+          end
+          Process.waitpid(pid)
+        end
+      end
+
+      def run_groonga_http(context)
+        host = "127.0.0.1"
+        port = 50041
+        command_line = [
+          @tester.groonga,
+          "--bind-address", host,
+          "--port", port.to_s,
+          "--protocol", @tester.protocol.to_s,
+          "-s",
+          "-n", context.db_path,
+        ]
+        env = {}
+        options = {
+        }
+        pid = Process.spawn(env, *command_line, options)
+        begin
+          open("http://#{host}:#{port}/d/status") do
+          end
+          executor = Executor.new(host, port, context)
+          yield(executor)
+        ensure
+          open("http://#{host}:#{port}/d/shutdown") do
           end
           Process.waitpid(pid)
         end
