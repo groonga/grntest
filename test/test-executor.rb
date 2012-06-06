@@ -146,6 +146,18 @@ EOF
       assert_equal(expected_url, actual_url)
     end
 
+    def test_value_double_quote
+      command = "select Sites --output_columns \"_key, uri\""
+      arguments = {
+        "table" => "Sites",
+        "output_columns" => "_key, uri",
+      }
+      actual_url = convert(command)
+      expected_url = build_url("select", arguments)
+
+      assert_equal(expected_url, actual_url)
+    end
+
     private
     def convert(command)
       converter = Groonga::Tester::CommandFormatConverter.new(command)
