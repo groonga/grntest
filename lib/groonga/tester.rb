@@ -634,8 +634,7 @@ module Groonga
         arguments.concat(["--values", load_values]) unless load_values.empty?
 
         translated_values = translate_arguments(command, arguments)
-        url = build_url(command, translated_values)
-        url
+        build_url(command, translated_values)
       end
 
       private
