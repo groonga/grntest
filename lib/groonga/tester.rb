@@ -271,7 +271,16 @@ module Groonga
         @test_script_path.to_s.gsub(/\//, ".")
       end
 
-      def run_groonga(db_path)
+      def run_groonga(db_path, &block)
+        case @tester.protocol
+        when :gqtp
+          run_groonga_gqtp(db_path, &block)
+        when :http
+          run_groonga_http(db_path, &block)
+        end
+      end
+
+      def run_groonga_gqtp(db_path)
         read = 0
         write = 1
         input_pipe = IO.pipe
