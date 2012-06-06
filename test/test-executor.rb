@@ -61,7 +61,7 @@ class TestExecutor < Test::Unit::TestCase
         "flags" => "TABLE_HASH_KEY",
         "key_type" => "ShortText",
       }
-      actual_url = translate(command)
+      actual_url = convert(command)
       expected_url = build_url("table_create", arguments)
 
       assert_equal(expected_url, actual_url)
@@ -69,7 +69,7 @@ class TestExecutor < Test::Unit::TestCase
 
     def test_command_with_argument_name
       command = "select --table Sites"
-      actual_url = translate(command)
+      actual_url = convert(command)
       expected_url = build_url("select", "table" => "Sites")
 
       assert_equal(expected_url, actual_url)
@@ -77,7 +77,7 @@ class TestExecutor < Test::Unit::TestCase
 
     def test_command_without_arguments
       command = "dump"
-      actual_url = translate(command)
+      actual_url = convert(command)
       expected_url = build_url(command, {})
 
       assert_equal(expected_url, actual_url)
@@ -94,7 +94,7 @@ class TestExecutor < Test::Unit::TestCase
 EOF
       load_values = load_values.gsub(/\n/, "")
       command = "#{load_command} #{load_values}"
-      actual_url = translate(command)
+      actual_url = convert(command)
       arguments = {
         "table" => "Sites",
         "values" => load_values
@@ -113,7 +113,7 @@ EOF
 EOF
       load_values = load_values.gsub(/\n/, "")
       command = "#{load_command} #{load_values}"
-      actual_url = translate(command)
+      actual_url = convert(command)
 
       arguments = {
         "table" => "Sites",
@@ -130,14 +130,14 @@ EOF
         "table" => "Sites",
         "output_columns" => "_key,uri",
       }
-      actual_url = translate(command)
+      actual_url = convert(command)
       expected_url = build_url("select", arguments)
 
       assert_equal(expected_url, actual_url)
     end
 
     private
-    def translate(command)
+    def convert(command)
       converter = Groonga::Tester::CommandFormatConverter.new(command)
       converter.to_url
     end
