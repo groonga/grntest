@@ -55,7 +55,7 @@ class TestExecutor < Test::Unit::TestCase
 
   class TestTranslate < self
     def setup
-      @translater = Groonga::Tester::Translater.new
+      @translator = Groonga::Tester::CommandTranslator.new
     end
 
     def test_command
@@ -142,7 +142,7 @@ EOF
 
     private
     def translate(command)
-      @translater.translate_command(command)
+      @translator.translate_url(command)
     end
 
     def build_url(command, arguments)
