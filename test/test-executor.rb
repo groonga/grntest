@@ -98,14 +98,14 @@ class TestExecutor < Test::Unit::TestCase
 EOF
       load_values = load_values.gsub(/\n/, "")
       commands = "#{load_command} #{load_values}"
-      actual_commands = translate(commands)
+      actual_url = translate(commands)
       arguments = {
         "table" => "Sites",
         "values" => load_values
       }
       expected_command = build_url("load", arguments)
 
-      assert_equal(expected_command, actual_commands)
+      assert_equal(expected_command, actual_url)
     end
 
     def test_load_command_with_json_value
@@ -117,7 +117,7 @@ EOF
 EOF
       load_values = load_values.gsub(/\n/, "")
       commands = "#{load_command} #{load_values}"
-      actual_commands = translate(commands)
+      actual_url = translate(commands)
 
       arguments = {
         "table" => "Sites",
@@ -125,7 +125,7 @@ EOF
       }
       expected_command = build_url("load", arguments)
 
-      assert_equal(expected_command, actual_commands)
+      assert_equal(expected_command, actual_url)
     end
 
     def test_command_with_single_quote
