@@ -66,25 +66,25 @@ class TestExecutor < Test::Unit::TestCase
         "key_type" => "ShortText",
       }
       actual_url = translate(command)
-      expected_command = build_url("table_create", arguments)
+      expected_url = build_url("table_create", arguments)
 
-      assert_equal(expected_command, actual_url)
+      assert_equal(expected_url, actual_url)
     end
 
     def test_command_with_argument_name
       command = "select --table Sites"
       actual_url = translate(command)
-      expected_command = build_url("select", "table" => "Sites")
+      expected_url = build_url("select", "table" => "Sites")
 
-      assert_equal(expected_command, actual_url)
+      assert_equal(expected_url, actual_url)
     end
 
     def test_command_without_arguments
       command = "dump"
       actual_url = translate(command)
-      expected_command = build_url(command, {})
+      expected_url = build_url(command, {})
 
-      assert_equal(expected_command, actual_url)
+      assert_equal(expected_url, actual_url)
     end
 
     def test_load_command
@@ -103,9 +103,9 @@ EOF
         "table" => "Sites",
         "values" => load_values
       }
-      expected_command = build_url("load", arguments)
+      expected_url = build_url("load", arguments)
 
-      assert_equal(expected_command, actual_url)
+      assert_equal(expected_url, actual_url)
     end
 
     def test_load_command_with_json_value
@@ -123,9 +123,9 @@ EOF
         "table" => "Sites",
         "values" => load_values.gsub(/\s/, "")
       }
-      expected_command = build_url("load", arguments)
+      expected_url = build_url("load", arguments)
 
-      assert_equal(expected_command, actual_url)
+      assert_equal(expected_url, actual_url)
     end
 
     def test_command_with_single_quote
@@ -135,9 +135,9 @@ EOF
         "output_columns" => "_key,uri",
       }
       actual_url = translate(command)
-      expected_command = build_url("select", arguments)
+      expected_url = build_url("select", arguments)
 
-      assert_equal(expected_command, actual_url)
+      assert_equal(expected_url, actual_url)
     end
 
     private
