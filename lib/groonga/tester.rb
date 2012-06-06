@@ -644,7 +644,7 @@ module Groonga
         last_argument_name = nil
         n_non_named_arguments = 0
         arguments.each do |argument|
-          if argument =~ /\A--/
+          if /\A--/ =~ argument
             last_argument_name = argument.sub(/\A--/, "")
             next
           end
