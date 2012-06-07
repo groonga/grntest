@@ -577,7 +577,7 @@ module Groonga
       end
 
       def execute_script(path)
-        executer = create_executer(@context)
+        executer = create_sub_executer(@context)
         script_path = Pathname(path)
         if script_path.relative?
           script_path = Pathname(@context.base_directory) + script_path
@@ -662,7 +662,7 @@ module Groonga
         @output.gets
       end
 
-      def create_executer(context)
+      def create_sub_executer(context)
         self.class.new(@input, @output, context)
       end
 
@@ -707,7 +707,7 @@ module Groonga
         end
       end
 
-      def create_executer(context)
+      def create_sub_executer(context)
         self.class.new(@host, @port, context)
       end
     end
