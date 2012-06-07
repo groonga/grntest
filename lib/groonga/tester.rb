@@ -656,7 +656,8 @@ module Groonga
           @input.print(command_line)
           @input.flush
         rescue SystemCallError
-          raise Error.new("failed to write to groonga: <#{command_line}>: #{$!}")
+          message = "failed to write to groonga: <#{command_line}>: #{$!}"
+          raise Error.new(message)
         end
         read_output
       end
