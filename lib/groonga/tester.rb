@@ -242,8 +242,8 @@ module Groonga
             context.base_directory = @tester.base_directory
             context.groonga_suggest_create_dataset =
               @tester.groonga_suggest_create_dataset
-            run_groonga(context) do |executer|
-              executer.execute(@test_script_path)
+            run_groonga(context) do |executor|
+              executor.execute(@test_script_path)
             end
           rescue Interrupt
             @interrupted = true
@@ -577,12 +577,12 @@ module Groonga
       end
 
       def execute_script(path)
-        executer = create_sub_executer(@context)
+        executor = create_sub_executor(@context)
         script_path = Pathname(path)
         if script_path.relative?
           script_path = Pathname(@context.base_directory) + script_path
         end
-        executer.execute(script_path)
+        executor.execute(script_path)
       end
 
       def execute_command(line)
@@ -662,7 +662,7 @@ module Groonga
         @output.gets
       end
 
-      def create_sub_executer(context)
+      def create_sub_executor(context)
         self.class.new(@input, @output, context)
       end
 
@@ -707,7 +707,7 @@ module Groonga
         end
       end
 
-      def create_sub_executer(context)
+      def create_sub_executor(context)
         self.class.new(@host, @port, context)
       end
     end
