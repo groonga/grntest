@@ -338,8 +338,13 @@ module Groonga
             executor.send_command("shutdown")
           rescue SystemCallError
           end
+
+          total_sleep_time = 0
+          sleep_time = 0.1
           while File.exist?(pid_file.path)
-            sleep(0.1)
+            sleep(sleep_time)
+            total_sleep_time += sleep_time
+            break if total_sleep_time > 1.0
           end
         end
       end
