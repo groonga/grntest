@@ -322,11 +322,11 @@ module Groonga
         if /groonga-httpd$/ =~ @tester.groonga
           db_path = context.db_path
           config_file = create_temporary_config_file(host, port, db_path)
-          groonga_option = [
+          groonga_options = [
             "-c", config_file.path,
           ]
         else
-          groonga_option = [
+          groonga_options = [
             "--bind-address", host,
             "--port", port.to_s,
             "--protocol", @tester.protocol.to_s,
@@ -340,7 +340,7 @@ module Groonga
           @tester.groonga,
           "--pid-path", pid_file.path,
         ]
-        command_line.concat(groonga_option)
+        command_line.concat(groonga_options)
         system(*command_line)
         begin
           executor = HTTPExecutor.new(host, port, context)
