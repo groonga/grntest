@@ -323,7 +323,6 @@ module Groonga
           db_path = context.db_path
           config_file = create_temporary_config_file(host, port, db_path)
           groonga_option = [
-            @tester.groonga,
             "-c", config_file.path,
           ]
         else
