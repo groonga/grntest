@@ -63,7 +63,7 @@ module Groonga
         parser.on("--protocol=PROTOCOL", available_protocols,
                   "Use PROTOCOL for communicating groonga",
                   "[#{available_protocol_labels}]",
-               "(#{tester.protocol})") do |protocol|
+                  "(#{tester.protocol})") do |protocol|
           tester.protocol = protocol
         end
 
