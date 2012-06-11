@@ -347,8 +347,7 @@ module Groonga
       end
 
       def build_groonga_options(host, port, pid_file, context)
-        groonga_httpd_path = File.join(@tester.base_directory, "groonga-httpd")
-        if @tester.groonga == groonga_httpd_path
+        if File.basename(@tester.groonga) == "groonga-httpd"
           db_path = context.db_path
           config_file = create_config_file(host, port, db_path, pid_file)
           groonga_options = [
