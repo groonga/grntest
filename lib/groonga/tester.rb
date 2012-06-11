@@ -322,8 +322,7 @@ module Groonga
 
         if /groonga-httpd$/ =~ @tester.groonga
           db_path = context.db_path
-          config_file =
-            create_temporary_config_file(host, port, db_path, pid_file)
+          config_file = create_config_file(host, port, db_path, pid_file)
           groonga_options = [
             "-c", config_file.path,
           ]
@@ -363,7 +362,7 @@ module Groonga
         end
       end
 
-      def create_temporary_config_file(host, port, db_path, pid_file)
+      def create_config_file(host, port, db_path, pid_file)
         config_file = Tempfile.new("test-httpd.conf")
         config_file.puts <<EOF
 worker_processes 1;
