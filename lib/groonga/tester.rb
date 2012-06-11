@@ -318,15 +318,18 @@ module Groonga
       def run_groonga_http(context)
         host = "127.0.0.1"
         port = 50041
+        pid_file = Tempfile.new("groonga.pid")
 
         if /groonga-httpd$/ =~ @tester.groonga
           db_path = context.db_path
-          config_file = create_temporary_config_file(host, port, db_path)
+          config_file =
+            create_temporary_config_file(host, port, db_path, pid_file)
           groonga_options = [
             "-c", config_file.path,
           ]
         else
           groonga_options = [
+            "--pid-path", pid_file.path,
             "--bind-address", host,
             "--port", port.to_s,
             "--protocol", @tester.protocol.to_s,
@@ -335,10 +338,8 @@ module Groonga
           ]
         end
 
-        pid_file = Tempfile.new("groonga.pid")
         command_line = [
           @tester.groonga,
-          "--pid-path", pid_file.path,
         ]
         command_line.concat(groonga_options)
         system(*command_line)
@@ -362,8 +363,28 @@ module Groonga
         end
       end
 
-      def create_temporary_config_file(host, port, db_path)
-        Tempfile.new("test-httpd.conf")
+      def create_temporary_config_file(host, port, db_path, pid_file)
+        config_file = Tempfile.new("test-httpd.conf")
+        config_file.puts <<EOF
+worker_processes 1;
+pid #{pid_file.path};
+events {
+     worker_connections 1024;
+}
+
+http {
+     server {
+             listen #{port};
+             server_name #{host};
+             location /d/ {
+                     groonga_database #{db_path};
+                     groonga;
+            }
+     }
+}
+EOF
+        config_file.close
+        config_file
       end
 
       def normalize_result(result)
