@@ -320,24 +320,7 @@ module Groonga
         port = 50041
         pid_file = Tempfile.new("groonga.pid")
 
-        groonga_httpd_path = File.join(@tester.base_directory, "groonga-httpd")
-        if @tester.groonga == groonga_httpd_path
-          db_path = context.db_path
-          config_file = create_config_file(host, port, db_path, pid_file)
-          groonga_options = [
-            "-c", config_file.path,
-          ]
-        else
-          groonga_options = [
-            "--pid-path", pid_file.path,
-            "--bind-address", host,
-            "--port", port.to_s,
-            "--protocol", @tester.protocol.to_s,
-            "-d",
-            "-n", context.db_path,
-          ]
-        end
-
+        groonga_options = build_groonga_options(host, port, pid_file, context)
         command_line = [
           @tester.groonga,
         ]
@@ -361,6 +344,27 @@ module Groonga
             break if total_sleep_time > 1.0
           end
         end
+      end
+
+      def build_groonga_options(host, port, pid_file, context)
+        groonga_httpd_path = File.join(@tester.base_directory, "groonga-httpd")
+        if @tester.groonga == groonga_httpd_path
+          db_path = context.db_path
+          config_file = create_config_file(host, port, db_path, pid_file)
+          groonga_options = [
+            "-c", config_file.path,
+          ]
+        else
+          groonga_options = [
+            "--pid-path", pid_file.path,
+            "--bind-address", host,
+            "--port", port.to_s,
+            "--protocol", @tester.protocol.to_s,
+            "-d",
+            "-n", context.db_path,
+          ]
+        end
+        groonga_options
       end
 
       def create_config_file(host, port, db_path, pid_file)
