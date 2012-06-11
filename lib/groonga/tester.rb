@@ -320,7 +320,8 @@ module Groonga
         port = 50041
         pid_file = Tempfile.new("groonga.pid")
 
-        if /groonga-httpd$/ =~ @tester.groonga
+        groonga_httpd_path = File.join(@tester.base_directory, "groonga-httpd")
+        if @tester.groonga == groonga_httpd_path
           db_path = context.db_path
           config_file = create_config_file(host, port, db_path, pid_file)
           groonga_options = [
