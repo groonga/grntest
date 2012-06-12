@@ -260,7 +260,7 @@ module Groonga
       end
 
       def create_temporary_directory
-        path = temporary_path
+        path = "tmp"
         FileUtils.rm_rf(path)
         FileUtils.mkdir_p(path)
         begin
@@ -273,10 +273,6 @@ module Groonga
             FileUtils.rm_rf(path)
           end
         end
-      end
-
-      def temporary_path
-        "tmp"
       end
 
       def keep_database_path
