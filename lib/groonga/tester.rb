@@ -52,6 +52,12 @@ module Groonga
           tester.groonga = command
         end
 
+        parser.on("--groonga-httpd=COMMAND",
+                  "Use COMMAND as groonga-httpd command for groonga-httpd tests",
+                  "(#{tester.groonga_httpd})") do |command|
+          tester.groonga_httpd = command
+        end
+
         parser.on("--groonga-suggest-create-dataset=COMMAND",
                   "Use COMMAND as groonga_suggest_create_dataset command",
                   "(#{tester.groonga_suggest_create_dataset})") do |command|
@@ -105,11 +111,12 @@ module Groonga
       end
     end
 
-    attr_accessor :groonga, :groonga_suggest_create_dataset, :protocol
+    attr_accessor :groonga, :groonga_httpd, :groonga_suggest_create_dataset, :protocol
     attr_accessor :base_directory, :diff, :diff_options
     attr_writer :keep_database
     def initialize
       @groonga = "groonga"
+      @groonga_httpd = nil
       @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
       @protocol = :gqtp
       @base_directory = "."
