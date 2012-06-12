@@ -353,11 +353,10 @@ module Groonga
         unless @tester.groonga_httpd.nil?
           db_path = context.db_path
           config_file = create_config_file(host, port, db_path, pid_file)
-          real_basepath = File.realpath(@tester.base_directory)
           command_line = [
             @tester.groonga_httpd,
             "-c", config_file.path,
-            "-p", File.join(real_basepath, "/"),
+            "-p", keep_database_path,
           ]
         else
           command_line = [
