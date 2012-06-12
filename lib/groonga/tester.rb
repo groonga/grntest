@@ -327,11 +327,7 @@ module Groonga
         port = 50041
         pid_file = Tempfile.new("groonga.pid")
 
-        groonga_options = groonga_http_options(host, port, pid_file, context)
-        command_line = [
-          @tester.groonga,
-        ]
-        command_line.concat(groonga_options)
+        command_line = groonga_http_command(host, port, pid_file, context)
         system(*command_line)
         begin
           executor = HTTPExecutor.new(host, port, context)
@@ -353,17 +349,19 @@ module Groonga
         end
       end
 
-      def groonga_http_options(host, port, pid_file, context)
-        if File.basename(@tester.groonga) == "groonga-httpd"
+      def groonga_http_command(host, port, pid_file, context)
+        unless @tester.groonga_httpd.nil?
           db_path = context.db_path
           config_file = create_config_file(host, port, db_path, pid_file)
           real_basepath = File.realpath(@tester.base_directory)
-          groonga_options = [
+          command_line = [
+            @tester.groonga_httpd,
             "-c", config_file.path,
             "-p", File.join(real_basepath, "/"),
           ]
         else
-          groonga_options = [
+          command_line = [
+            @tester.groonga,
             "--pid-path", pid_file.path,
             "--bind-address", host,
             "--port", port.to_s,
@@ -372,7 +370,7 @@ module Groonga
             "-n", context.db_path,
           ]
         end
-        groonga_options
+        command_line
       end
 
       def create_config_file(host, port, db_path, pid_file)
