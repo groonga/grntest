@@ -401,10 +401,9 @@ EOF
       end
 
       def create_empty_database(db_path)
-        groonga_command = ENV["GROONGA"] || "groonga"
         output_fd = Tempfile.new("create-empty-database")
         create_database_command = [
-          groonga_command,
+          @tester.groonga,
           "--output-fd", output_fd.to_i.to_s,
           "-n", db_path,
           "shutdown"
