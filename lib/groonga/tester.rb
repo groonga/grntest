@@ -367,6 +367,7 @@ module Groonga
       end
 
       def create_config_file(host, port, db_path, pid_file)
+        create_empty_database(db_path)
         config_file = Tempfile.new("test-httpd.conf")
         config_file.puts <<EOF
 worker_processes 1;
@@ -388,6 +389,19 @@ http {
 EOF
         config_file.close
         config_file
+      end
+
+      def create_empty_database(db_path)
+        groonga_command = ENV["GROONGA"] || "groonga"
+        output_fd = Tempfile.new("create-empty-database")
+        create_database_command = [
+          groonga_command,
+          "--output-fd", output_fd.to_i.to_s,
+          "-n", db_path,
+          "shutdown"
+        ]
+        system(*create_database_command)
+        output_fd.close(true)
       end
 
       def normalize_result(result)
