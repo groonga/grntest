@@ -260,7 +260,7 @@ module Groonga
       end
 
       def create_temporary_directory
-        path = "tmp"
+        path = temporary_path
         FileUtils.rm_rf(path)
         FileUtils.mkdir_p(path)
         begin
@@ -273,6 +273,10 @@ module Groonga
             FileUtils.rm_rf(path)
           end
         end
+      end
+
+      def temporary_path
+        "tmp"
       end
 
       def keep_database_path
@@ -363,11 +367,10 @@ module Groonga
         else
           db_path = context.db_path
           config_file = create_config_file(host, port, db_path, pid_file)
-          FileUtils.mkdir_p(keep_database_path)
           command_line = [
             @tester.groonga_httpd,
             "-c", config_file.path,
-            "-p", keep_database_path,
+            "-p", File.join(File.realpath(temporary_path), "/"),
           ]
         end
         command_line
