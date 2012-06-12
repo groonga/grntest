@@ -363,6 +363,7 @@ module Groonga
         else
           db_path = context.db_path
           config_file = create_config_file(host, port, db_path, pid_file)
+          FileUtils.mkdir_p(keep_database_path)
           command_line = [
             @tester.groonga_httpd,
             "-c", config_file.path,
