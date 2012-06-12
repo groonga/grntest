@@ -370,7 +370,7 @@ module Groonga
           command_line = [
             @tester.groonga_httpd,
             "-c", config_file.path,
-            "-p", File.join(File.realpath(temporary_path), "/"),
+            "-p", File.join(File.dirname(db_path), "/"),
           ]
         end
         command_line
