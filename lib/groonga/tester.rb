@@ -350,8 +350,10 @@ module Groonga
         if File.basename(@tester.groonga) == "groonga-httpd"
           db_path = context.db_path
           config_file = create_config_file(host, port, db_path, pid_file)
+          real_basepath = File.realpath(@tester.base_directory)
           groonga_options = [
             "-c", config_file.path,
+            "-p", File.join(real_basepath, "/"),
           ]
         else
           groonga_options = [
@@ -378,6 +380,8 @@ events {
 
 http {
      server {
+             error_log groonga-httpd-error.log;
+             access_log groonga-httpd-access.log;
              listen #{port};
              server_name #{host};
              location /d/ {
