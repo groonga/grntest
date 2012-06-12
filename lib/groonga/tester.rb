@@ -350,15 +350,7 @@ module Groonga
       end
 
       def groonga_http_command(host, port, pid_file, context)
-        unless @tester.groonga_httpd.nil?
-          db_path = context.db_path
-          config_file = create_config_file(host, port, db_path, pid_file)
-          command_line = [
-            @tester.groonga_httpd,
-            "-c", config_file.path,
-            "-p", keep_database_path,
-          ]
-        else
+        if @tester.groonga_httpd.nil?
           command_line = [
             @tester.groonga,
             "--pid-path", pid_file.path,
@@ -367,6 +359,14 @@ module Groonga
             "--protocol", @tester.protocol.to_s,
             "-d",
             "-n", context.db_path,
+          ]
+        else
+          db_path = context.db_path
+          config_file = create_config_file(host, port, db_path, pid_file)
+          command_line = [
+            @tester.groonga_httpd,
+            "-c", config_file.path,
+            "-p", keep_database_path,
           ]
         end
         command_line
