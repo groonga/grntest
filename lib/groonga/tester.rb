@@ -349,13 +349,13 @@ module Groonga
       end
 
       def wait_groonga_http_shutdown(pid_file)
-          total_sleep_time = 0
-          sleep_time = 0.1
-          while File.exist?(pid_file.path)
-            sleep(sleep_time)
-            total_sleep_time += sleep_time
-            break if total_sleep_time > 1.0
-          end
+        total_sleep_time = 0
+        sleep_time = 0.1
+        while File.exist?(pid_file.path)
+          sleep(sleep_time)
+          total_sleep_time += sleep_time
+          break if total_sleep_time > 1.0
+        end
       end
 
       def groonga_http_command(host, port, pid_file, context)
