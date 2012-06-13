@@ -335,7 +335,12 @@ module Groonga
           yield(executor)
         ensure
           begin
-            executor.send_command("shutdown")
+            if @tester.groonga_httpd.nil?
+              executor.send_command("shutdown")
+            else
+              command_line.concat(["-s", "quit"])
+              system(*command_line)
+            end
           rescue SystemCallError
           end
 
