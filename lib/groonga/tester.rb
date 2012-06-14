@@ -767,8 +767,13 @@ EOF
       def send_command(command_line)
         converter = CommandFormatConverter.new(command_line)
         url = "http://#{@host}:#{@port}#{converter.to_url}"
-        open(url) do |response|
-          "#{response.read}\n"
+        begin
+          open(url) do |response|
+            "#{response.read}\n"
+          end
+        rescue OpenURI::HTTPError
+          message = "Failed to get response from groonga: #{$!}: <#{url}>"
+          raise Error.new(message)
         end
       end
 
