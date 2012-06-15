@@ -73,6 +73,18 @@ module Groonga
           tester.protocol = protocol
         end
 
+        available_testees = ["groonga", "groonga-httpd"]
+        available_testee_labels = available_testees.join(", ")
+        parser.on("--testee=TESTEE", available_testees,
+                  "Test against TESTEE",
+                  "[#{available_testee_labels}]",
+                  "(#{tester.testee})") do |testee|
+          tester.testee = testee
+          if tester.testee == "groonga-httpd"
+            tester.protocol = "http"
+          end
+        end
+
         parser.on("--base-directory=DIRECTORY",
                   "Use DIRECTORY as a base directory of relative path",
                   "(#{tester.base_directory})") do |directory|
@@ -117,15 +129,17 @@ module Groonga
       end
     end
 
-    attr_accessor :groonga, :groonga_httpd, :groonga_suggest_create_dataset, :protocol
+    attr_accessor :groonga, :groonga_httpd, :groonga_suggest_create_dataset
+    attr_accessor :protocol, :testee
     attr_accessor :base_directory, :diff, :diff_options
     attr_accessor :gdb, :default_gdb
     attr_writer :keep_database
     def initialize
       @groonga = "groonga"
-      @groonga_httpd = nil
+      @groonga_httpd = "groonga-httpd"
       @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
       @protocol = :gqtp
+      @testee = "groonga"
       @base_directory = "."
       detect_suitable_diff
       initialize_debuggers
@@ -406,9 +420,10 @@ EOC
           yield(executor)
         ensure
           begin
-            if @tester.groonga_httpd.nil?
+            case @tester.testee
+            when "groonga"
               executor.send_command("shutdown")
-            else
+            when "groonga-httpd"
               command_line.concat(["-s", "quit"])
               system(*command_line)
             end
@@ -430,7 +445,8 @@ EOC
       end
 
       def groonga_http_command(host, port, pid_file, context)
-        if @tester.groonga_httpd.nil?
+        case @tester.testee
+        when "groonga"
           command_line = [
             @tester.groonga,
             "--pid-path", pid_file.path,
@@ -440,7 +456,7 @@ EOC
             "-d",
             "-n", context.db_path,
           ]
-        else
+        when "groonga-httpd"
           db_path = context.db_path
           config_file = create_config_file(host, port, db_path, pid_file)
           command_line = [
