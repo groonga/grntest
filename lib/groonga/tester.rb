@@ -95,6 +95,12 @@ module Groonga
           diff_option_is_specified = true
         end
 
+        parser.on("--gdb[=COMMAND]",
+                  "Run groonga on gdb and use COMMAND as gdb",
+                  "(#{tester.default_gdb})") do |command|
+          tester.gdb = command || tester.default_gdb
+        end
+
         parser.on("--[no-]keep-database",
                   "Keep used database for debug after test is finished",
                   "(#{tester.keep_database?})") do |boolean|
@@ -113,6 +119,7 @@ module Groonga
 
     attr_accessor :groonga, :groonga_httpd, :groonga_suggest_create_dataset, :protocol
     attr_accessor :base_directory, :diff, :diff_options
+    attr_accessor :gdb, :default_gdb
     attr_writer :keep_database
     def initialize
       @groonga = "groonga"
@@ -121,6 +128,7 @@ module Groonga
       @protocol = :gqtp
       @base_directory = "."
       detect_suitable_diff
+      initialize_debuggers
     end
 
     def run(*targets)
@@ -189,6 +197,11 @@ module Groonga
         @diff = "diff"
         @diff_options = ["-u"]
       end
+    end
+
+    def initialize_debuggers
+      @gdb = nil
+      @default_gdb = "gdb"
     end
 
     def command_exist?(name)
@@ -289,37 +302,85 @@ module Groonga
       end
 
       def run_groonga_gqtp(context)
+        pid = nil
+        begin
+          open_pipe do |input_read, input_write, output_read, output_write|
+            groonga_input = input_write
+            groonga_output = output_read
+
+            input_fd = input_read.to_i
+            output_fd = output_write.to_i
+            command_line = groonga_command_line
+            command_line += [
+              "--input-fd", input_fd.to_s,
+              "--output-fd", output_fd.to_s,
+              "-n", context.db_path,
+            ]
+            env = {}
+            options = {
+              input_fd => input_fd,
+              output_fd => output_fd
+            }
+            pid = Process.spawn(env, *command_line, options)
+            executor = GQTPExecutor.new(groonga_input, groonga_output, context)
+            executor.ensure_groonga_ready
+            yield(executor)
+          end
+        ensure
+          Process.waitpid(pid) if pid
+        end
+      end
+
+      def open_pipe
         read = 0
         write = 1
-        input_pipe = IO.pipe
-        output_pipe = IO.pipe
 
-        input_fd = input_pipe[read].to_i
-        output_fd = output_pipe[write].to_i
-        command_line = [
-          @tester.groonga,
-          "--input-fd", input_fd.to_s,
-          "--output-fd", output_fd.to_s,
-          "-n", context.db_path,
-        ]
-        env = {}
-        options = {
-          input_fd => input_fd,
-          output_fd => output_fd
-        }
-        pid = Process.spawn(env, *command_line, options)
         begin
-          groonga_input = input_pipe[write]
-          groonga_output = output_pipe[read]
-          executor = GQTPExecutor.new(groonga_input, groonga_output, context)
-          executor.ensure_groonga_ready
-          yield(executor)
+          input_pipe = IO.pipe
+          output_pipe = IO.pipe
+          yield(input_pipe[read], input_pipe[write],
+                output_pipe[read], output_pipe[write])
         ensure
+          input_pipe ||= []
+          output_pipe ||= []
           (input_pipe + output_pipe).each do |io|
             io.close unless io.closed?
           end
-          Process.waitpid(pid)
         end
+      end
+
+      def groonga_command_line
+        command_line = []
+        groonga = @tester.groonga
+        if @tester.gdb
+          if libtool_wrapper?(groonga)
+            command_line << find_libtool(groonga)
+            command_line << "--mode=execute"
+          end
+          command_line << @tester.gdb
+          command_line << "--args"
+        end
+        command_line << groonga
+        command_line
+      end
+
+      def libtool_wrapper?(command)
+        return false unless File.exist?(command)
+        File.open(command, "r") do |command_file|
+          first_line = command_file.gets
+          first_line.start_with?("#!")
+        end
+      end
+
+      def find_libtool(command)
+        command_path = Pathname.new(command)
+        directory = command_path.dirname
+        until directory.root?
+          libtool = directory + "libtool"
+          return libtool.to_s if libtool.executable?
+          directory = directory.parent
+        end
+        "libtool"
       end
 
       def run_groonga_http(context)
