@@ -258,6 +258,7 @@ module Groonga
           db_path = File.join(directory_path, "db")
           context = Executor::Context.new
           begin
+            context.temporary_directory_path = directory_path
             context.db_path = db_path
             context.base_directory = @tester.base_directory
             context.groonga_suggest_create_dataset =
@@ -310,7 +311,7 @@ module Groonga
 
             input_fd = input_read.to_i
             output_fd = output_write.to_i
-            command_line = groonga_command_line
+            command_line = groonga_command_line(context)
             command_line += [
               "--input-fd", input_fd.to_s,
               "--output-fd", output_fd.to_s,
@@ -349,7 +350,7 @@ module Groonga
         end
       end
 
-      def groonga_command_line
+      def groonga_command_line(context)
         command_line = []
         groonga = @tester.groonga
         if @tester.gdb
@@ -358,6 +359,15 @@ module Groonga
             command_line << "--mode=execute"
           end
           command_line << @tester.gdb
+          gdb_command_path = File.join(context.temporary_directory_path,
+                                       "groonga.gdb")
+          File.open(gdb_command_path, "w") do |gdb_command|
+            gdb_command.puts(<<-EOC)
+break main
+run
+EOC
+          end
+          command_line << "--command=#{gdb_command_path}"
           command_line << "--args"
         end
         command_line << groonga
@@ -568,11 +578,13 @@ EOF
     class Executor
       class Context
         attr_writer :logging
-        attr_accessor :base_directory, :db_path, :groonga_suggest_create_dataset
+        attr_accessor :base_directory, :temporary_directory_path, :db_path
+        attr_accessor :groonga_suggest_create_dataset
         attr_accessor :result
         def initialize
           @logging = true
           @base_directory = "."
+          @temporary_directory_path = "tmp"
           @db_path = "db"
           @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
           @n_nested = 0
