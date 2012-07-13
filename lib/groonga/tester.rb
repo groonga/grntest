@@ -107,6 +107,15 @@ module Groonga
           diff_option_is_specified = true
         end
 
+        available_reporters = [:stream, :inplace]
+        available_reporter_labels = available_reporters.join(", ")
+        parser.on("--reporter=REPORTER", available_reporters,
+                  "Report test result by REPORTER",
+                  "[#{available_reporter_labels}]",
+                  "(#{tester.reporter})") do |reporter|
+          tester.reporter = reporter
+        end
+
         parser.on("--gdb[=COMMAND]",
                   "Run groonga on gdb and use COMMAND as gdb",
                   "(#{tester.default_gdb})") do |command|
@@ -131,7 +140,7 @@ module Groonga
 
     attr_accessor :groonga, :groonga_httpd, :groonga_suggest_create_dataset
     attr_accessor :protocol, :testee
-    attr_accessor :base_directory, :diff, :diff_options
+    attr_accessor :base_directory, :diff, :diff_options, :reporter
     attr_accessor :gdb, :default_gdb
     attr_writer :keep_database
     def initialize
@@ -141,6 +150,7 @@ module Groonga
       @protocol = :gqtp
       @testee = "groonga"
       @base_directory = "."
+      @reporter = :stream
       detect_suitable_diff
       initialize_debuggers
     end
@@ -215,12 +225,22 @@ module Groonga
       def initialize(tester)
         @tester = tester
       end
+
+      private
+      def create_reporter
+        case @tester.reporter
+        when :stream
+          StreamReporter.new(@tester)
+        when :inplace
+          InplaceReporter.new(@tester)
+        end
+      end
     end
 
     class SequentialTestSuitesRunner < TestSuitesRunner
       def run(test_suites)
         succeeded = true
-        reporter = StreamReporter.new(@tester)
+        reporter = create_reporter
         reporter.start
         catch do |tag|
           test_suites.each do |suite_name, test_script_paths|
@@ -1008,11 +1028,13 @@ EOF
 
       def pass_test
         report_test_result("pass")
+        clear_line
         @n_passed_tests += 1
       end
 
       def fail_test(expected, actual)
         report_test_result("fail")
+        puts
         puts("=" * @term_width)
         report_diff(expected, actual)
         puts("=" * @term_width)
@@ -1021,6 +1043,7 @@ EOF
 
       def no_check_test(result)
         report_test_result("not checked")
+        puts
         puts(result)
         @n_not_checked_tests += 1
       end
@@ -1050,17 +1073,26 @@ EOF
       def print(message)
         @current_column += message.to_s.size
         @output.print(message)
+        @output.flush
       end
 
       def puts(*messages)
-        @current_column = 0
+        reset_current_column
         @output.puts(*messages)
+      end
+
+      def reset_current_column
+        @current_column = 0
+      end
+
+      def clear_line
+        puts
       end
 
       def report_test_result(label)
         message = " [#{label}]"
         message = message.rjust(@term_width - @current_column) if @term_width > 0
-        puts(message)
+        print(message)
       end
 
       def report_diff(expected, actual)
@@ -1085,6 +1117,31 @@ EOF
         Integer(ENV["COLUMNS"] || ENV["TERM_WIDTH"] || 79)
       rescue ArgumentError
         0
+      end
+    end
+
+    class InplaceReporter < StreamReporter
+      def finish_suite(suite_name)
+        print("\e[1A" * n_using_lines)
+        clear_line
+      end
+
+      def finish
+        n_using_lines.times do
+          puts
+        end
+        puts
+        super
+      end
+
+      private
+      def clear_line
+        print("\r")
+        reset_current_column
+      end
+
+      def n_using_lines
+        2
       end
     end
   end
