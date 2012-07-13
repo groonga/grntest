@@ -149,23 +149,8 @@ module Groonga
       succeeded = true
       return succeeded if targets.empty?
 
-      reporter = Reporter.new(self)
-      reporter.start
-      catch do |tag|
-        targets.each do |target|
-          target_path = Pathname(target)
-          next unless target_path.exist?
-          if target_path.directory?
-            unless run_tests_in_directory(target_path, reporter, tag)
-              succeeded = false
-            end
-          else
-            succeeded = false unless run_test(target_path, reporter, tag)
-          end
-        end
-      end
-      reporter.finish
-      succeeded
+      test_suites = load_tests(*targets)
+      run_test_suites(test_suites)
     end
 
     def keep_database?
@@ -173,34 +158,34 @@ module Groonga
     end
 
     private
-    def collect_test_files(test_directory)
-      test_files = Pathname.glob(test_directory + "**" + "*.test")
-      grouped_test_files = test_files.group_by do |test_file|
-        test_file.dirname.relative_path_from(test_directory)
-      end
-      grouped_test_files.sort_by do |directory, _|
-        directory.to_s
-      end
-    end
-
-    def run_tests_in_directory(test_directory, reporter, tag)
-      succeeded = true
-      collect_test_files(test_directory).each do |directory, test_files|
-        suite_name = directory.to_s
-        reporter.start_suite(suite_name)
-        test_files.sort.each do |test_file|
-          succeeded = false unless run_test(test_file, reporter, tag)
+    def load_tests(*targets)
+      default_group_name = "."
+      tests = {default_group_name => []}
+      targets.each do |target|
+        target_path = Pathname(target)
+        next unless target_path.exist?
+        if target_path.directory?
+          load_tests_under_directory(tests, target_path)
+        else
+          tests[default_group_name] << target_path
         end
-        reporter.finish_suite(suite_name)
       end
-      succeeded
+      tests
     end
 
-    def run_test(test_script_path, reporter, tag)
-      runner = Runner.new(self, test_script_path)
-      succeeded = runner.run(reporter)
-      throw(tag) if runner.interrupted?
-      succeeded
+    def load_tests_under_directory(tests, test_directory_path)
+      test_file_paths = Pathname.glob(test_directory_path + "**" + "*.test")
+      test_file_paths.each do |test_file_path|
+        directory_path = test_file_path.dirname
+        directory = directory_path.relative_path_from(test_directory_path).to_s
+        tests[directory] ||= []
+        tests[directory] << test_file_path
+      end
+    end
+
+    def run_test_suites(test_suites)
+      runner = SequentialTestSuitesRunner.new(self)
+      runner.run(test_suites)
     end
 
     def detect_suitable_diff
@@ -226,7 +211,34 @@ module Groonga
       false
     end
 
-    class Runner
+    class TestSuitesRunner
+      def initialize(tester)
+        @tester = tester
+      end
+    end
+
+    class SequentialTestSuitesRunner < TestSuitesRunner
+      def run(test_suites)
+        succeeded = true
+        reporter = StreamReporter.new(@tester)
+        reporter.start
+        catch do |tag|
+          test_suites.each do |suite_name, test_script_paths|
+            reporter.start_suite(suite_name)
+            test_script_paths.each do |test_script_path|
+              runner = TestRunner.new(@tester, test_script_path)
+              succeeded = false unless runner.run(reporter)
+              throw(tag) if runner.interrupted?
+            end
+            reporter.finish_suite(suite_name)
+          end
+        end
+        reporter.finish
+        succeeded
+      end
+    end
+
+    class TestRunner
       MAX_N_COLUMNS = 79
 
       def initialize(tester, test_script_path)
@@ -968,7 +980,7 @@ EOF
       end
     end
 
-    class Reporter
+    class StreamReporter
       def initialize(tester)
         @tester = tester
         @term_width = guess_term_width
