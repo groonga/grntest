@@ -1122,7 +1122,7 @@ EOF
 
     class InplaceReporter < StreamReporter
       def finish_suite(suite_name)
-        print("\e[1A" * n_using_lines)
+        up_n_lines(n_using_lines)
         clear_line
       end
 
@@ -1135,6 +1135,10 @@ EOF
       end
 
       private
+      def up_n_lines(n)
+        print("\e[1A" * n_using_lines)
+      end
+
       def clear_line
         print("\r")
         reset_current_column
