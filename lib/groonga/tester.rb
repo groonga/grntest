@@ -796,7 +796,7 @@ EOF
       def execute_command_line(command_line)
         extract_command_info(command_line)
         log_input(command_line)
-        if @current_command == "load"
+        if multiline_load_command?
           @loading = true
           @pending_load_command = command_line.dup
         else
@@ -805,19 +805,23 @@ EOF
       end
 
       def extract_command_info(command_line)
-        words = Shellwords.split(command_line)
-        @current_command = words.shift
+        @current_command, *@current_arguments = Shellwords.split(command_line)
         if @current_command == "dump"
           @output_format = "groonga-command"
         else
           @output_format = "json"
-          words.each_with_index do |word, i|
+          @current_arguments.each_with_index do |word, i|
             if /\A--output_format(?:=(.+))?\z/ =~ word
               @output_format = $1 || words[i + 1]
               break
             end
           end
         end
+      end
+
+      def multiline_load_command?
+        @current_command == "load" and
+          not @current_arguments.include?("--values")
       end
 
       def execute_command(command)
