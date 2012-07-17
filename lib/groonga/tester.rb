@@ -417,6 +417,7 @@ EOC
           command_line << "--args"
         end
         command_line << groonga
+        command_line << "--log-path=#{context.log_path}"
         command_line
       end
 
@@ -485,6 +486,7 @@ EOC
             "--bind-address", host,
             "--port", port.to_s,
             "--protocol", @tester.protocol.to_s,
+            "--log-path", context.log_path,
             "-d",
             "-n", context.db_path,
           ]
@@ -637,6 +639,7 @@ EOF
           @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
           @n_nested = 0
           @result = []
+          @log = nil
         end
 
         def logging?
@@ -652,6 +655,14 @@ EOF
 
         def top_level?
           @n_nested == 1
+        end
+
+        def log_path
+          File.join(@temporary_directory_path, "groonga.log")
+        end
+
+        def log
+          @log ||= File.open(log_path, "a+")
         end
       end
 
@@ -707,7 +718,7 @@ EOF
         log_input(line)
         @pending_load_command << line
         if line == "]\n"
-          log_output(send_command(@pending_load_command))
+          execute_command(@pending_load_command)
           @pending_load_command = nil
           @loading = false
         end
@@ -735,7 +746,7 @@ EOF
           comment_content = $POSTMATCH
           execute_comment(comment_content)
         else
-          execute_command(line)
+          execute_command_line(line)
         end
       end
 
@@ -782,19 +793,19 @@ EOF
         executor.execute(script_path)
       end
 
-      def execute_command(line)
-        extract_command_info(line)
-        log_input(line)
+      def execute_command_line(command_line)
+        extract_command_info(command_line)
+        log_input(command_line)
         if @current_command == "load"
           @loading = true
-          @pending_load_command = line.dup
+          @pending_load_command = command_line.dup
         else
-          log_output(send_command(line))
+          execute_command(command_line)
         end
       end
 
-      def extract_command_info(line)
-        words = Shellwords.split(line)
+      def extract_command_info(command_line)
+        words = Shellwords.split(command_line)
         @current_command = words.shift
         if @current_command == "dump"
           @output_format = "groonga-command"
@@ -809,13 +820,50 @@ EOF
         end
       end
 
+      def execute_command(command)
+        log_output(send_command(command))
+        log_error(read_error_log)
+      end
+
+      def read_error_log
+        log = read_all_readable_content(context.log, :first_timeout => 0)
+        normalized_error_log = ""
+        log.each_line do |line|
+          timestamp, log_level, message = line.split(/\|\s*/, 3)
+          next unless error_log_level?(log_level)
+          next if backtrace_log_message?(message)
+          normalized_error_log << "\#|#{log_level}| #{message}"
+        end
+        normalized_error_log
+      end
+
+      def read_all_readable_content(output, options={})
+        content = ""
+        first_timeout = options[:first_timeout] || 1
+        timeout = first_timeout
+        while IO.select([output], [], [], timeout)
+          break if output.eof?
+          content << output.readpartial(65535)
+          timeout = 0
+        end
+        content
+      end
+
+      def error_log_level?(log_level)
+        ["E", "A", "C", "e"].include?(log_level)
+      end
+
+      def backtrace_log_message?(message)
+        message.start_with?("/")
+      end
+
       def log(tag, content, options={})
         return unless @context.logging?
-        return if content.empty?
         log_force(tag, content, options)
       end
 
       def log_force(tag, content, options)
+        return if content.empty?
         @context.result << [tag, content, options]
       end
 
@@ -866,15 +914,7 @@ EOF
 
       private
       def read_output
-        output = ""
-        first_timeout = 1
-        timeout = first_timeout
-        while IO.select([@output], [], [], timeout)
-          break if @output.eof?
-          output << @output.readpartial(65535)
-          timeout = 0
-        end
-        output
+        read_all_readable_content(@output)
       end
     end
 
