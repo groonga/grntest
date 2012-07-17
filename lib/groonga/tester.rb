@@ -834,7 +834,7 @@ EOF
           next if backtrace_log_message?(message)
           normalized_error_log << "\#|#{log_level}| #{message}"
         end
-        normalized_error_log
+        normalized_error_log.chomp
       end
 
       def read_all_readable_content(output, options={})
