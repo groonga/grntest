@@ -520,7 +520,7 @@ http {
              server_name #{host};
              location /d/ {
                      groonga_database #{db_path};
-                     groonga;
+                     groonga on;
             }
      }
 }
