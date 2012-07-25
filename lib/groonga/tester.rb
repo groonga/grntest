@@ -81,7 +81,7 @@ module Groonga
                   "(#{tester.testee})") do |testee|
           tester.testee = testee
           if tester.testee == "groonga-httpd"
-            tester.protocol = "http"
+            tester.protocol = :http
           end
         end
 
