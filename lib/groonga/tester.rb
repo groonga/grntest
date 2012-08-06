@@ -258,6 +258,17 @@ module Groonga
       end
     end
 
+    class TestResult
+      attr_accessor :test_name, :elapsed_time
+      attr_accessor :expected, :actual
+      def initialize(test_name)
+        @test_name = test_name
+        @elapsed_time = nil
+        @actual = nil
+        @expected = nil
+      end
+    end
+
     class TestRunner
       MAX_N_COLUMNS = 79
 
@@ -272,24 +283,27 @@ module Groonga
         succeeded = true
 
         test_name = @test_script_path.basename.to_s
+        result = TestResult.new(test_name)
         reporter.start_test(test_name)
-        actual_result = run_groonga_script
-        actual_result = normalize_result(actual_result)
-        expected_result = read_expected_result
-        if expected_result
-          if actual_result == expected_result
-            reporter.pass_test
+        timer = Time.now
+        result.actual = run_groonga_script
+        result.elapsed_time = Time.now - timer
+        result.actual = normalize_result(result.actual)
+        result.expected = read_expected_result
+        if result.expected
+          if result.actual == result.expected
+            reporter.pass_test(result)
             remove_reject_file
           else
-            reporter.fail_test(expected_result, actual_result)
-            output_reject_file(actual_result)
+            reporter.fail_test(result)
+            output_reject_file(result.actual)
             succeeded = false
           end
         else
-          reporter.no_check_test(actual_result)
-          output_actual_file(actual_result)
+          reporter.no_check_test(result)
+          output_actual_file(result.actual)
         end
-        reporter.finish_test(test_name)
+        reporter.finish_test(result)
 
         succeeded
       end
@@ -1070,29 +1084,29 @@ EOF
         @output.flush
       end
 
-      def pass_test
-        report_test_result("pass")
+      def pass_test(result)
+        report_test_result(result, "pass")
         clear_line
         @n_passed_tests += 1
       end
 
-      def fail_test(expected, actual)
-        report_test_result("fail")
+      def fail_test(result)
+        report_test_result(result, "fail")
         puts
         puts("=" * @term_width)
-        report_diff(expected, actual)
+        report_diff(result.expected, result.actual)
         puts("=" * @term_width)
         @failed_tests << @test_name
       end
 
       def no_check_test(result)
-        report_test_result("not checked")
+        report_test_result(result, "not checked")
         puts
         puts(result)
         @n_not_checked_tests += 1
       end
 
-      def finish_test(test_name)
+      def finish_test(result)
         @n_tests += 1
       end
 
@@ -1133,8 +1147,8 @@ EOF
         puts
       end
 
-      def report_test_result(label)
-        message = " [#{label}]"
+      def report_test_result(result, label)
+        message = " %10.4fs [%s]" % [result.elapsed_time, label]
         message = message.rjust(@term_width - @current_column) if @term_width > 0
         print(message)
       end
