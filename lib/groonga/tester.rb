@@ -320,17 +320,17 @@ module Groonga
       end
 
       def create_temporary_directory
-        path = "tmp"
-        FileUtils.rm_rf(path)
+        path = "tmp/grntest"
+        FileUtils.rm_rf(path, :secure => true)
         FileUtils.mkdir_p(path)
         begin
           yield(path)
         ensure
           if @tester.keep_database? and File.exist?(path)
-            FileUtils.rm_rf(keep_database_path)
+            FileUtils.rm_rf(keep_database_path, :secure => true)
             FileUtils.mv(path, keep_database_path)
           else
-            FileUtils.rm_rf(path)
+            FileUtils.rm_rf(path, :secure => true)
           end
         end
       end
@@ -605,7 +605,7 @@ EOF
         return unless have_extension?
         reject_path = related_file_path("reject")
         return if reject_path.nil?
-        FileUtils.rm_rf(reject_path.to_s)
+        FileUtils.rm_rf(reject_path.to_s, :secure => true)
       end
 
       def output_reject_file(actual_result)
