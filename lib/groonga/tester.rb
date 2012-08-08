@@ -235,6 +235,9 @@ module Groonga
       end
     end
 
+    class TestSuitesResult < Result
+    end
+
     class TestSuitesRunner
       def initialize(tester)
         @tester = tester
@@ -255,19 +258,22 @@ module Groonga
       def run(test_suites)
         succeeded = true
         reporter = create_reporter
-        reporter.start
-        catch do |tag|
-          test_suites.each do |suite_name, test_script_paths|
-            reporter.start_suite(suite_name)
-            test_script_paths.each do |test_script_path|
-              runner = TestRunner.new(@tester, test_script_path)
-              succeeded = false unless runner.run(reporter)
-              throw(tag) if runner.interrupted?
+        result = TestSuitesResult.new
+        result.measure do
+          reporter.start
+          catch do |tag|
+            test_suites.each do |suite_name, test_script_paths|
+              reporter.start_suite(suite_name)
+              test_script_paths.each do |test_script_path|
+                runner = TestRunner.new(@tester, test_script_path)
+                succeeded = false unless runner.run(reporter)
+                throw(tag) if runner.interrupted?
+              end
+              reporter.finish_suite(suite_name)
             end
-            reporter.finish_suite(suite_name)
           end
         end
-        reporter.finish
+        reporter.finish(result)
         succeeded
       end
     end
@@ -1127,7 +1133,7 @@ EOF
       def finish_suite(suite_name)
       end
 
-      def finish
+      def finish(result)
         puts
         puts("#{@n_tests} tests, " +
                "#{@n_passed_tests} passes, " +
@@ -1138,7 +1144,7 @@ EOF
         else
           pass_ratio = (@n_passed_tests / @n_tests.to_f) * 100
         end
-        puts("%.4g%% passed." % pass_ratio)
+        puts("%.4g%% passed in %.4fs." % [pass_ratio, result.elapsed_time])
       end
 
       private
@@ -1198,7 +1204,7 @@ EOF
         clear_line
       end
 
-      def finish
+      def finish(result)
         n_using_lines.times do
           puts
         end
