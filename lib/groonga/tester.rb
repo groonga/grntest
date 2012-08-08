@@ -221,6 +221,20 @@ module Groonga
       false
     end
 
+    class Result
+      attr_accessor :elapsed_time
+      def initialize
+        @elapsed_time
+      end
+
+      def measure
+        start_time = Time.now
+        yield
+      ensure
+        @elapsed_time = Time.now - start_time
+      end
+    end
+
     class TestSuitesRunner
       def initialize(tester)
         @tester = tester
@@ -258,21 +272,14 @@ module Groonga
       end
     end
 
-    class TestResult
-      attr_accessor :test_name, :elapsed_time
+    class TestResult < Result
+      attr_accessor :test_name
       attr_accessor :expected, :actual
       def initialize(test_name)
+        super()
         @test_name = test_name
-        @elapsed_time = nil
         @actual = nil
         @expected = nil
-      end
-
-      def measure
-        start_time = Time.now
-        yield
-      ensure
-        @elapsed_time = Time.now - start_time
       end
     end
 
