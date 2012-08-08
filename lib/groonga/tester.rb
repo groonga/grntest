@@ -285,9 +285,9 @@ module Groonga
         test_name = @test_script_path.basename.to_s
         result = TestResult.new(test_name)
         reporter.start_test(test_name)
-        timer = Time.now
+        started_time = Time.now
         result.actual = run_groonga_script
-        result.elapsed_time = Time.now - timer
+        result.elapsed_time = Time.now - started_time
         result.actual = normalize_result(result.actual)
         result.expected = read_expected_result
         if result.expected
