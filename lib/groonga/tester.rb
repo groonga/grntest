@@ -413,8 +413,8 @@ module Groonga
       end
 
       def open_pipe
-        IO.pipe do |input_read, input_write|
-          IO.pipe do |output_read, output_write|
+        IO.pipe("ASCII-8BIT") do |input_read, input_write|
+          IO.pipe("ASCII-8BIT") do |output_read, output_write|
             yield(input_read, input_write, output_read, output_write)
           end
         end
