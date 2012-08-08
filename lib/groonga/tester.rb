@@ -267,6 +267,13 @@ module Groonga
         @actual = nil
         @expected = nil
       end
+
+      def measure
+        start_time = Time.now
+        yield
+      ensure
+        @elapsed_time = Time.now - start_time
+      end
     end
 
     class TestRunner
@@ -285,9 +292,9 @@ module Groonga
         test_name = @test_script_path.basename.to_s
         result = TestResult.new(test_name)
         reporter.start_test(test_name)
-        started_time = Time.now
-        result.actual = run_groonga_script
-        result.elapsed_time = Time.now - started_time
+        result.measure do
+          result.actual = run_groonga_script
+        end
         result.actual = normalize_result(result.actual)
         result.expected = read_expected_result
         if result.expected
