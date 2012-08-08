@@ -413,19 +413,9 @@ module Groonga
       end
 
       def open_pipe
-        read = 0
-        write = 1
-
-        begin
-          input_pipe = IO.pipe
-          output_pipe = IO.pipe
-          yield(input_pipe[read], input_pipe[write],
-                output_pipe[read], output_pipe[write])
-        ensure
-          input_pipe ||= []
-          output_pipe ||= []
-          (input_pipe + output_pipe).each do |io|
-            io.close unless io.closed?
+        IO.pipe do |input_read, input_write|
+          IO.pipe do |output_read, output_write|
+            yield(input_read, input_write, output_read, output_write)
           end
         end
       end
