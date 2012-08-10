@@ -1112,7 +1112,7 @@ EOF
       def no_check_test(result)
         report_test_result(result, "not checked")
         puts
-        puts(result)
+        puts(result.actual)
         @n_not_checked_tests += 1
       end
 
