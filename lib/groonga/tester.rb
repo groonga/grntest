@@ -116,6 +116,11 @@ module Groonga
           tester.reporter = reporter
         end
 
+        parser.on("--n-workers=N", Integer,
+                  "Use N workers to run tests") do |n|
+          tester.n_workers = n
+        end
+
         parser.on("--gdb[=COMMAND]",
                   "Run groonga on gdb and use COMMAND as gdb",
                   "(#{tester.default_gdb})") do |command|
@@ -141,6 +146,7 @@ module Groonga
     attr_accessor :groonga, :groonga_httpd, :groonga_suggest_create_dataset
     attr_accessor :protocol, :testee
     attr_accessor :base_directory, :diff, :diff_options, :reporter
+    attr_accessor :n_workers
     attr_accessor :gdb, :default_gdb
     attr_writer :keep_database
     def initialize
@@ -151,6 +157,7 @@ module Groonga
       @testee = "groonga"
       @base_directory = "."
       @reporter = :stream
+      @n_workers = 1
       detect_suitable_diff
       initialize_debuggers
     end
@@ -194,7 +201,7 @@ module Groonga
     end
 
     def run_test_suites(test_suites)
-      runner = SequentialTestSuitesRunner.new(self)
+      runner = TestSuitesRunner.new(self)
       runner.run(test_suites)
     end
 
@@ -221,10 +228,97 @@ module Groonga
       false
     end
 
+    class Worker
+      attr_reader :id, :tester, :test_suites_rusult, :reporter
+      attr_reader :suite_name, :test_script_path, :status
+      def initialize(id, tester, test_suites_result, reporter)
+        @id = id
+        @tester = tester
+        @test_suites_result = test_suites_result
+        @reporter = reporter
+        @suite_name = nil
+        @test_script_path = nil
+        @interruptted = false
+        @status = "not running"
+      end
+
+      def interrupt
+        @interruptted = true
+      end
+
+      def interruptted?
+        @interruptted
+      end
+
+      def test_name
+        return nil if @test_script_path.nil?
+        @test_script_path.basename(".*").to_s
+      end
+
+      def run(queue)
+        succeeded = true
+
+        @reporter.start_worker(self)
+        catch do |tag|
+          loop do
+            suite_name, test_script_path = queue.pop
+            break if test_script_path.nil?
+
+            unless @suite_name == suite_name
+              @reporter.finish_suite(self) if @suite_name
+              @suite_name = suite_name
+              @reporter.start_suite(self)
+            end
+            @test_script_path = test_script_path
+            runner = TestRunner.new(@tester, self)
+            succeeded = false unless runner.run
+
+            break if interruptted?
+          end
+          @status = "finished"
+          @reporter.finish_suite(@suite_name) if @suite_name
+          @suite_name = nil
+        end
+        @reporter.finish_worker(self)
+
+        succeeded
+      end
+
+      def start_test
+        @status = "running"
+        @test_result = nil
+        @reporter.start_test(self)
+      end
+
+      def pass_test(result)
+        @status = "passed"
+        @test_suites_result.test_passed
+        @reporter.pass_test(self, result)
+      end
+
+      def fail_test(result)
+        @status = "failed"
+        @test_suites_result.test_failed(test_name)
+        @reporter.fail_test(self, result)
+      end
+
+      def no_check_test(result)
+        @status = "not checked"
+        @test_suites_result.test_not_checked
+        @reporter.no_check_test(self, result)
+      end
+
+      def finish_test(result)
+        @test_suites_result.test_finished
+        @reporter.finish_test(self, result)
+        @test_script_path = nil
+      end
+    end
+
     class Result
       attr_accessor :elapsed_time
       def initialize
-        @elapsed_time
+        @elapsed_time = 0
       end
 
       def measure
@@ -236,14 +330,100 @@ module Groonga
     end
 
     class TestSuitesResult < Result
+      attr_reader :n_tests, :n_passed_tests, :n_not_checked_tests
+      attr_reader :failed_tests
+      def initialize
+        super
+        @n_tests = 0
+        @n_passed_tests = 0
+        @n_not_checked_tests = 0
+        @failed_tests = []
+      end
+
+      def n_failed_tests
+        @failed_tests.size
+      end
+
+      def pass_ratio
+        if @n_tests.zero?
+          0
+        else
+          (@n_passed_tests / @n_tests.to_f) * 100
+        end
+      end
+
+      def test_finished
+        @n_tests += 1
+      end
+
+      def test_passed
+        @n_passed_tests += 1
+      end
+
+      def test_failed(name)
+        @failed_tests << name
+      end
+
+      def test_not_checked
+        @n_not_checked_tests += 1
+      end
     end
 
     class TestSuitesRunner
       def initialize(tester)
         @tester = tester
+        @reporter = create_reporter
+        @result = TestSuitesResult.new
+      end
+
+      def run(test_suites)
+        succeeded = true
+
+        @result.measure do
+          succeeded = run_test_suites(test_suites)
+        end
+        @reporter.finish(@result)
+
+        succeeded
       end
 
       private
+      def run_test_suites(test_suites)
+        queue = Queue.new
+        test_suites.each do |suite_name, test_script_paths|
+          test_script_paths.each do |test_script_path|
+            queue << [suite_name, test_script_path]
+          end
+        end
+        @tester.n_workers.times do
+          queue << nil
+        end
+
+        workers = []
+        @tester.n_workers.times do |i|
+          workers << Worker.new(i, @tester, @result, @reporter)
+        end
+        @reporter.start(workers.dup)
+
+        succeeded = true
+        worker_threads = []
+        @tester.n_workers.times do |i|
+          worker = workers[i]
+          worker_threads << Thread.new do
+            succeeded = worker.run(queue)
+            workers.delete(worker)
+            if worker.interruptted?
+              workers.each do |other_worker|
+                other_worker.interrupt
+              end
+            end
+          end
+        end
+        worker_threads.each(&:join)
+
+        succeeded
+      end
+
       def create_reporter
         case @tester.reporter
         when :stream
@@ -254,82 +434,65 @@ module Groonga
       end
     end
 
-    class SequentialTestSuitesRunner < TestSuitesRunner
-      def run(test_suites)
-        succeeded = true
-        reporter = create_reporter
-        result = TestSuitesResult.new
-        result.measure do
-          reporter.start
-          catch do |tag|
-            test_suites.each do |suite_name, test_script_paths|
-              reporter.start_suite(suite_name)
-              test_script_paths.each do |test_script_path|
-                runner = TestRunner.new(@tester, test_script_path)
-                succeeded = false unless runner.run(reporter)
-                throw(tag) if runner.interrupted?
-              end
-              reporter.finish_suite(suite_name)
-            end
-          end
-        end
-        reporter.finish(result)
-        succeeded
-      end
-    end
-
     class TestResult < Result
-      attr_accessor :test_name
+      attr_accessor :worker_id, :test_name
       attr_accessor :expected, :actual
-      def initialize(test_name)
+      def initialize(worker)
         super()
-        @test_name = test_name
+        @worker_id = worker.id
+        @test_name = worker.test_name
         @actual = nil
         @expected = nil
+      end
+
+      def status
+        if @expected
+          if @actual == @expected
+            :pass
+          else
+            :fail
+          end
+        else
+          :no_check
+        end
       end
     end
 
     class TestRunner
       MAX_N_COLUMNS = 79
 
-      def initialize(tester, test_script_path)
+      def initialize(tester, worker)
         @tester = tester
-        @test_script_path = test_script_path
+        @worker = worker
         @max_n_columns = MAX_N_COLUMNS
-        @interrupted = false
+        @id = nil
       end
 
-      def run(reporter)
+      def run
         succeeded = true
 
-        test_name = @test_script_path.basename.to_s
-        result = TestResult.new(test_name)
-        reporter.start_test(test_name)
+        @worker.start_test
+        result = TestResult.new(@worker)
         result.measure do
           result.actual = run_groonga_script
         end
         result.actual = normalize_result(result.actual)
         result.expected = read_expected_result
-        if result.expected
-          if result.actual == result.expected
-            reporter.pass_test(result)
-            remove_reject_file
-          else
-            reporter.fail_test(result)
-            output_reject_file(result.actual)
-            succeeded = false
-          end
+        case result.status
+        when :pass
+          @worker.pass_test(result)
+          remove_reject_file
+        when :fail
+          @worker.fail_test(result)
+          output_reject_file(result.actual)
+          succeeded = false
         else
-          reporter.no_check_test(result)
+          @worker.no_check_test(result)
           output_actual_file(result.actual)
         end
-        reporter.finish_test(result)
+        @worker.finish_test(result)
 
         succeeded
-      end
-
-      def interrupted?
-        @interrupted
       end
 
       private
@@ -344,10 +507,10 @@ module Groonga
             context.groonga_suggest_create_dataset =
               @tester.groonga_suggest_create_dataset
             run_groonga(context) do |executor|
-              executor.execute(@test_script_path)
+              executor.execute(test_script_path)
             end
           rescue Interrupt
-            @interrupted = true
+            @worker.interrupted
           end
           context.result
         end
@@ -355,6 +518,7 @@ module Groonga
 
       def create_temporary_directory
         path = "tmp/grntest"
+        path << ".#{@worker.id}" if @tester.n_workers > 1
         FileUtils.rm_rf(path, :secure => true)
         FileUtils.mkdir_p(path)
         begin
@@ -370,7 +534,7 @@ module Groonga
       end
 
       def keep_database_path
-        @test_script_path.to_s.gsub(/\//, ".")
+        test_script_path.to_s.gsub(/\//, ".")
       end
 
       def run_groonga(context, &block)
@@ -605,13 +769,17 @@ EOF
         end
       end
 
+      def test_script_path
+        @worker.test_script_path
+      end
+
       def have_extension?
-        not @test_script_path.extname.empty?
+        not test_script_path.extname.empty?
       end
 
       def related_file_path(extension)
-        path = Pathname(@test_script_path.to_s.gsub(/\.[^.]+\z/, ".#{extension}"))
-        return nil if @test_script_path == path
+        path = Pathname(test_script_path.to_s.gsub(/\.[^.]+\z/, ".#{extension}"))
+        return nil if test_script_path == path
         path
       end
 
@@ -1068,73 +1236,12 @@ EOF
       end
     end
 
-    class StreamReporter
+    class BaseReporter
       def initialize(tester)
         @tester = tester
         @term_width = guess_term_width
-        @current_column = 0
         @output = STDOUT
-        @n_tests = 0
-        @n_passed_tests = 0
-        @n_not_checked_tests = 0
-        @failed_tests = []
-      end
-
-      def start
-      end
-
-      def start_suite(suite_name)
-        puts(suite_name)
-        @output.flush
-      end
-
-      def start_test(test_name)
-        @test_name = test_name
-        print("  #{@test_name}")
-        @output.flush
-      end
-
-      def pass_test(result)
-        report_test_result(result, "pass")
-        clear_line
-        @n_passed_tests += 1
-      end
-
-      def fail_test(result)
-        report_test_result(result, "fail")
-        puts
-        puts("=" * @term_width)
-        report_diff(result.expected, result.actual)
-        puts("=" * @term_width)
-        @failed_tests << @test_name
-      end
-
-      def no_check_test(result)
-        report_test_result(result, "not checked")
-        puts
-        puts(result.actual)
-        @n_not_checked_tests += 1
-      end
-
-      def finish_test(result)
-        @n_tests += 1
-      end
-
-      def finish_suite(suite_name)
-      end
-
-      def finish(result)
-        puts
-        puts("#{@n_tests} tests, " +
-               "#{@n_passed_tests} passes, " +
-               "#{@failed_tests.size} failures, " +
-               "#{@n_not_checked_tests} not checked tests.")
-        if @n_tests.zero?
-          pass_ratio = 0
-        else
-          pass_ratio = (@n_passed_tests / @n_tests.to_f) * 100
-        end
-        puts("%.4g%% passed in %.4fs." % [pass_ratio, result.elapsed_time])
+        reset_current_column
       end
 
       private
@@ -1153,10 +1260,75 @@ EOF
         @current_column = 0
       end
 
-      def clear_line
+      def guess_term_width
+        Integer(ENV["COLUMNS"] || ENV["TERM_WIDTH"] || 79)
+      rescue ArgumentError
+        0
+      end
+    end
+
+    class StreamReporter < BaseReporter
+      def initialize(tester)
+        super
+      end
+
+      def start(workers)
+      end
+
+      def start_worker(worker)
+      end
+
+      def start_suite(worker)
+        puts(worker.suite_name)
+        @output.flush
+      end
+
+      def start_test(worker)
+        label = "  #{worker.test_name}"
+        print(label)
+        @output.flush
+      end
+
+      def pass_test(worker, result)
+        report_test_result(result, worker.status)
         puts
       end
 
+      def fail_test(worker, result)
+        report_test_result(result, worker.status)
+        puts
+        puts("=" * @term_width)
+        report_diff(result.expected, result.actual)
+        puts("=" * @term_width)
+      end
+
+      def no_check_test(worker, result)
+        report_test_result(result, worker.status)
+        puts
+        puts(result.actual)
+      end
+
+      def finish_test(worker, result)
+      end
+
+      def finish_suite(worker)
+      end
+
+      def finish_worker(worker_id)
+      end
+
+      def finish(result)
+        puts
+        puts("#{result.n_tests} tests, " +
+               "#{result.n_passed_tests} passes, " +
+               "#{result.n_failed_tests} failures, " +
+               "#{result.n_not_checked_tests} not checked tests.")
+        pass_ratio = result.pass_ratio
+        elapsed_time = result.elapsed_time
+        puts("%.4g%% passed in %.4fs." % [pass_ratio, elapsed_time])
+      end
+
+      private
       def report_test_result(result, label)
         message = " %10.4fs [%s]" % [result.elapsed_time, label]
         message = message.rjust(@term_width - @current_column) if @term_width > 0
@@ -1180,40 +1352,97 @@ EOF
         file.close
         yield(file)
       end
-
-      def guess_term_width
-        Integer(ENV["COLUMNS"] || ENV["TERM_WIDTH"] || 79)
-      rescue ArgumentError
-        0
-      end
     end
 
-    class InplaceReporter < StreamReporter
-      def finish_suite(suite_name)
-        up_n_lines(n_using_lines)
-        clear_line
+    class InplaceReporter < BaseReporter
+      def initialize(tester)
+        super
+        @mutex = Mutex.new
+        @workers = nil
+      end
+
+      def start(workers)
+        @workers = workers
+        n_workers.times do
+          puts
+          puts
+        end
+      end
+
+      def start_worker(worker)
+      end
+
+      def start_suite(worker)
+        redraw
+      end
+
+      def start_test(worker)
+        redraw
+      end
+
+      def pass_test(worker, result)
+        redraw
+      end
+
+      def fail_test(worker, result)
+        redraw
+      end
+
+      def no_check_test(worker, result)
+        redraw
+      end
+
+      def finish_test(worker, result)
+        redraw
+      end
+
+      def finish_suite(worker)
+        redraw
+      end
+
+      def finish_worker(worker_id)
+        redraw
       end
 
       def finish(result)
-        n_using_lines.times do
-          puts
-        end
         puts
-        super
+        puts("#{result.n_tests} tests, " +
+               "#{result.n_passed_tests} passes, " +
+               "#{result.n_failed_tests} failures, " +
+               "#{result.n_not_checked_tests} not checked tests.")
+        pass_ratio = result.pass_ratio
+        elapsed_time = result.elapsed_time
+        puts("%.4g%% passed in %.4fs." % [pass_ratio, elapsed_time])
       end
 
       private
+      def redraw
+        @mutex.synchronize do
+          up_n_lines(n_using_lines)
+          @workers.each do |worker|
+            clear_line
+            puts("[#{worker.id}] (#{worker.status}) #{worker.suite_name}")
+            clear_line
+            puts("  #{worker.test_name}")
+          end
+        end
+      end
+
       def up_n_lines(n)
-        print("\e[1A" * n_using_lines)
+        print("\e[1A" * n)
       end
 
       def clear_line
+        print(" " * @term_width)
         print("\r")
-        reset_current_column
       end
 
       def n_using_lines
-        2
+        2 * n_workers
+      end
+
+      def n_workers
+        @tester.n_workers
       end
     end
   end
