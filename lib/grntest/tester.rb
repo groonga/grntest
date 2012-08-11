@@ -26,7 +26,7 @@ require "shellwords"
 require "open-uri"
 require "cgi/util"
 
-module Groonga
+module Grntest
   class Tester
     VERSION = "1.0.0"
 
