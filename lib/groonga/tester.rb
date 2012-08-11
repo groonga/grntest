@@ -1321,6 +1321,16 @@ EOF
         puts(message)
       end
 
+      def justify(message, width)
+        return " " * width if message.nil?
+        return message.ljust(width) if message.bytesize <= width
+        half_width = width / 2.0
+        elision_mark = "..."
+        left = message[0, half_width.ceil - elision_mark.size]
+        right = message[(message.size - half_width.floor)..-1]
+        "#{left}#{elision_mark}#{right}"
+      end
+
       def print(message)
         @current_column += message.to_s.size
         @output.print(message)
@@ -1362,7 +1372,11 @@ EOF
       end
 
       def start_suite(worker)
-        puts(worker.suite_name)
+        if worker.suite_name.bytesize <= @term_width
+          puts(worker.suite_name)
+        else
+          puts(justify(worker.suite_name, @term_width))
+        end
         @output.flush
       end
 
@@ -1469,7 +1483,12 @@ EOF
 
       def draw_status_line(worker)
         clear_line
-        puts("[#{worker.id}] (#{worker.status}) #{worker.suite_name}")
+        left = "[#{worker.id}] "
+        right = " [#{worker.status}]"
+        rest_width = @term_width - @current_column
+        center_width = rest_width - left.bytesize - right.bytesize
+        center = justify(worker.suite_name, center_width)
+        puts("#{left}#{center}#{right}")
       end
 
       def draw_test_line(worker)
@@ -1499,6 +1518,7 @@ EOF
       def clear_line
         print(" " * @term_width)
         print("\r")
+        reset_current_column
       end
 
       def n_using_lines
