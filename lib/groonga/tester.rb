@@ -123,6 +123,13 @@ module Groonga
           tester.test_patterns << parse_name_or_pattern(name)
         end
 
+        parser.on("--test-suite=NAME",
+                  "Run only test suite that name is NAME",
+                  "If NAME is /.../, NAME is treated as regular expression",
+                  "This option can be used multiple times") do |name|
+          tester.test_suite_patterns << parse_name_or_pattern(name)
+        end
+
         parser.on("--exclude-test=NAME",
                   "Exclude test that name is NAME",
                   "If NAME is /.../, NAME is treated as regular expression",
@@ -191,7 +198,7 @@ module Groonga
     attr_accessor :output
     attr_accessor :gdb, :default_gdb
     attr_writer :reporter, :keep_database, :use_color
-    attr_reader :test_patterns
+    attr_reader :test_patterns, :test_suite_patterns
     attr_reader :exclude_test_patterns, :exclude_test_suite_patterns
     def initialize
       @groonga = "groonga"
@@ -206,6 +213,7 @@ module Groonga
       @keep_database = false
       @use_color = nil
       @test_patterns = []
+      @test_suite_patterns = []
       @exclude_test_patterns = []
       @exclude_test_suite_patterns = []
       detect_suitable_diff
@@ -256,6 +264,17 @@ module Groonga
     def exclude_test?(test_name)
       @exclude_test_patterns.any? do |pattern|
         pattern === test_name
+      end
+    end
+
+    def target_test_suite?(test_suite_name)
+      selected_test_suite?(test_suite_name) and
+        not exclude_test_suite?(test_suite_name)
+    end
+
+    def selected_test_suite?(test_suite_name)
+      @test_suite_patterns.all? do |pattern|
+        pattern === test_suite_name
       end
     end
 
@@ -528,7 +547,7 @@ module Groonga
       def run_test_suites(test_suites)
         queue = Queue.new
         test_suites.each do |suite_name, test_script_paths|
-          next if @tester.exclude_test_suite?(suite_name)
+          next unless @tester.target_test_suite?(suite_name)
           test_script_paths.each do |test_script_path|
             test_name = test_script_path.basename(".*").to_s
             next unless @tester.target_test?(test_name)
