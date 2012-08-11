@@ -1316,9 +1316,22 @@ EOF
       end
 
       def report_test_result(result, label)
-        message = " %10.4fs [%s]" % [result.elapsed_time, label]
+        message = test_result_message(result, label)
         message = message.rjust(@term_width - @current_column) if @term_width > 0
         puts(message)
+      end
+
+      def test_result_message(result, label)
+        " %7.4fs [%s]" % [result.elapsed_time, label]
+      end
+
+      def max_test_result_width
+        @max_test_result_width ||= guess_max_test_result_width
+      end
+
+      def guess_max_test_result_width
+        result = Result.new
+        test_result_message(result, "not checked").bytesize
       end
 
       def justify(message, width)
@@ -1382,6 +1395,10 @@ EOF
 
       def start_test(worker)
         label = "  #{worker.test_name}"
+        if @term_width > 0
+          width = @term_width - @current_column - max_test_result_width
+          label = justify(label, width)
+        end
         print(label)
         @output.flush
       end
@@ -1494,10 +1511,11 @@ EOF
       def draw_test_line(worker)
         clear_line
         if worker.test_name
-          puts("  #{worker.test_name}")
+          label = "  #{worker.test_name}"
         else
-          puts("  #{worker.statistics}")
+          label = "  #{worker.statistics}"
         end
+        puts(justify(label, @term_width))
       end
 
       def redraw
