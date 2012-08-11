@@ -199,6 +199,7 @@ has many test scripts and uses many useful features. They will help you.
 ## Authors
 
 * Kouhei Sutou \<kou@clear-code.com\>
+* Haruka Yoshihara \<yoshihara@clear-code.com\>
 
 ## License
 
