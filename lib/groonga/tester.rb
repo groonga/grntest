@@ -423,7 +423,7 @@ module Groonga
         if n_tests.zero?
           0
         else
-          (n_passed_tests / n_tests.to_f) * 100
+          (n_passed_tests / (n_tests - n_not_checked_tests).to_f) * 100
         end
       end
 
