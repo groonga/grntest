@@ -1390,6 +1390,14 @@ EOF
         end
       end
 
+      def report_test(worker, result)
+        report_marker(result)
+        print("[#{worker.id}] ") if @tester.n_workers > 1
+        puts(worker.suite_name)
+        print("  #{worker.test_name}")
+        report_test_result(result, worker.status)
+      end
+
       def report_test_result(result, label)
         message = test_result_message(result, label)
         message_width = string_width(message)
@@ -1595,6 +1603,7 @@ EOF
         synchronize do
           report_test_result_mark("F", result)
           puts
+          report_test(worker, result)
           report_failure(worker, result)
         end
       end
@@ -1603,6 +1612,7 @@ EOF
         synchronize do
           report_test_result_mark("N", result)
           puts
+          report_test(worker, result)
           report_actual(result)
         end
       end
@@ -1746,13 +1756,6 @@ EOF
       end
 
       private
-      def report_test(worker, result)
-        report_marker(result)
-        puts("[#{worker.id}] #{worker.suite_name}")
-        print("  #{worker.test_name}")
-        report_test_result(result, worker.status)
-      end
-
       def draw
         @test_suites_result.workers.each do |worker|
           draw_status_line(worker)
