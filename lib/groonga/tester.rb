@@ -306,7 +306,6 @@ module Groonga
         succeeded = true
 
         @result.measure do
-          @test_suites_result.start_worker(self)
           @reporter.start_worker(self)
           catch do |tag|
             loop do
@@ -366,16 +365,12 @@ module Groonga
     end
 
     class TestSuitesResult < Result
-      attr_reader :workers
+      attr_accessor :workers
       attr_accessor :n_total_tests
       def initialize
         super
         @workers = []
         @n_total_tests = 0
-      end
-
-      def start_worker(worker)
-        @workers << worker
       end
 
       def pass_ratio
@@ -446,6 +441,7 @@ module Groonga
         @tester.n_workers.times do |i|
           workers << Worker.new(i, @tester, @result, @reporter)
         end
+        @result.workers = workers.dup
         @reporter.start(@result)
 
         succeeded = true
