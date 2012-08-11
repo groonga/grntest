@@ -1395,7 +1395,6 @@ EOF
       def print(message)
         @current_column += message.to_s.size
         @output.print(message)
-        @output.flush
       end
 
       def puts(*messages)
