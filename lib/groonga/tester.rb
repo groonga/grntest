@@ -1696,7 +1696,7 @@ EOF
         progress_width -= start_mark.bytesize
         progress_width -= finish_mark.bytesize
         progress_width -= statistics.bytesize
-        finished_mark = "="
+        finished_mark = "-"
         if n_done_tests == n_total_tests
           progress = finished_mark * progress_width
         else
