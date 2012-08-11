@@ -1294,6 +1294,33 @@ EOF
         puts("%.4g%% passed in %.4fs." % [pass_ratio, elapsed_time])
       end
 
+      def report_failure(result)
+        report_marker
+        report_diff(result.expected, result.actual)
+        report_marker
+      end
+
+      def report_marker
+        puts("=" * @term_width)
+      end
+
+      def report_diff(expected, actual)
+        create_temporary_file("expected", expected) do |expected_file|
+          create_temporary_file("actual", actual) do |actual_file|
+            diff_options = @tester.diff_options.dup
+            diff_options.concat(["--label", "(actual)", actual_file.path,
+                                 "--label", "(expected)", expected_file.path])
+            system(@tester.diff, *diff_options)
+          end
+        end
+      end
+
+      def report_test_result(result, label)
+        message = " %10.4fs [%s]" % [result.elapsed_time, label]
+        message = message.rjust(@term_width - @current_column) if @term_width > 0
+        puts(message)
+      end
+
       def print(message)
         @current_column += message.to_s.size
         @output.print(message)
@@ -1307,6 +1334,13 @@ EOF
 
       def reset_current_column
         @current_column = 0
+      end
+
+      def create_temporary_file(key, content)
+        file = Tempfile.new("groonga-test-#{key}")
+        file.print(content)
+        file.close
+        yield(file)
       end
 
       def guess_term_width
@@ -1340,20 +1374,15 @@ EOF
 
       def pass_test(worker, result)
         report_test_result(result, worker.status)
-        puts
       end
 
       def fail_test(worker, result)
         report_test_result(result, worker.status)
-        puts
-        puts("=" * @term_width)
-        report_diff(result.expected, result.actual)
-        puts("=" * @term_width)
+        report_failure(worker, result)
       end
 
       def no_check_test(worker, result)
         report_test_result(result, worker.status)
-        puts
         puts(result.actual)
       end
 
@@ -1369,31 +1398,6 @@ EOF
       def finish(result)
         puts
         report_summary(result)
-      end
-
-      private
-      def report_test_result(result, label)
-        message = " %10.4fs [%s]" % [result.elapsed_time, label]
-        message = message.rjust(@term_width - @current_column) if @term_width > 0
-        print(message)
-      end
-
-      def report_diff(expected, actual)
-        create_temporary_file("expected", expected) do |expected_file|
-          create_temporary_file("actual", actual) do |actual_file|
-            diff_options = @tester.diff_options.dup
-            diff_options.concat(["--label", "(actual)", actual_file.path,
-                                 "--label", "(expected)", expected_file.path])
-            system(@tester.diff, *diff_options)
-          end
-        end
-      end
-
-      def create_temporary_file(key, content)
-        file = Tempfile.new("groonga-test-#{key}")
-        file.print(content)
-        file.close
-        yield(file)
       end
     end
 
@@ -1424,7 +1428,13 @@ EOF
       end
 
       def fail_test(worker, result)
-        redraw
+        redraw do
+          report_marker
+          puts("[#{worker.id}] #{worker.suite_name}")
+          print("  #{worker.test_name}")
+          report_test_result(result, worker.status)
+          report_failure(result)
+        end
       end
 
       def no_check_test(worker, result)
@@ -1474,7 +1484,11 @@ EOF
       def redraw
         @mutex.synchronize do
           draw
-          up_n_lines(n_using_lines)
+          if block_given?
+            yield
+          else
+            up_n_lines(n_using_lines)
+          end
         end
       end
 
