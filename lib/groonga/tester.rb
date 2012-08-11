@@ -116,6 +116,17 @@ module Groonga
           tester.reporter = reporter
         end
 
+        parser.on("--exclude-test=NAME",
+                  "Exclude test that name is NAME",
+                  "If NAME is /.../, NAME is treated as regular expression",
+                  "This option can be used multiple times") do |name|
+          if /\A\/(.+)\/\z/ =~ name
+            tester.exclude_test_patterns << Regexp.new($1, Regexp::IGNORECASE)
+          else
+            tester.exclude_test_patterns << name
+          end
+        end
+
         parser.on("--n-workers=N", Integer,
                   "Use N workers to run tests") do |n|
           tester.n_workers = n
@@ -162,6 +173,7 @@ module Groonga
     attr_accessor :output
     attr_accessor :gdb, :default_gdb
     attr_writer :reporter, :keep_database, :use_color
+    attr_reader :exclude_test_patterns
     def initialize
       @groonga = "groonga"
       @groonga_httpd = "groonga-httpd"
@@ -174,6 +186,7 @@ module Groonga
       @output = $stdout
       @keep_database = false
       @use_color = nil
+      @exclude_test_patterns = []
       detect_suitable_diff
       initialize_debuggers
     end
@@ -207,6 +220,12 @@ module Groonga
         @use_color = guess_color_availability
       end
       @use_color
+    end
+
+    def exclude_test?(test_name)
+      @exclude_test_patterns.any? do |pattern|
+        pattern === test_name
+      end
     end
 
     private
@@ -322,7 +341,7 @@ module Groonga
 
     class Worker
       attr_reader :id, :tester, :test_suites_rusult, :reporter
-      attr_reader :suite_name, :test_script_path, :status, :result
+      attr_reader :suite_name, :test_script_path, :test_name, :status, :result
       def initialize(id, tester, test_suites_result, reporter)
         @id = id
         @tester = tester
@@ -330,6 +349,7 @@ module Groonga
         @reporter = reporter
         @suite_name = nil
         @test_script_path = nil
+        @test_name = nil
         @interruptted = false
         @status = "not running"
         @result = WorkerResult.new
@@ -343,11 +363,6 @@ module Groonga
         @interruptted
       end
 
-      def test_name
-        return nil if @test_script_path.nil?
-        @test_script_path.basename(".*").to_s
-      end
-
       def run(queue)
         succeeded = true
 
@@ -355,7 +370,7 @@ module Groonga
           @reporter.start_worker(self)
           catch do |tag|
             loop do
-              suite_name, test_script_path = queue.pop
+              suite_name, test_script_path, test_name = queue.pop
               break if test_script_path.nil?
 
               unless @suite_name == suite_name
@@ -364,6 +379,7 @@ module Groonga
                 @reporter.start_suite(self)
               end
               @test_script_path = test_script_path
+              @test_name = test_name
               runner = TestRunner.new(@tester, self)
               succeeded = false unless runner.run
 
@@ -407,6 +423,7 @@ module Groonga
         @result.test_finished
         @reporter.finish_test(self, result)
         @test_script_path = nil
+        @test_name = nil
       end
     end
 
@@ -475,7 +492,9 @@ module Groonga
         queue = Queue.new
         test_suites.each do |suite_name, test_script_paths|
           test_script_paths.each do |test_script_path|
-            queue << [suite_name, test_script_path]
+            test_name = test_script_path.basename(".*").to_s
+            next if @tester.exclude_test?(test_name)
+            queue << [suite_name, test_script_path, test_name]
             @result.n_total_tests += 1
           end
         end
