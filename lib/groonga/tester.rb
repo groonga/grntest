@@ -1591,6 +1591,8 @@ EOF
       def initialize(tester)
         super
         @mutex = Mutex.new
+        @last_redraw_time = Time.now
+        @minimum_redraw_interval = 0.1
       end
 
       def start(result)
@@ -1709,12 +1711,16 @@ EOF
 
       def redraw
         @mutex.synchronize do
+          unless block_given?
+            return if Time.now - @last_redraw_time < @minimum_redraw_interval
+          end
           draw
           if block_given?
             yield
           else
             up_n_lines(n_using_lines)
           end
+          @last_redraw_time = Time.now
         end
       end
 
