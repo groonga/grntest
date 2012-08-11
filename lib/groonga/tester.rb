@@ -116,6 +116,13 @@ module Groonga
           tester.reporter = reporter
         end
 
+        parser.on("--test=NAME",
+                  "Run only test that name is NAME",
+                  "If NAME is /.../, NAME is treated as regular expression",
+                  "This option can be used multiple times") do |name|
+          tester.test_patterns << parse_name_or_pattern(name)
+        end
+
         parser.on("--exclude-test=NAME",
                   "Exclude test that name is NAME",
                   "If NAME is /.../, NAME is treated as regular expression",
@@ -184,6 +191,7 @@ module Groonga
     attr_accessor :output
     attr_accessor :gdb, :default_gdb
     attr_writer :reporter, :keep_database, :use_color
+    attr_reader :test_patterns
     attr_reader :exclude_test_patterns, :exclude_test_suite_patterns
     def initialize
       @groonga = "groonga"
@@ -197,6 +205,7 @@ module Groonga
       @output = $stdout
       @keep_database = false
       @use_color = nil
+      @test_patterns = []
       @exclude_test_patterns = []
       @exclude_test_suite_patterns = []
       detect_suitable_diff
@@ -232,6 +241,16 @@ module Groonga
         @use_color = guess_color_availability
       end
       @use_color
+    end
+
+    def target_test?(test_name)
+      selected_test?(test_name) and not exclude_test?(test_name)
+    end
+
+    def selected_test?(test_name)
+      @test_patterns.all? do |pattern|
+        pattern === test_name
+      end
     end
 
     def exclude_test?(test_name)
@@ -512,7 +531,7 @@ module Groonga
           next if @tester.exclude_test_suite?(suite_name)
           test_script_paths.each do |test_script_path|
             test_name = test_script_path.basename(".*").to_s
-            next if @tester.exclude_test?(test_name)
+            next unless @tester.target_test?(test_name)
             queue << [suite_name, test_script_path, test_name]
             @result.n_total_tests += 1
           end
