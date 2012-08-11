@@ -107,7 +107,7 @@ module Groonga
           diff_option_is_specified = true
         end
 
-        available_reporters = [:stream, :inplace]
+        available_reporters = [:progress, :stream, :inplace]
         available_reporter_labels = available_reporters.join(", ")
         parser.on("--reporter=REPORTER", available_reporters,
                   "Report test result by REPORTER",
