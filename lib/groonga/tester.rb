@@ -133,6 +133,18 @@ module Groonga
           tester.keep_database = boolean
         end
 
+        parser.on("--output=OUTPUT",
+                  "Output to OUTPUT",
+                  "(stdout)") do |output|
+          tester.output = File.open(output, "w:ascii-8bit")
+        end
+
+        parser.on("--[no-]use-color",
+                  "Enable colorlized output",
+                  "(auto)") do |use_color|
+          tester.use_color = use_color
+        end
+
         parser.on("--version",
                   "Show version and exit") do
           puts(GroongaTester::VERSION)
@@ -147,8 +159,9 @@ module Groonga
     attr_accessor :protocol, :testee
     attr_accessor :base_directory, :diff, :diff_options, :reporter
     attr_accessor :n_workers
+    attr_accessor :output
     attr_accessor :gdb, :default_gdb
-    attr_writer :keep_database
+    attr_writer :keep_database, :use_color
     def initialize
       @groonga = "groonga"
       @groonga_httpd = "groonga-httpd"
@@ -158,6 +171,8 @@ module Groonga
       @base_directory = "."
       @reporter = :stream
       @n_workers = 1
+      @output = $stdout
+      @use_color = nil
       detect_suitable_diff
       initialize_debuggers
     end
@@ -172,6 +187,13 @@ module Groonga
 
     def keep_database?
       @keep_database
+    end
+
+    def use_color?
+      if @use_color.nil?
+        @use_color = guess_color_availability
+      end
+      @use_color
     end
 
     private
@@ -226,6 +248,17 @@ module Groonga
         return true if File.executable?(absolute_path)
       end
       false
+    end
+
+    def guess_color_availability
+      return false unless @output.tty?
+      case ENV["TERM"]
+      when /term(?:-(?:256)?color)?\z/, "screen"
+        true
+      else
+        return true if ENV["EMACS"] == "t"
+        false
+      end
     end
 
     class Result
@@ -487,9 +520,9 @@ module Groonga
       def status
         if @expected
           if @actual == @expected
-            :pass
+            :success
           else
-            :fail
+            :failure
           end
         else
           :no_check
@@ -518,10 +551,10 @@ module Groonga
         result.actual = normalize_result(result.actual)
         result.expected = read_expected_result
         case result.status
-        when :pass
+        when :success
           @worker.pass_test(result)
           remove_reject_file
-        when :fail
+        when :failure
           @worker.fail_test(result)
           output_reject_file(result.actual)
           succeeded = false
@@ -1279,7 +1312,7 @@ EOF
       def initialize(tester)
         @tester = tester
         @term_width = guess_term_width
-        @output = STDOUT
+        @output = @tester.output
         reset_current_column
       end
 
@@ -1333,21 +1366,17 @@ EOF
 
       def report_test_result(result, label)
         message = test_result_message(result, label)
-        message = message.rjust(@term_width - @current_column) if @term_width > 0
+        message_width = string_width(message)
+        rest_width = @term_width - @current_column
+        if rest_width > message_width
+          print(" " * (rest_width - message_width))
+        end
         puts(message)
       end
 
       def test_result_message(result, label)
-        " %7.4fs [%s]" % [result.elapsed_time, label]
-      end
-
-      def max_test_result_width
-        @max_test_result_width ||= guess_max_test_result_width
-      end
-
-      def guess_max_test_result_width
-        result = Result.new
-        test_result_message(result, "not checked").bytesize
+        situation = result.status
+        " %7.4fs [%s]" % [result.elapsed_time, colorize(label, situation)]
       end
 
       def justify(message, width)
@@ -1387,6 +1416,118 @@ EOF
       rescue ArgumentError
         0
       end
+
+      def string_width(string)
+        string.gsub(/\e\[[0-9;]+m/, "").size
+      end
+
+      def colorize(message, situation)
+        return message unless @tester.use_color?
+        case situation
+        when :success
+          "%s%s%s" % [success_color, message, reset_color]
+        when :failure
+          "%s%s%s" % [failure_color, message, reset_color]
+        when :no_check
+          "%s%s%s" % [no_check_color, message, reset_color]
+        else
+          message
+        end
+      end
+
+      def success_color
+        escape_sequence({
+                          :color => :green,
+                          :color_256 => [0, 3, 0],
+                          :background => true,
+                        },
+                        {
+                          :color => :white,
+                          :color_256 => [5, 5, 5],
+                          :bold => true,
+                        })
+      end
+
+      def failure_color
+        escape_sequence({
+                          :color => :red,
+                          :color_256 => [3, 0, 0],
+                          :background => true,
+                        },
+                        {
+                          :color => :white,
+                          :color_256 => [5, 5, 5],
+                          :bold => true,
+                        })
+      end
+
+      def no_check_color
+        escape_sequence({
+                          :color => :magenta,
+                          :color_256 => [3, 0, 3],
+                          :background => true,
+                        },
+                        {
+                          :color => :white,
+                          :color_256 => [5, 5, 5],
+                          :bold => true,
+                        })
+      end
+
+      def reset_color
+        escape_sequence(:reset)
+      end
+
+      COLOR_NAMES = [
+        :black, :red, :green, :yellow,
+        :blue, :magenta, :cyan, :white,
+      ]
+      def escape_sequence(*commands)
+        sequence = []
+        commands.each do |command|
+          case command
+          when :reset
+            sequence << "0"
+          when :bold
+            sequence << "1"
+          when :italic
+            sequence << "3"
+          when :underline
+            sequence << "4"
+          when Hash
+            foreground_p = !command[:background]
+            if available_colors == 256
+              sequence << (foreground_p ? "38" : "48")
+              sequence << "5"
+              sequence << pack_256_color(*command[:color_256])
+            else
+              color_parameter = foreground_p ? 3 : 4
+              color_parameter += 6 if command[:intensity]
+              color = COLOR_NAMES[command[:color]]
+              sequence << "#{color_parameter}#{color}"
+            end
+          end
+        end
+        "\e[#{sequence.join(';')}m"
+      end
+
+      def pack_256_color(red, green, blue)
+        red * 36 + green * 6 + blue + 16
+      end
+
+      def available_colors
+        case ENV["COLORTERM"]
+        when "gnome-terminal"
+          256
+        else
+          case ENV["TERM"]
+          when /-256color\z/
+            256
+          else
+            8
+          end
+        end
+      end
     end
 
     class StreamReporter < BaseReporter
@@ -1410,12 +1551,7 @@ EOF
       end
 
       def start_test(worker)
-        label = "  #{worker.test_name}"
-        if @term_width > 0
-          width = @term_width - @current_column - max_test_result_width
-          label = justify(label, width)
-        end
-        print(label)
+        print("  #{worker.test_name}")
         @output.flush
       end
 
