@@ -318,16 +318,6 @@ module Groonga
       def test_not_checked
         @n_not_checked_tests += 1
       end
-
-      def status
-        if n_failed_tests > 0
-          :failure
-        elsif n_not_checked_tests > 0
-          :no_check
-        else
-          :success
-        end
-      end
     end
 
     class Worker
@@ -1446,6 +1436,16 @@ EOF
         string.gsub(/\e\[[0-9;]+m/, "").size
       end
 
+      def result_status(result)
+        if result.n_failed_tests > 0
+          :failure
+        elsif result.n_not_checked_tests > 0
+          :no_check
+        else
+          :success
+        end
+      end
+
       def colorize(message, situation)
         return message unless @tester.use_color?
         case situation
@@ -1686,7 +1686,7 @@ EOF
 
       def draw_status_line(worker)
         clear_line
-        situation = worker.result.status
+        situation = result_status(worker.result)
         left = "[#{colorize(worker.id, situation)}] "
         right = " [#{worker.status}]"
         rest_width = @term_width - @current_column
@@ -1719,15 +1719,17 @@ EOF
         progress_width -= finish_mark.bytesize
         progress_width -= statistics.bytesize
         finished_mark = "-"
+        situation = result_status(@test_suites_result)
         if n_done_tests == n_total_tests
-          progress = finished_mark * progress_width
+          progress = colorize(finished_mark * progress_width, situation)
         else
           current_mark = ">"
           finished_marks_width = (progress_width * finished_test_ratio).ceil
           finished_marks_width -= current_mark.bytesize
           finished_marks_width = [0, finished_marks_width].max
           progress = finished_mark * finished_marks_width + current_mark
-          progress = progress.ljust(progress_width)
+          progress = colorize(progress, situation)
+          progress << " " * (progress_width - string_width(progress))
         end
         puts("#{start_mark}#{progress}#{finish_mark}#{statistics}")
       end
