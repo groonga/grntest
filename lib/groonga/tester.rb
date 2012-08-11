@@ -1624,8 +1624,8 @@ EOF
 
       def not_checked_color
         escape_sequence({
-                          :color => :magenta,
-                          :color_256 => [3, 0, 3],
+                          :color => :cyan,
+                          :color_256 => [0, 1, 1],
                           :background => true,
                         },
                         {
