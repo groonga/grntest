@@ -189,7 +189,7 @@ module Groonga
     def reporter
       if @reporter.nil?
         if @n_workers == 1
-          :stream
+          :progress
         else
           :inplace
         end
@@ -512,6 +512,8 @@ module Groonga
 
       def create_reporter
         case @tester.reporter
+        when :progress
+          ProgressReporter.new(@tester)
         when :stream
           StreamReporter.new(@tester)
         when :inplace
@@ -1406,7 +1408,7 @@ EOF
       end
 
       def print(message)
-        @current_column += message.to_s.size
+        @current_column += string_width(message.to_s)
         @output.print(message)
       end
 
@@ -1555,6 +1557,65 @@ EOF
           else
             8
           end
+        end
+      end
+    end
+
+    class ProgressReporter < BaseReporter
+      def initialize(tester)
+        super
+      end
+
+      def start(result)
+      end
+
+      def start_worker(worker)
+      end
+
+      def start_suite(worker)
+      end
+
+      def start_test(worker)
+      end
+
+      def pass_test(worker, result)
+        report_test_result_mark(".", result)
+      end
+
+      def fail_test(worker, result)
+        report_test_result_mark("F", result)
+        puts
+        report_failure(worker, result)
+      end
+
+      def no_check_test(worker, result)
+        report_test_result_mark("N", result)
+        puts
+        report_actual(result)
+      end
+
+      def finish_test(worker, result)
+      end
+
+      def finish_suite(worker)
+      end
+
+      def finish_worker(worker_id)
+      end
+
+      def finish(result)
+        puts
+        puts
+        report_summary(result)
+      end
+
+      private
+      def report_test_result_mark(mark, result)
+        print(colorize(mark, result))
+        if @term_width <= @current_column
+          puts
+        else
+          @output.flush
         end
       end
     end
