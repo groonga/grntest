@@ -1664,7 +1664,7 @@ EOF
             else
               color_parameter = foreground_p ? 3 : 4
               color_parameter += 6 if command[:intensity]
-              color = COLOR_NAMES[command[:color]]
+              color = COLOR_NAMES.index(command[:color])
               sequence << "#{color_parameter}#{color}"
             end
           end
