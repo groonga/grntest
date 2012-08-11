@@ -1604,7 +1604,7 @@ EOF
           report_test_result_mark("F", result)
           puts
           report_test(worker, result)
-          report_failure(worker, result)
+          report_failure(result)
         end
       end
 
@@ -1674,7 +1674,7 @@ EOF
 
       def fail_test(worker, result)
         report_test_result(result, worker.status)
-        report_failure(worker, result)
+        report_failure(result)
       end
 
       def no_check_test(worker, result)
