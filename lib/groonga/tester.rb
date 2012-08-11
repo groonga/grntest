@@ -1485,7 +1485,24 @@ EOF
       end
 
       def test_result_message(result, label)
-        " %7.4fs [%s]" % [result.elapsed_time, colorize(label, result)]
+        elapsed_time = result.elapsed_time
+        formatted_elapsed_time = "%.4fs" % elapsed_time
+        formatted_elapsed_time = colorize(formatted_elapsed_time,
+                                          elapsed_time_status(elapsed_time))
+        " #{formatted_elapsed_time} [#{colorize(label, result)}]"
+      end
+
+      LONG_ELAPSED_TIME = 1.0
+      def long_elapsed_time?(elapsed_time)
+        elapsed_time >= LONG_ELAPSED_TIME
+      end
+
+      def elapsed_time_status(elapsed_time)
+        if long_elapsed_time?(elapsed_time)
+          elapsed_time_status = :failure
+        else
+          elapsed_time_status = :no_check
+        end
       end
 
       def justify(message, width)
@@ -1560,9 +1577,14 @@ EOF
         end
       end
 
-      def colorize(message, result)
+      def colorize(message, result_or_status)
         return message unless @tester.use_color?
-        case result_status(result)
+        if result_or_status.is_a?(Symbol)
+          status = result_or_status
+        else
+          status = result_status(result_or_status)
+        end
+        case status
         when :success
           "%s%s%s" % [success_color, message, reset_color]
         when :failure
