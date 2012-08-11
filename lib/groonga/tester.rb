@@ -140,7 +140,7 @@ module Groonga
         end
 
         parser.on("--[no-]use-color",
-                  "Enable colorlized output",
+                  "Enable colorized output",
                   "(auto)") do |use_color|
           tester.use_color = use_color
         end
