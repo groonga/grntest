@@ -318,6 +318,16 @@ module Groonga
       def test_not_checked
         @n_not_checked_tests += 1
       end
+
+      def status
+        if n_failed_tests > 0
+          :failure
+        elsif n_not_checked_tests > 0
+          :no_check
+        else
+          :success
+        end
+      end
     end
 
     class Worker
@@ -1676,10 +1686,11 @@ EOF
 
       def draw_status_line(worker)
         clear_line
-        left = "[#{worker.id}] "
+        situation = worker.result.status
+        left = "[#{colorize(worker.id, situation)}] "
         right = " [#{worker.status}]"
         rest_width = @term_width - @current_column
-        center_width = rest_width - left.bytesize - right.bytesize
+        center_width = rest_width - string_width(left) - string_width(right)
         center = justify(worker.suite_name, center_width)
         puts("#{left}#{center}#{right}")
       end
