@@ -1349,6 +1349,12 @@ EOF
         report_marker
       end
 
+      def report_actual(result)
+        report_marker
+        puts(result.actual)
+        report_marker
+      end
+
       def report_marker
         puts("=" * @term_width)
       end
@@ -1566,7 +1572,7 @@ EOF
 
       def no_check_test(worker, result)
         report_test_result(result, worker.status)
-        puts(result.actual)
+        report_actual(result)
       end
 
       def finish_test(worker, result)
@@ -1611,16 +1617,16 @@ EOF
 
       def fail_test(worker, result)
         redraw do
-          report_marker
-          puts("[#{worker.id}] #{worker.suite_name}")
-          print("  #{worker.test_name}")
-          report_test_result(result, worker.status)
+          report_test(worker, result)
           report_failure(result)
         end
       end
 
       def no_check_test(worker, result)
-        redraw
+        redraw do
+          report_test(worker, result)
+          report_actual(result)
+        end
       end
 
       def finish_test(worker, result)
@@ -1642,6 +1648,13 @@ EOF
       end
 
       private
+      def report_test(worker, result)
+        report_marker
+        puts("[#{worker.id}] #{worker.suite_name}")
+        print("  #{worker.test_name}")
+        report_test_result(result, worker.status)
+      end
+
       def draw
         @test_suites_result.workers.each do |worker|
           draw_status_line(worker)
