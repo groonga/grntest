@@ -1325,10 +1325,17 @@ EOF
         @tester = tester
         @term_width = guess_term_width
         @output = @tester.output
+        @mutex = Mutex.new
         reset_current_column
       end
 
       private
+      def synchronize
+        @mutex.synchronize do
+          yield
+        end
+      end
+
       def report_summary(result)
         puts(colorize(statistics(result), result))
         pass_ratio = result.pass_ratio
@@ -1579,19 +1586,25 @@ EOF
       end
 
       def pass_test(worker, result)
-        report_test_result_mark(".", result)
+        synchronize do
+          report_test_result_mark(".", result)
+        end
       end
 
       def fail_test(worker, result)
-        report_test_result_mark("F", result)
-        puts
-        report_failure(worker, result)
+        synchronize do
+          report_test_result_mark("F", result)
+          puts
+          report_failure(worker, result)
+        end
       end
 
       def no_check_test(worker, result)
-        report_test_result_mark("N", result)
-        puts
-        report_actual(result)
+        synchronize do
+          report_test_result_mark("N", result)
+          puts
+          report_actual(result)
+        end
       end
 
       def finish_test(worker, result)
@@ -1677,7 +1690,6 @@ EOF
     class InplaceReporter < BaseReporter
       def initialize(tester)
         super
-        @mutex = Mutex.new
         @last_redraw_time = Time.now
         @minimum_redraw_interval = 0.1
       end
@@ -1799,7 +1811,7 @@ EOF
       end
 
       def redraw
-        @mutex.synchronize do
+        synchronize do
           unless block_given?
             return if Time.now - @last_redraw_time < @minimum_redraw_interval
           end
