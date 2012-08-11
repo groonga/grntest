@@ -469,10 +469,10 @@ module Groonga
         @reporter.fail_test(self, result)
       end
 
-      def no_check_test(result)
+      def not_check_test(result)
         @status = "not checked"
         @result.test_not_checked
-        @reporter.no_check_test(self, result)
+        @reporter.not_check_test(self, result)
       end
 
       def finish_test(result)
@@ -617,7 +617,7 @@ module Groonga
             :failure
           end
         else
-          :no_check
+          :not_checked
         end
       end
     end
@@ -651,7 +651,7 @@ module Groonga
           output_reject_file(result.actual)
           succeeded = false
         else
-          @worker.no_check_test(result)
+          @worker.not_check_test(result)
           output_actual_file(result.actual)
         end
         @worker.finish_test(result)
@@ -1501,7 +1501,7 @@ EOF
         if long_elapsed_time?(elapsed_time)
           elapsed_time_status = :failure
         else
-          elapsed_time_status = :no_check
+          elapsed_time_status = :not_checked
         end
       end
 
@@ -1570,7 +1570,7 @@ EOF
           if result.n_failed_tests > 0
             :failure
           elsif result.n_not_checked_tests > 0
-            :no_check
+            :not_checked
           else
             :success
           end
@@ -1589,8 +1589,8 @@ EOF
           "%s%s%s" % [success_color, message, reset_color]
         when :failure
           "%s%s%s" % [failure_color, message, reset_color]
-        when :no_check
-          "%s%s%s" % [no_check_color, message, reset_color]
+        when :not_checked
+          "%s%s%s" % [not_checked_color, message, reset_color]
         else
           message
         end
@@ -1622,7 +1622,7 @@ EOF
                         })
       end
 
-      def no_check_color
+      def not_checked_color
         escape_sequence({
                           :color => :magenta,
                           :color_256 => [3, 0, 3],
@@ -1723,7 +1723,7 @@ EOF
         end
       end
 
-      def no_check_test(worker, result)
+      def not_check_test(worker, result)
         synchronize do
           report_test_result_mark("N", result)
           puts
@@ -1792,7 +1792,7 @@ EOF
         report_failure(result)
       end
 
-      def no_check_test(worker, result)
+      def not_check_test(worker, result)
         report_test_result(result, worker.status)
         report_actual(result)
       end
@@ -1845,7 +1845,7 @@ EOF
         end
       end
 
-      def no_check_test(worker, result)
+      def not_check_test(worker, result)
         redraw do
           report_test(worker, result)
           report_actual(result)
