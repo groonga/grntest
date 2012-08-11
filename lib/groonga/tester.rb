@@ -1535,10 +1535,15 @@ EOF
         progress_width -= start_mark.bytesize
         progress_width -= finish_mark.bytesize
         progress_width -= statistics.bytesize
+        finished_mark = "="
         if n_done_tests == @n_tests
-          progress = "=" * progress_width
+          progress = finished_mark * progress_width
         else
-          progress = "=" * (progress_width * finished_test_ratio).ceil + ">"
+          current_mark = ">"
+          finished_marks_width = (progress_width * finished_test_ratio).ceil
+          finished_marks_width -= current_mark.bytesize
+          finished_marks_width = [0, finished_marks_width].max
+          progress = finished_mark * finished_marks_width + current_mark
           progress = progress.ljust(progress_width)
         end
         puts("#{start_mark}#{progress}#{finish_mark}#{statistics}")
