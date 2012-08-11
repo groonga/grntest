@@ -26,10 +26,10 @@ require "shellwords"
 require "open-uri"
 require "cgi/util"
 
+require "grntest/version"
+
 module Grntest
   class Tester
-    VERSION = "1.0.0"
-
     class << self
       def run(argv=nil)
         argv ||= ARGV.dup
@@ -175,7 +175,7 @@ module Grntest
 
         parser.on("--version",
                   "Show version and exit") do
-          puts(GroongaTester::VERSION)
+          puts(VERSION)
           throw(tag, true)
         end
 
