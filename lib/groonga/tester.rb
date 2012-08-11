@@ -252,7 +252,7 @@ module Groonga
     end
 
     def target_test?(test_name)
-      selected_test?(test_name) and not exclude_test?(test_name)
+      selected_test?(test_name) and not excluded_test?(test_name)
     end
 
     def selected_test?(test_name)
@@ -261,7 +261,7 @@ module Groonga
       end
     end
 
-    def exclude_test?(test_name)
+    def excluded_test?(test_name)
       @exclude_test_patterns.any? do |pattern|
         pattern === test_name
       end
@@ -269,7 +269,7 @@ module Groonga
 
     def target_test_suite?(test_suite_name)
       selected_test_suite?(test_suite_name) and
-        not exclude_test_suite?(test_suite_name)
+        not excluded_test_suite?(test_suite_name)
     end
 
     def selected_test_suite?(test_suite_name)
@@ -278,7 +278,7 @@ module Groonga
       end
     end
 
-    def exclude_test_suite?(test_suite_name)
+    def excluded_test_suite?(test_suite_name)
       @exclude_test_suite_patterns.any? do |pattern|
         pattern === test_suite_name
       end
