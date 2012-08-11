@@ -203,6 +203,6 @@ has many test scripts and uses many useful features. They will help you.
 
 ## License
 
-GPLv3 or later. See license/GPL-3 for details.
+GPLv3 or later. See doc/text/gpl-3.0.txt for details.
 
 (Kouhei Sutou has a right to change the license including contributed patches.)
