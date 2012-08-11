@@ -1188,6 +1188,7 @@ EOF
         normalized_error_log = ""
         log.each_line do |line|
           timestamp, log_level, message = line.split(/\|\s*/, 3)
+          _ = timestamp # suppress warning
           next unless error_log_level?(log_level)
           next if backtrace_log_message?(message)
           normalized_error_log << "\#|#{log_level}| #{message}"
