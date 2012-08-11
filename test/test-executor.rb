@@ -15,13 +15,13 @@
 
 require "stringio"
 require "cgi/util"
-require "groonga/tester"
+require "grntest/tester"
 
 class TestExecutor < Test::Unit::TestCase
   def setup
     input = StringIO.new
     output = StringIO.new
-    @executor = Groonga::Tester::GQTPExecutor.new(input, output)
+    @executor = Grntest::Tester::StandardIOExecutor.new(input, output)
     @context = @executor.context
     @script = Tempfile.new("test-executor")
   end
@@ -173,7 +173,7 @@ EOF
 
     private
     def convert(command)
-      converter = Groonga::Tester::CommandFormatConverter.new(command)
+      converter = Grntest::Tester::CommandFormatConverter.new(command)
       converter.to_url
     end
 
