@@ -107,7 +107,7 @@ module Groonga
           diff_option_is_specified = true
         end
 
-        available_reporters = [:progress, :stream, :inplace]
+        available_reporters = [:mark, :stream, :inplace]
         available_reporter_labels = available_reporters.join(", ")
         parser.on("--reporter=REPORTER", available_reporters,
                   "Report test result by REPORTER",
@@ -189,7 +189,7 @@ module Groonga
     def reporter
       if @reporter.nil?
         if @n_workers == 1
-          :progress
+          :mark
         else
           :inplace
         end
@@ -512,8 +512,8 @@ module Groonga
 
       def create_reporter
         case @tester.reporter
-        when :progress
-          ProgressReporter.new(@tester)
+        when :mark
+          MarkReporter.new(@tester)
         when :stream
           StreamReporter.new(@tester)
         when :inplace
@@ -1568,7 +1568,7 @@ EOF
       end
     end
 
-    class ProgressReporter < BaseReporter
+    class MarkReporter < BaseReporter
       def initialize(tester)
         super
       end
