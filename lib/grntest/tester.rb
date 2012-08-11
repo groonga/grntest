@@ -87,7 +87,7 @@ module Grntest
         parser.on("--base-directory=DIRECTORY",
                   "Use DIRECTORY as a base directory of relative path",
                   "(#{tester.base_directory})") do |directory|
-          tester.base_directory = directory
+          tester.base_directory = Pathname(directory)
         end
 
         parser.on("--diff=DIFF",
@@ -205,7 +205,7 @@ module Grntest
       @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
       @interface = :stdio
       @testee = "groonga"
-      @base_directory = "."
+      @base_directory = Pathname(".")
       @reporter = nil
       @n_workers = 1
       @output = $stdout
@@ -563,7 +563,7 @@ module Grntest
         @tester.n_workers.times do |i|
           workers << Worker.new(i, @tester, @result, @reporter)
         end
-        @result.workers = workers.dup
+        @result.workers = workers
         @reporter.start(@result)
 
         succeeded = true
@@ -662,11 +662,13 @@ module Grntest
       private
       def run_groonga_script
         create_temporary_directory do |directory_path|
-          db_path = File.join(directory_path, "db")
+          db_dir = directory_path + "db"
+          FileUtils.mkdir_p(db_dir.to_s)
+          db_path = db_dir + "db"
           context = Executor::Context.new
           context.temporary_directory_path = directory_path
           context.db_path = db_path
-          context.base_directory = @tester.base_directory
+          context.base_directory = @tester.base_directory.expand_path
           context.groonga_suggest_create_dataset =
             @tester.groonga_suggest_create_dataset
           run_groonga(context) do |executor|
@@ -682,7 +684,7 @@ module Grntest
         FileUtils.rm_rf(path, :secure => true)
         FileUtils.mkdir_p(path)
         begin
-          yield(path)
+          yield(Pathname(path).expand_path)
         ensure
           if @tester.keep_database? and File.exist?(path)
             FileUtils.rm_rf(keep_database_path, :secure => true)
@@ -719,7 +721,9 @@ module Grntest
             command_line += [
               "--input-fd", input_fd.to_s,
               "--output-fd", output_fd.to_s,
-              "-n", context.db_path,
+              "--working-directory", context.temporary_directory_path.to_s,
+              "-n",
+              context.relative_db_path.to_s,
             ]
             env = {}
             options = {
@@ -755,8 +759,7 @@ module Grntest
             command_line << "--mode=execute"
           end
           command_line << @tester.gdb
-          gdb_command_path = File.join(context.temporary_directory_path,
-                                       "groonga.gdb")
+          gdb_command_path = context.temporary_directory_path + "groonga.gdb"
           File.open(gdb_command_path, "w") do |gdb_command|
             gdb_command.puts(<<-EOC)
 break main
@@ -836,27 +839,30 @@ EOC
             "--bind-address", host,
             "--port", port.to_s,
             "--protocol", "http",
-            "--log-path", context.log_path,
+            "--log-path", context.log_path.to_s,
+            "--working-directory", context.temporary_directory_path.to_s,
             "-d",
-            "-n", context.db_path,
+            "-n",
+            context.relative_db_path.to_s,
           ]
         when "groonga-httpd"
-          db_path = context.db_path
-          config_file = create_config_file(host, port, db_path, pid_file)
+          config_file = create_config_file(context, host, port, pid_file)
           command_line = [
             @tester.groonga_httpd,
             "-c", config_file.path,
-            "-p", File.join(File.dirname(db_path), "/"),
+            "-p", "#{context.db_path.parent}/",
           ]
         end
         command_line
       end
 
-      def create_config_file(host, port, db_path, pid_file)
-        create_empty_database(db_path)
+      def create_config_file(context, host, port, pid_file)
+        create_empty_database(context.db_path.to_s)
         config_file = Tempfile.new("test-httpd.conf")
         config_file.puts <<EOF
 worker_processes 1;
+working_directory #{context.temporary_directory_path};
+error_log #{context.temporary_directory_path + "error.log"};
 pid #{pid_file.path};
 events {
      worker_connections 1024;
@@ -869,7 +875,7 @@ http {
              listen #{port};
              server_name #{host};
              location /d/ {
-                     groonga_database #{db_path};
+                     groonga_database #{context.relative_db_path};
                      groonga on;
             }
      }
@@ -987,9 +993,9 @@ EOF
         attr_accessor :result
         def initialize
           @logging = true
-          @base_directory = "."
-          @temporary_directory_path = "tmp"
-          @db_path = "db"
+          @base_directory = Pathname(".")
+          @temporary_directory_path = Pathname("tmp")
+          @db_path = Pathname("db")
           @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
           @n_nested = 0
           @result = []
@@ -1012,11 +1018,15 @@ EOF
         end
 
         def log_path
-          File.join(@temporary_directory_path, "groonga.log")
+          @temporary_directory_path + "groonga.log"
         end
 
         def log
-          @log ||= File.open(log_path, "a+")
+          @log ||= File.open(log_path.to_s, "a+")
+        end
+
+        def relative_db_path
+          @db_path.relative_path_from(@temporary_directory_path)
         end
       end
 
@@ -1118,7 +1128,7 @@ EOF
         when "include"
           path = options.first
           return if path.nil?
-          execute_script(path)
+          execute_script(Pathname(path))
         end
       end
 
@@ -1138,11 +1148,10 @@ EOF
         end
       end
 
-      def execute_script(path)
+      def execute_script(script_path)
         executor = create_sub_executor(@context)
-        script_path = Pathname(path)
         if script_path.relative?
-          script_path = Pathname(@context.base_directory) + script_path
+          script_path = @context.base_directory + script_path
         end
         executor.execute(script_path)
       end
