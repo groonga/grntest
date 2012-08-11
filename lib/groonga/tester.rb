@@ -1520,9 +1520,26 @@ EOF
       end
 
       def guess_term_width
-        Integer(ENV["COLUMNS"] || ENV["TERM_WIDTH"] || 79)
+        Integer(guess_term_width_from_env || guess_term_width_from_stty || 79)
       rescue ArgumentError
         0
+      end
+
+      def guess_term_width_from_env
+        ENV["COLUMNS"] || ENV["TERM_WIDTH"]
+      end
+
+      def guess_term_width_from_stty
+        case `stty -a`
+        when /(\d+) columns/
+          $1
+        when /columns (\d+)/
+          $1
+        else
+          nil
+        end
+      rescue SystemCallError
+        nil
       end
 
       def string_width(string)
