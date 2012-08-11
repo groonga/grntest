@@ -482,16 +482,17 @@ module Groonga
         @tester.n_workers.times do |i|
           worker = workers[i]
           worker_threads << Thread.new do
-            succeeded = worker.run(queue)
-            workers.delete(worker)
-            if worker.interruptted?
-              workers.each do |other_worker|
-                other_worker.interrupt
-              end
-            end
+            succeeded = false unless worker.run(queue)
           end
         end
-        worker_threads.each(&:join)
+
+        begin
+          worker_threads.each(&:join)
+        rescue Interrupt
+          workers.each do |worker|
+            worker.interrupt
+          end
+        end
 
         succeeded
       end
@@ -572,17 +573,13 @@ module Groonga
         create_temporary_directory do |directory_path|
           db_path = File.join(directory_path, "db")
           context = Executor::Context.new
-          begin
-            context.temporary_directory_path = directory_path
-            context.db_path = db_path
-            context.base_directory = @tester.base_directory
-            context.groonga_suggest_create_dataset =
-              @tester.groonga_suggest_create_dataset
-            run_groonga(context) do |executor|
-              executor.execute(test_script_path)
-            end
-          rescue Interrupt
-            @worker.interrupted
+          context.temporary_directory_path = directory_path
+          context.db_path = db_path
+          context.base_directory = @tester.base_directory
+          context.groonga_suggest_create_dataset =
+            @tester.groonga_suggest_create_dataset
+          run_groonga(context) do |executor|
+            executor.execute(test_script_path)
           end
           context.result
         end
