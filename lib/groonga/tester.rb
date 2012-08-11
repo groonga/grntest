@@ -231,6 +231,8 @@ module Groonga
     class Worker
       attr_reader :id, :tester, :test_suites_rusult, :reporter
       attr_reader :suite_name, :test_script_path, :status
+      attr_reader :n_tests, :n_passed_tests, :n_failed_tests
+      attr_reader :n_not_checked_tests, :elapsed_time
       def initialize(id, tester, test_suites_result, reporter)
         @id = id
         @tester = tester
@@ -434,15 +436,16 @@ module Groonga
             queue << [suite_name, test_script_path]
           end
         end
-        @tester.n_workers.times do
-          queue << nil
-        end
 
         workers = []
         @tester.n_workers.times do |i|
           workers << Worker.new(i, @tester, @result, @reporter)
         end
-        @reporter.start(workers.dup)
+        @reporter.start(workers.dup, queue.size)
+
+        @tester.n_workers.times do
+          queue << nil
+        end
 
         succeeded = true
         worker_threads = []
@@ -1378,7 +1381,7 @@ EOF
         super
       end
 
-      def start(workers)
+      def start(workers, n_tests)
       end
 
       def start_worker(worker)
@@ -1439,8 +1442,9 @@ EOF
         @workers = nil
       end
 
-      def start(workers)
+      def start(workers, n_tests)
         @workers = workers
+        @n_tests = n_tests
       end
 
       def start_worker(worker)
@@ -1496,6 +1500,7 @@ EOF
           draw_status_line(worker)
           draw_test_line(worker)
         end
+        draw_progress_line
       end
 
       def draw_status_line(worker)
@@ -1516,6 +1521,27 @@ EOF
           label = "  #{worker.statistics}"
         end
         puts(justify(label, @term_width))
+      end
+
+      def draw_progress_line
+        n_done_tests = @workers.collect(&:n_tests).inject(&:+)
+        finished_test_ratio = n_done_tests.to_f / @n_tests
+
+        start_mark = "|"
+        finish_mark = "|"
+        statistics = " [%3d%%]" % (finished_test_ratio * 100)
+
+        progress_width = @term_width
+        progress_width -= start_mark.bytesize
+        progress_width -= finish_mark.bytesize
+        progress_width -= statistics.bytesize
+        if n_done_tests == @n_tests
+          progress = "=" * progress_width
+        else
+          progress = "=" * (progress_width * finished_test_ratio).ceil + ">"
+          progress = progress.ljust(progress_width)
+        end
+        puts("#{start_mark}#{progress}#{finish_mark}#{statistics}")
       end
 
       def redraw
@@ -1540,7 +1566,15 @@ EOF
       end
 
       def n_using_lines
-        2 * n_workers
+        n_worker_lines * n_workers + n_progress_lines
+      end
+
+      def n_worker_lines
+        2
+      end
+
+      def n_progress_lines
+        1
       end
 
       def n_workers
