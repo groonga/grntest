@@ -228,11 +228,55 @@ module Groonga
       false
     end
 
+    class Result
+      attr_accessor :elapsed_time
+      def initialize
+        @elapsed_time = 0
+      end
+
+      def measure
+        start_time = Time.now
+        yield
+      ensure
+        @elapsed_time = Time.now - start_time
+      end
+    end
+
+    class WorkerResult < Result
+      attr_reader :n_tests, :n_passed_tests, :n_not_checked_tests
+      attr_reader :failed_tests
+      def initialize
+        super
+        @n_tests = 0
+        @n_passed_tests = 0
+        @n_not_checked_tests = 0
+        @failed_tests = []
+      end
+
+      def n_failed_tests
+        @failed_tests.size
+      end
+
+      def test_finished
+        @n_tests += 1
+      end
+
+      def test_passed
+        @n_passed_tests += 1
+      end
+
+      def test_failed(name)
+        @failed_tests << name
+      end
+
+      def test_not_checked
+        @n_not_checked_tests += 1
+      end
+    end
+
     class Worker
       attr_reader :id, :tester, :test_suites_rusult, :reporter
-      attr_reader :suite_name, :test_script_path, :status
-      attr_reader :n_tests, :n_passed_tests, :n_failed_tests
-      attr_reader :n_not_checked_tests, :elapsed_time
+      attr_reader :suite_name, :test_script_path, :status, :result
       def initialize(id, tester, test_suites_result, reporter)
         @id = id
         @tester = tester
@@ -242,12 +286,7 @@ module Groonga
         @test_script_path = nil
         @interruptted = false
         @status = "not running"
-
-        @n_tests = 0
-        @n_passed_tests = 0
-        @n_failed_tests = 0
-        @n_not_checked_tests = 0
-        @elapsed_time = 0
+        @result = WorkerResult.new
       end
 
       def interrupt
@@ -263,29 +302,11 @@ module Groonga
         @test_script_path.basename(".*").to_s
       end
 
-      def statistics
-        items = [
-          "#{@n_tests} tests",
-          "#{@n_passed_tests} passes",
-          "#{@n_failed_tests} failures",
-          "#{@n_not_checked_tests} not checked_tests",
-        ]
-        "#{throughput}: " + items.join(", ")
-      end
-
-      def throughput
-        if @elapsed_time.zero?
-          tests_per_second = 0
-        else
-          tests_per_second = @n_tests / @elapsed_time
-        end
-        "%6.2f tests/sec" % tests_per_second
-      end
-
       def run(queue)
         succeeded = true
 
-        measure do
+        @result.measure do
+          @test_suites_result.start_worker(self)
           @reporter.start_worker(self)
           catch do |tag|
             loop do
@@ -321,92 +342,72 @@ module Groonga
 
       def pass_test(result)
         @status = "passed"
-        @n_passed_tests += 1
-        @test_suites_result.test_passed
+        @result.test_passed
         @reporter.pass_test(self, result)
       end
 
       def fail_test(result)
         @status = "failed"
-        @n_failed_tests += 1
-        @test_suites_result.test_failed(test_name)
+        @result.test_failed(test_name)
         @reporter.fail_test(self, result)
       end
 
       def no_check_test(result)
         @status = "not checked"
-        @n_not_checked_tests += 1
-        @test_suites_result.test_not_checked
+        @result.test_not_checked
         @reporter.no_check_test(self, result)
       end
 
       def finish_test(result)
-        @n_tests += 1
-        @test_suites_result.test_finished
+        @result.test_finished
         @reporter.finish_test(self, result)
         @test_script_path = nil
-      end
-
-      private
-      def measure
-        started_time = Time.now
-        yield
-      ensure
-        @elapsed_time = Time.now - started_time
-      end
-    end
-
-    class Result
-      attr_accessor :elapsed_time
-      def initialize
-        @elapsed_time = 0
-      end
-
-      def measure
-        start_time = Time.now
-        yield
-      ensure
-        @elapsed_time = Time.now - start_time
       end
     end
 
     class TestSuitesResult < Result
-      attr_reader :n_tests, :n_passed_tests, :n_not_checked_tests
-      attr_reader :failed_tests
+      attr_reader :workers
+      attr_accessor :n_total_tests
       def initialize
         super
-        @n_tests = 0
-        @n_passed_tests = 0
-        @n_not_checked_tests = 0
-        @failed_tests = []
+        @workers = []
+        @n_total_tests = 0
       end
 
-      def n_failed_tests
-        @failed_tests.size
+      def start_worker(worker)
+        @workers << worker
       end
 
       def pass_ratio
-        if @n_tests.zero?
+        if n_tests.zero?
           0
         else
-          (@n_passed_tests / @n_tests.to_f) * 100
+          (n_passed_tests / n_tests.to_f) * 100
         end
       end
 
-      def test_finished
-        @n_tests += 1
+      def n_tests
+        collect_count(:n_tests)
       end
 
-      def test_passed
-        @n_passed_tests += 1
+      def n_passed_tests
+        collect_count(:n_passed_tests)
       end
 
-      def test_failed(name)
-        @failed_tests << name
+      def n_failed_tests
+        collect_count(:n_failed_tests)
       end
 
-      def test_not_checked
-        @n_not_checked_tests += 1
+      def n_not_checked_tests
+        collect_count(:n_not_checked_tests)
+      end
+
+      private
+      def collect_count(item)
+        counts = @workers.collect do |worker|
+          worker.result.send(item)
+        end
+        counts.inject(&:+)
       end
     end
 
@@ -434,18 +435,18 @@ module Groonga
         test_suites.each do |suite_name, test_script_paths|
           test_script_paths.each do |test_script_path|
             queue << [suite_name, test_script_path]
+            @result.n_total_tests += 1
           end
+        end
+        @tester.n_workers.times do
+          queue << nil
         end
 
         workers = []
         @tester.n_workers.times do |i|
           workers << Worker.new(i, @tester, @result, @reporter)
         end
-        @reporter.start(workers.dup, queue.size)
-
-        @tester.n_workers.times do
-          queue << nil
-        end
+        @reporter.start(@result)
 
         succeeded = true
         worker_threads = []
@@ -1288,13 +1289,29 @@ EOF
 
       private
       def report_summary(result)
-        puts("#{result.n_tests} tests, " +
-               "#{result.n_passed_tests} passes, " +
-               "#{result.n_failed_tests} failures, " +
-               "#{result.n_not_checked_tests} not checked tests.")
+        puts(statistics(result))
         pass_ratio = result.pass_ratio
         elapsed_time = result.elapsed_time
         puts("%.4g%% passed in %.4fs." % [pass_ratio, elapsed_time])
+      end
+
+      def statistics(result)
+        items = [
+          "#{result.n_tests} tests",
+          "#{result.n_passed_tests} passes",
+          "#{result.n_failed_tests} failures",
+          "#{result.n_not_checked_tests} not checked_tests",
+        ]
+        "#{throughput(result)}: " + items.join(", ")
+      end
+
+      def throughput(result)
+        if result.elapsed_time.zero?
+          tests_per_second = 0
+        else
+          tests_per_second = result.n_tests / result.elapsed_time
+        end
+        "%.2f tests/sec" % tests_per_second
       end
 
       def report_failure(result)
@@ -1381,7 +1398,7 @@ EOF
         super
       end
 
-      def start(workers, n_tests)
+      def start(result)
       end
 
       def start_worker(worker)
@@ -1439,12 +1456,10 @@ EOF
       def initialize(tester)
         super
         @mutex = Mutex.new
-        @workers = nil
       end
 
-      def start(workers, n_tests)
-        @workers = workers
-        @n_tests = n_tests
+      def start(result)
+        @test_suites_result = result
       end
 
       def start_worker(worker)
@@ -1484,7 +1499,7 @@ EOF
         redraw
       end
 
-      def finish_worker(worker_id)
+      def finish_worker(worker)
         redraw
       end
 
@@ -1496,7 +1511,7 @@ EOF
 
       private
       def draw
-        @workers.each do |worker|
+        @test_suites_result.workers.each do |worker|
           draw_status_line(worker)
           draw_test_line(worker)
         end
@@ -1518,14 +1533,15 @@ EOF
         if worker.test_name
           label = "  #{worker.test_name}"
         else
-          label = "  #{worker.statistics}"
+          label = "  #{statistics(worker.result)}"
         end
         puts(justify(label, @term_width))
       end
 
       def draw_progress_line
-        n_done_tests = @workers.collect(&:n_tests).inject(&:+)
-        finished_test_ratio = n_done_tests.to_f / @n_tests
+        n_done_tests = @test_suites_result.n_tests
+        n_total_tests = @test_suites_result.n_total_tests
+        finished_test_ratio = n_done_tests.to_f / n_total_tests
 
         start_mark = "|"
         finish_mark = "|"
@@ -1536,7 +1552,7 @@ EOF
         progress_width -= finish_mark.bytesize
         progress_width -= statistics.bytesize
         finished_mark = "="
-        if n_done_tests == @n_tests
+        if n_done_tests == n_total_tests
           progress = finished_mark * progress_width
         else
           current_mark = ">"
