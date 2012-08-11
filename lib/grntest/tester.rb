@@ -63,13 +63,13 @@ module Grntest
           tester.groonga_suggest_create_dataset = command
         end
 
-        available_protocols = [:gqtp, :http]
-        available_protocol_labels = available_protocols.join(", ")
-        parser.on("--protocol=PROTOCOL", available_protocols,
-                  "Use PROTOCOL for communicating groonga",
-                  "[#{available_protocol_labels}]",
-                  "(#{tester.protocol})") do |protocol|
-          tester.protocol = protocol
+        available_interfaces = [:stdio, :http]
+        available_interface_labels = available_interfaces.join(", ")
+        parser.on("--interface=INTERFACE", available_interfaces,
+                  "Use INTERFACE for communicating groonga",
+                  "[#{available_interface_labels}]",
+                  "(#{tester.interface})") do |interface|
+          tester.interface = interface
         end
 
         available_testees = ["groonga", "groonga-httpd"]
@@ -80,7 +80,7 @@ module Grntest
                   "(#{tester.testee})") do |testee|
           tester.testee = testee
           if tester.testee == "groonga-httpd"
-            tester.protocol = :http
+            tester.interface = :http
           end
         end
 
@@ -191,7 +191,7 @@ module Grntest
     end
 
     attr_accessor :groonga, :groonga_httpd, :groonga_suggest_create_dataset
-    attr_accessor :protocol, :testee
+    attr_accessor :interface, :testee
     attr_accessor :base_directory, :diff, :diff_options
     attr_accessor :n_workers
     attr_accessor :output
@@ -203,7 +203,7 @@ module Grntest
       @groonga = "groonga"
       @groonga_httpd = "groonga-httpd"
       @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
-      @protocol = :gqtp
+      @interface = :stdio
       @testee = "groonga"
       @base_directory = "."
       @reporter = nil
@@ -697,15 +697,15 @@ module Grntest
       end
 
       def run_groonga(context, &block)
-        case @tester.protocol
-        when :gqtp
-          run_groonga_gqtp(context, &block)
+        case @tester.interface
+        when :stdio
+          run_groonga_stdio(context, &block)
         when :http
           run_groonga_http(context, &block)
         end
       end
 
-      def run_groonga_gqtp(context)
+      def run_groonga_stdio(context)
         pid = nil
         begin
           open_pipe do |input_read, input_write, output_read, output_write|
@@ -726,7 +726,9 @@ module Grntest
               output_fd => output_fd
             }
             pid = Process.spawn(env, *command_line, options)
-            executor = GQTPExecutor.new(groonga_input, groonga_output, context)
+            executor = StandardIOExecutor.new(groonga_input,
+                                              groonga_output,
+                                              context)
             executor.ensure_groonga_ready
             yield(executor)
           end
@@ -832,7 +834,7 @@ EOC
             "--pid-path", pid_file.path,
             "--bind-address", host,
             "--port", port.to_s,
-            "--protocol", @tester.protocol.to_s,
+            "--protocol", "http",
             "--log-path", context.log_path,
             "-d",
             "-n", context.db_path,
@@ -1239,7 +1241,7 @@ EOF
       end
     end
 
-    class GQTPExecutor < Executor
+    class StandardIOExecutor < Executor
       def initialize(input, output, context=nil)
         super(context)
         @input = input
