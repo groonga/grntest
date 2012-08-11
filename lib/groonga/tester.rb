@@ -1354,19 +1354,19 @@ EOF
       end
 
       def report_failure(result)
-        report_marker
+        report_marker(result.status)
         report_diff(result.expected, result.actual)
-        report_marker
+        report_marker(result.status)
       end
 
       def report_actual(result)
-        report_marker
+        report_marker(result.status)
         puts(result.actual)
-        report_marker
+        report_marker(result.status)
       end
 
-      def report_marker
-        puts("=" * @term_width)
+      def report_marker(situation)
+        puts(colorize("=" * @term_width, situation))
       end
 
       def report_diff(expected, actual)
@@ -1670,7 +1670,7 @@ EOF
 
       private
       def report_test(worker, result)
-        report_marker
+        report_marker(result.status)
         puts("[#{worker.id}] #{worker.suite_name}")
         print("  #{worker.test_name}")
         report_test_result(result, worker.status)
