@@ -112,7 +112,7 @@ module Groonga
         parser.on("--reporter=REPORTER", available_reporters,
                   "Report test result by REPORTER",
                   "[#{available_reporter_labels}]",
-                  "(#{tester.reporter})") do |reporter|
+                  "(auto)") do |reporter|
           tester.reporter = reporter
         end
 
@@ -157,11 +157,11 @@ module Groonga
 
     attr_accessor :groonga, :groonga_httpd, :groonga_suggest_create_dataset
     attr_accessor :protocol, :testee
-    attr_accessor :base_directory, :diff, :diff_options, :reporter
+    attr_accessor :base_directory, :diff, :diff_options
     attr_accessor :n_workers
     attr_accessor :output
     attr_accessor :gdb, :default_gdb
-    attr_writer :keep_database, :use_color
+    attr_writer :reporter, :keep_database, :use_color
     def initialize
       @groonga = "groonga"
       @groonga_httpd = "groonga-httpd"
@@ -169,9 +169,10 @@ module Groonga
       @protocol = :gqtp
       @testee = "groonga"
       @base_directory = "."
-      @reporter = :stream
+      @reporter = nil
       @n_workers = 1
       @output = $stdout
+      @keep_database = false
       @use_color = nil
       detect_suitable_diff
       initialize_debuggers
@@ -183,6 +184,18 @@ module Groonga
 
       test_suites = load_tests(*targets)
       run_test_suites(test_suites)
+    end
+
+    def reporter
+      if @reporter.nil?
+        if @n_workers == 1
+          :stream
+        else
+          :inplace
+        end
+      else
+        @reporter
+      end
     end
 
     def keep_database?
