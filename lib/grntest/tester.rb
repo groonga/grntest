@@ -810,7 +810,7 @@ EOC
         env = {}
         spawn_options = {}
         command_line = groonga_http_command(host, port, pid_file, context,
-                                    spawn_options)
+                                            spawn_options)
         pid = nil
         begin
           pid = Process.spawn(env, *command_line, spawn_options)
