@@ -638,7 +638,7 @@ module Grntest
         @worker.start_test
         result = TestResult.new(@worker)
         result.measure do
-          result.actual = run_groonga_script
+          result.actual = execute_groonga_script
         end
         result.actual = normalize_result(result.actual)
         result.expected = read_expected_result
@@ -660,7 +660,7 @@ module Grntest
       end
 
       private
-      def run_groonga_script
+      def execute_groonga_script
         create_temporary_directory do |directory_path|
           db_dir = directory_path + "db"
           FileUtils.mkdir_p(db_dir.to_s)
