@@ -805,11 +805,11 @@ EOC
       def run_groonga_http(context)
         host = "127.0.0.1"
         port = 50041 + @worker.id
-        pid_file = Tempfile.new("groonga.pid")
+        pid_file_path = context.temporary_directory_path + "groonga.pid"
 
         env = {}
         spawn_options = {}
-        command_line = groonga_http_command(host, port, pid_file, context,
+        command_line = groonga_http_command(host, port, pid_file_path, context,
                                             spawn_options)
         pid = nil
         begin
@@ -829,29 +829,29 @@ EOC
             yield(executor)
           ensure
             executor.send_command("shutdown")
-            wait_groonga_http_shutdown(pid_file)
+            wait_groonga_http_shutdown(pid_file_path)
           end
         ensure
           Process.waitpid(pid) if pid
         end
       end
 
-      def wait_groonga_http_shutdown(pid_file)
+      def wait_groonga_http_shutdown(pid_file_path)
         total_sleep_time = 0
         sleep_time = 0.1
-        while File.exist?(pid_file.path)
+        while pid_file_path.exist?
           sleep(sleep_time)
           total_sleep_time += sleep_time
           break if total_sleep_time > 1.0
         end
       end
 
-      def groonga_http_command(host, port, pid_file, context, spawn_options)
+      def groonga_http_command(host, port, pid_file_path, context, spawn_options)
         case @tester.testee
         when "groonga"
           command_line = groonga_command_line(context, spawn_options)
           command_line += [
-            "--pid-path", pid_file.path,
+            "--pid-path", pid_file_path.to_s,
             "--bind-address", host,
             "--port", port.to_s,
             "--protocol", "http",
@@ -862,7 +862,8 @@ EOC
         when "groonga-httpd"
           command_line = command_command_line(@tester.groonga_httpd, context,
                                               spawn_options)
-          config_file_path = create_config_file(context, host, port, pid_file)
+          config_file_path = create_config_file(context, host, port,
+                                                pid_file_path)
           command_line += [
             "-c", config_file_path.to_s,
             "-p", "#{context.temporary_directory_path}/",
@@ -871,7 +872,7 @@ EOC
         command_line
       end
 
-      def create_config_file(context, host, port, pid_file)
+      def create_config_file(context, host, port, pid_file_path)
         create_empty_database(context.db_path.to_s)
         config_file_path =
           context.temporary_directory_path + "groonga-httpd.conf"
@@ -882,7 +883,7 @@ master_process off;
 worker_processes 1;
 working_directory #{context.temporary_directory_path};
 error_log groonga-httpd-access.log;
-pid #{pid_file.path};
+pid #{pid_file_path};
 events {
      worker_connections 1024;
 }
