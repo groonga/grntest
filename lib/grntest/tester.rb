@@ -865,7 +865,7 @@ EOC
         config_file.puts <<EOF
 worker_processes 1;
 working_directory #{context.temporary_directory_path};
-error_log #{context.temporary_directory_path + "error.log"};
+error_log groonga-httpd-access.log;
 pid #{pid_file.path};
 events {
      worker_connections 1024;
@@ -873,7 +873,6 @@ events {
 
 http {
      server {
-             error_log groonga-httpd-error.log;
              access_log groonga-httpd-access.log;
              listen #{port};
              server_name #{host};
