@@ -721,7 +721,6 @@ module Grntest
             command_line += [
               "--input-fd", input_fd.to_s,
               "--output-fd", output_fd.to_s,
-              "--working-directory", context.temporary_directory_path.to_s,
               "-n",
               context.relative_db_path.to_s,
             ]
@@ -772,6 +771,7 @@ EOC
         end
         command_line << groonga
         command_line << "--log-path=#{context.log_path}"
+        command_line << "--working-directory=#{context.temporary_directory_path}"
         command_line
       end
 
@@ -800,24 +800,28 @@ EOC
         pid_file = Tempfile.new("groonga.pid")
 
         command_line = groonga_http_command(host, port, pid_file, context)
-        system(*command_line)
+        pid = nil
         begin
-          executor = HTTPExecutor.new(host, port, context)
-          executor.ensure_groonga_ready
-          yield(executor)
-        ensure
+          pid = Process.spawn(*command_line)
           begin
-            case @tester.testee
-            when "groonga"
-              executor.send_command("shutdown")
-            when "groonga-httpd"
-              command_line.concat(["-s", "quit"])
-              system(*command_line)
+            executor = HTTPExecutor.new(host, port, context)
+            begin
+              executor.ensure_groonga_ready
+            rescue
+              if Process.waitpid(pid, Process::WNOHANG)
+                pid = nil
+                raise
+              end
+              raise unless @tester.gdb
+              retry
             end
-          rescue SystemCallError
+            yield(executor)
+          ensure
+            executor.send_command("shutdown")
+            wait_groonga_http_shutdown(pid_file)
           end
-
-          wait_groonga_http_shutdown(pid_file)
+        ensure
+          Process.waitpid(pid) if pid
         end
       end
 
@@ -834,15 +838,13 @@ EOC
       def groonga_http_command(host, port, pid_file, context)
         case @tester.testee
         when "groonga"
-          command_line = [
-            @tester.groonga,
+          command_line = groonga_command_line(context)
+          command_line += [
             "--pid-path", pid_file.path,
             "--bind-address", host,
             "--port", port.to_s,
             "--protocol", "http",
-            "--log-path", context.log_path.to_s,
-            "--working-directory", context.temporary_directory_path.to_s,
-            "-d",
+            "-s",
             "-n",
             context.relative_db_path.to_s,
           ]
