@@ -796,7 +796,7 @@ EOC
 
       def run_groonga_http(context)
         host = "127.0.0.1"
-        port = 50041
+        port = 50041 + @worker.id
         pid_file = Tempfile.new("groonga.pid")
 
         command_line = groonga_http_command(host, port, pid_file, context)
