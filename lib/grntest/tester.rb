@@ -853,7 +853,7 @@ EOC
           command_line = [
             @tester.groonga_httpd,
             "-c", config_file.path,
-            "-p", "#{context.db_path.parent}/",
+            "-p", "#{context.temporary_directory_path}/",
           ]
         end
         command_line
