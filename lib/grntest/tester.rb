@@ -767,6 +767,7 @@ run
 EOC
           end
           command_line << "--command=#{gdb_command_path}"
+          command_line << "--quiet"
           command_line << "--args"
         end
         command_line << groonga
