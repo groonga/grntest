@@ -717,19 +717,19 @@ module Grntest
 
             input_fd = input_read.to_i
             output_fd = output_write.to_i
-            command_line = groonga_command_line(context)
+            env = {}
+            spawn_options = {
+              input_fd => input_fd,
+              output_fd => output_fd
+            }
+            command_line = groonga_command_line(context, spawn_options)
             command_line += [
               "--input-fd", input_fd.to_s,
               "--output-fd", output_fd.to_s,
               "-n",
               context.relative_db_path.to_s,
             ]
-            env = {}
-            options = {
-              input_fd => input_fd,
-              output_fd => output_fd
-            }
-            pid = Process.spawn(env, *command_line, options)
+            pid = Process.spawn(env, *command_line, spawn_options)
             executor = StandardIOExecutor.new(groonga_input,
                                               groonga_output,
                                               context)
@@ -749,12 +749,11 @@ module Grntest
         end
       end
 
-      def groonga_command_line(context)
+      def command_command_line(command, context, spawn_options)
         command_line = []
-        groonga = @tester.groonga
         if @tester.gdb
-          if libtool_wrapper?(groonga)
-            command_line << find_libtool(groonga)
+          if libtool_wrapper?(command)
+            command_line << find_libtool(command)
             command_line << "--mode=execute"
           end
           command_line << @tester.gdb
@@ -763,13 +762,22 @@ module Grntest
             gdb_command.puts(<<-EOC)
 break main
 run
+print chdir("#{context.temporary_directory_path}")
 EOC
           end
           command_line << "--command=#{gdb_command_path}"
           command_line << "--quiet"
           command_line << "--args"
+        else
+          spawn_options[:chdir] = context.temporary_directory_path.to_s
         end
-        command_line << groonga
+        command_line << command
+        command_line
+      end
+
+      def groonga_command_line(context, spawn_options)
+        command_line = command_command_line(@tester.groonga, context,
+                                            spawn_options)
         command_line << "--log-path=#{context.log_path}"
         command_line << "--working-directory=#{context.temporary_directory_path}"
         command_line
@@ -799,10 +807,13 @@ EOC
         port = 50041 + @worker.id
         pid_file = Tempfile.new("groonga.pid")
 
-        command_line = groonga_http_command(host, port, pid_file, context)
+        env = {}
+        spawn_options = {}
+        command_line = groonga_http_command(host, port, pid_file, context,
+                                    spawn_options)
         pid = nil
         begin
-          pid = Process.spawn(*command_line)
+          pid = Process.spawn(env, *command_line, spawn_options)
           begin
             executor = HTTPExecutor.new(host, port, context)
             begin
@@ -835,10 +846,10 @@ EOC
         end
       end
 
-      def groonga_http_command(host, port, pid_file, context)
+      def groonga_http_command(host, port, pid_file, context, spawn_options)
         case @tester.testee
         when "groonga"
-          command_line = groonga_command_line(context)
+          command_line = groonga_command_line(context, spawn_options)
           command_line += [
             "--pid-path", pid_file.path,
             "--bind-address", host,
@@ -849,10 +860,11 @@ EOC
             context.relative_db_path.to_s,
           ]
         when "groonga-httpd"
-          config_file = create_config_file(context, host, port, pid_file)
-          command_line = [
-            @tester.groonga_httpd,
-            "-c", config_file.path,
+          command_line = command_command_line(@tester.groonga_httpd, context,
+                                              spawn_options)
+          config_file_path = create_config_file(context, host, port, pid_file)
+          command_line += [
+            "-c", config_file_path.to_s,
             "-p", "#{context.temporary_directory_path}/",
           ]
         end
@@ -861,8 +873,12 @@ EOC
 
       def create_config_file(context, host, port, pid_file)
         create_empty_database(context.db_path.to_s)
-        config_file = Tempfile.new("test-httpd.conf")
-        config_file.puts <<EOF
+        config_file_path =
+          context.temporary_directory_path + "groonga-httpd.conf"
+        config_file_path.open("w") do |config_file|
+            config_file.puts(<<EOF)
+daemon off;
+master_process off;
 worker_processes 1;
 working_directory #{context.temporary_directory_path};
 error_log groonga-httpd-access.log;
@@ -883,8 +899,8 @@ http {
      }
 }
 EOF
-        config_file.close
-        config_file
+        end
+        config_file_path
       end
 
       def create_empty_database(db_path)
