@@ -31,6 +31,27 @@ require "grntest/version"
 
 module Grntest
   class Tester
+    class Error < StandardError
+    end
+
+    class NotExist < Error
+      attr_reader :path
+      def initialize(path)
+        @path = path
+        super("<#{path}> doesn't exist.")
+      end
+    end
+
+    class ParseError < Error
+      attr_reader :type, :content, :reason
+      def initialize(type, content, reason)
+        @type = type
+        @content = content
+        @reason = reason
+        super("failed to parse <#{@type}> content: #{reason}: <#{content}>")
+      end
+    end
+
     class << self
       def run(argv=nil)
         argv ||= ARGV.dup
@@ -952,7 +973,13 @@ EOF
         type = options[:type]
         case type
         when "json", "msgpack"
-          status, *values = parse_result(content, type)
+          status = nil
+          values = nil
+          begin
+            status, *values = parse_result(content.chomp, type)
+          rescue ParseError
+            return $!.message
+          end
           normalized_status = normalize_status(status)
           normalized_output_content = [normalized_status, *values]
           normalized_output = JSON.generate(normalized_output_content)
@@ -968,11 +995,19 @@ EOF
       def parse_result(result, type)
         case type
         when "json"
-          JSON.parse(result)
+          begin
+            JSON.parse(result)
+          rescue JSON::ParserError
+            raise ParseError.new(type, result, $!.message)
+          end
         when "msgpack"
-          MessagePack.unpack(result.chomp)
+          begin
+            MessagePack.unpack(result.chomp)
+          rescue MessagePack::UnpackError, NoMemoryError
+            raise ParseError.new(type, result, $!.message)
+          end
         else
-          raise "Unknown type: #{type}"
+          raise ParseError.new(type, result, "unknown type")
         end
       end
 
@@ -1080,17 +1115,6 @@ EOF
 
         def relative_db_path
           @db_path.relative_path_from(@temporary_directory_path)
-        end
-      end
-
-      class Error < StandardError
-      end
-
-      class NotExist < Error
-        attr_reader :path
-        def initialize(path)
-          @path = path
-          super("<#{path}> doesn't exist.")
         end
       end
 
