@@ -25,6 +25,7 @@ require "open-uri"
 require "cgi/util"
 
 require "json"
+require "msgpack"
 
 require "grntest/version"
 
@@ -71,6 +72,15 @@ module Grntest
                   "[#{available_interface_labels}]",
                   "(#{tester.interface})") do |interface|
           tester.interface = interface
+        end
+
+        available_output_types = ["json", "msgpack"]
+        available_output_type_labels = available_output_types.join(", ")
+        parser.on("--output-type=TYPE", available_output_types,
+                  "Use TYPE as the output type",
+                  "[#{available_output_type_labels}]",
+                  "(#{tester.output_type})") do |type|
+          tester.output_type = type
         end
 
         available_testees = ["groonga", "groonga-httpd"]
@@ -192,7 +202,7 @@ module Grntest
     end
 
     attr_accessor :groonga, :groonga_httpd, :groonga_suggest_create_dataset
-    attr_accessor :interface, :testee
+    attr_accessor :interface, :output_type, :testee
     attr_accessor :base_directory, :diff, :diff_options
     attr_accessor :n_workers
     attr_accessor :output
@@ -205,6 +215,7 @@ module Grntest
       @groonga_httpd = "groonga-httpd"
       @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
       @interface = :stdio
+      @output_type = "json"
       @testee = "groonga"
       @base_directory = Pathname(".")
       @reporter = nil
@@ -672,6 +683,7 @@ module Grntest
           context.base_directory = @tester.base_directory.expand_path
           context.groonga_suggest_create_dataset =
             @tester.groonga_suggest_create_dataset
+          context.output_type = @tester.output_type
           run_groonga(context) do |executor|
             executor.execute(test_script_path)
           end
@@ -924,9 +936,10 @@ EOF
           when :input
             normalized_result << content
           when :output
-            case options[:format]
-            when "json"
-              status, *values = JSON.parse(content)
+            type = options[:type]
+            case type
+            when "json", "msgpack"
+              status, *values = parse_result(content, type)
               normalized_status = normalize_status(status)
               normalized_output_content = [normalized_status, *values]
               normalized_output = JSON.generate(normalized_output_content)
@@ -943,6 +956,17 @@ EOF
           end
         end
         normalized_result
+      end
+
+      def parse_result(result, type)
+        case type
+        when "json"
+          JSON.parse(result)
+        when "msgpack"
+          MessagePack.unpack(result.chomp)
+        else
+          raise "Unknown type: #{type}"
+        end
       end
 
       def normalize_status(status)
@@ -1011,6 +1035,7 @@ EOF
         attr_accessor :base_directory, :temporary_directory_path, :db_path
         attr_accessor :groonga_suggest_create_dataset
         attr_accessor :result
+        attr_accessor :output_type
         def initialize
           @logging = true
           @base_directory = Pathname(".")
@@ -1019,6 +1044,7 @@ EOF
           @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
           @n_nested = 0
           @result = []
+          @output_type = "json"
           @log = nil
         end
 
@@ -1067,7 +1093,7 @@ EOF
         @pending_command = ""
         @pending_load_command = nil
         @current_command_name = nil
-        @output_format = nil
+        @output_type = nil
         @context = context || Context.new
       end
 
@@ -1190,15 +1216,21 @@ EOF
       def extract_command_info(command_line)
         @current_command, *@current_arguments = Shellwords.split(command_line)
         if @current_command == "dump"
-          @output_format = "groonga-command"
+          @output_type = "groonga-command"
         else
-          @output_format = "json"
+          @output_type = @context.output_type
           @current_arguments.each_with_index do |word, i|
-            if /\A--output_format(?:=(.+))?\z/ =~ word
-              @output_format = $1 || words[i + 1]
+            if /\A--output_type(?:=(.+))?\z/ =~ word
+              @output_type = $1 || words[i + 1]
               break
             end
           end
+        end
+      end
+
+      def have_output_type_argument?
+        @current_arguments.any? do |argument|
+          /\A--output_type(?:=.+)?\z/ =~ argument
         end
       end
 
@@ -1262,9 +1294,9 @@ EOF
       def log_output(content)
         log(:output, content,
             :command => @current_command,
-            :format => @output_format)
+            :type => @output_type)
         @current_command = nil
-        @output_format = nil
+        @output_type = nil
       end
 
       def log_error(content)
@@ -1280,6 +1312,9 @@ EOF
       end
 
       def send_command(command_line)
+        unless have_output_type_argument?
+          command_line = command_line.sub(/$/, " --output_type #{@output_type}")
+        end
         begin
           @input.print(command_line)
           @input.flush
