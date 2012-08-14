@@ -1408,6 +1408,8 @@ EOF
           ]
         when "truncate"
           ["table"]
+        when "get"
+          ["table", "key", "output_columns", "id"]
         else
           nil
         end
