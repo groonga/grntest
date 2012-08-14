@@ -20,10 +20,11 @@ require "optparse"
 require "pathname"
 require "fileutils"
 require "tempfile"
-require "json"
 require "shellwords"
 require "open-uri"
 require "cgi/util"
+
+require "json"
 
 require "grntest/version"
 
