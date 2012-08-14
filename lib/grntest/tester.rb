@@ -938,10 +938,14 @@ EOF
           when :output
             normalized_result << normalize_output(content, options)
           when :error
-            normalized_result << "#{content}\n".force_encoding("ASCII-8BIT")
+            normalized_result << normalize_raw_content(content)
           end
         end
         normalized_result
+      end
+
+      def normalize_raw_content(content)
+        "#{content}\n".force_encoding("ASCII-8BIT")
       end
 
       def normalize_output(content, options)
@@ -955,10 +959,9 @@ EOF
           if normalized_output.bytesize > @max_n_columns
             normalized_output = JSON.pretty_generate(normalized_output_content)
           end
-          normalized_output.force_encoding("ASCII-8BIT")
-          "#{normalized_output}\n"
+          normalize_raw_content(normalized_output)
         else
-          "#{content}\n".force_encoding("ASCII-8BIT")
+          normalize_raw_content(content)
         end
       end
 
