@@ -936,26 +936,30 @@ EOF
           when :input
             normalized_result << content
           when :output
-            type = options[:type]
-            case type
-            when "json", "msgpack"
-              status, *values = parse_result(content, type)
-              normalized_status = normalize_status(status)
-              normalized_output_content = [normalized_status, *values]
-              normalized_output = JSON.generate(normalized_output_content)
-              if normalized_output.bytesize > @max_n_columns
-                normalized_output = JSON.pretty_generate(normalized_output_content)
-              end
-              normalized_output.force_encoding("ASCII-8BIT")
-              normalized_result << "#{normalized_output}\n"
-            else
-              normalized_result << "#{content}\n".force_encoding("ASCII-8BIT")
-            end
+            normalized_result << normalize_output(content, options)
           when :error
             normalized_result << "#{content}\n".force_encoding("ASCII-8BIT")
           end
         end
         normalized_result
+      end
+
+      def normalize_output(content, options)
+        type = options[:type]
+        case type
+        when "json", "msgpack"
+          status, *values = parse_result(content, type)
+          normalized_status = normalize_status(status)
+          normalized_output_content = [normalized_status, *values]
+          normalized_output = JSON.generate(normalized_output_content)
+          if normalized_output.bytesize > @max_n_columns
+            normalized_output = JSON.pretty_generate(normalized_output_content)
+          end
+          normalized_output.force_encoding("ASCII-8BIT")
+          "#{normalized_output}\n"
+        else
+          "#{content}\n".force_encoding("ASCII-8BIT")
+        end
       end
 
       def parse_result(result, type)
