@@ -19,7 +19,8 @@ clean_white_space = lambda do |entry|
   entry.gsub(/(\A\n+|\n+\z)/, '') + "\n"
 end
 
-require "./lib/grntest/version"
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "lib"))
+require "grntest/version"
 
 Gem::Specification.new do |spec|
   spec.name = "grntest"
