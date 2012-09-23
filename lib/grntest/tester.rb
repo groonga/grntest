@@ -1559,8 +1559,8 @@ EOF
         create_temporary_file("expected", expected) do |expected_file|
           create_temporary_file("actual", actual) do |actual_file|
             diff_options = @tester.diff_options.dup
-            diff_options.concat(["--label", "(actual)", actual_file.path,
-                                 "--label", "(expected)", expected_file.path])
+            diff_options.concat(["--label", "(expected)", expected_file.path,
+                                 "--label", "(actual)", actual_file.path])
             system(@tester.diff, *diff_options)
           end
         end
