@@ -1105,7 +1105,7 @@ EOF
         context.log.each_line do |line|
           timestamp, log_level, message = line.split(/\|\s*/, 3)
           _ = timestamp # suppress warning
-          next unless /^grn_fin \(\d+\)$/ =~ message
+          next unless /^grn_fin \((\d+)\)$/ =~ message
           n_leaked_objects = $1.to_i
           next if n_leaked_objects.zero?
           context.result << [:n_leaked_objects, n_leaked_objects, {}]
