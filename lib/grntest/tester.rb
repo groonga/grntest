@@ -396,12 +396,14 @@ module Grntest
     end
 
     class WorkerResult < Result
-      attr_reader :n_tests, :n_passed_tests, :n_not_checked_tests
+      attr_reader :n_tests, :n_passed_tests, :n_leaked_tests
+      attr_reader :n_not_checked_tests
       attr_reader :failed_tests
       def initialize
         super
         @n_tests = 0
         @n_passed_tests = 0
+        @n_leaked_tests = 0
         @n_not_checked_tests = 0
         @failed_tests = []
       end
@@ -420,6 +422,10 @@ module Grntest
 
       def test_failed(name)
         @failed_tests << name
+      end
+
+      def test_leaked(name)
+        @n_leaked_tests += 1
       end
 
       def test_not_checked
@@ -501,6 +507,12 @@ module Grntest
         @reporter.fail_test(self, result)
       end
 
+      def leaked_test(result)
+        @status = "leaked(#{result.n_leaked_objects})"
+        @result.test_leaked(test_name)
+        @reporter.leaked_test(self, result)
+      end
+
       def not_checked_test(result)
         @status = "not checked"
         @result.test_not_checked
@@ -543,6 +555,10 @@ module Grntest
 
       def n_failed_tests
         collect_count(:n_failed_tests)
+      end
+
+      def n_leaked_tests
+        collect_count(:n_leaked_tests)
       end
 
       def n_not_checked_tests
@@ -633,24 +649,33 @@ module Grntest
 
     class TestResult < Result
       attr_accessor :worker_id, :test_name
-      attr_accessor :expected, :actual
+      attr_accessor :expected, :actual, :n_leaked_objects
       def initialize(worker)
         super()
         @worker_id = worker.id
         @test_name = worker.test_name
         @actual = nil
         @expected = nil
+        @n_leaked_objects = 0
       end
 
       def status
         if @expected
           if @actual == @expected
-            :success
+            if @n_leaked_objects.zero?
+              :success
+            else
+              :leaked
+            end
           else
             :failure
           end
         else
-          :not_checked
+          if @n_leaked_objects.zero?
+            :not_checked
+          else
+            :leaked
+          end
         end
       end
     end
@@ -673,7 +698,7 @@ module Grntest
         result.measure do
           result.actual = execute_groonga_script
         end
-        result.actual = normalize_result(result.actual)
+        normalize_actual_result(result)
         result.expected = read_expected_result
         case result.status
         when :success
@@ -682,6 +707,9 @@ module Grntest
         when :failure
           @worker.fail_test(result)
           output_reject_file(result.actual)
+          succeeded = false
+        when :leaked
+          @worker.leaked_test(result)
           succeeded = false
         else
           @worker.not_checked_test(result)
@@ -708,6 +736,7 @@ module Grntest
           run_groonga(context) do |executor|
             executor.execute(test_script_path)
           end
+          check_memory_leak(context)
           context.result
         end
       end
@@ -950,9 +979,9 @@ EOF
         output_fd.close(true)
       end
 
-      def normalize_result(result)
+      def normalize_actual_result(result)
         normalized_result = ""
-        result.each do |tag, content, options|
+        result.actual.each do |tag, content, options|
           case tag
           when :input
             normalized_result << content
@@ -960,9 +989,11 @@ EOF
             normalized_result << normalize_output(content, options)
           when :error
             normalized_result << normalize_raw_content(content)
+          when :n_leaked_objects
+            result.n_leaked_objects = content
           end
         end
-        normalized_result
+        result.actual = normalized_result
       end
 
       def normalize_raw_content(content)
@@ -1067,6 +1098,17 @@ EOF
         return if result_path.nil?
         result_path.open("w:ascii-8bit") do |result_file|
           result_file.print(actual_result)
+        end
+      end
+
+      def check_memory_leak(context)
+        context.log.each_line do |line|
+          timestamp, log_level, message = line.split(/\|\s*/, 3)
+          _ = timestamp # suppress warning
+          next unless /^grn_fin \(\d+\)$/ =~ message
+          n_leaked_objects = $1.to_i
+          next if n_leaked_objects.zero?
+          context.result << [:n_leaked_objects, n_leaked_objects, {}]
         end
       end
     end
@@ -1513,6 +1555,7 @@ EOF
       end
 
       def report_summary(result)
+        puts(statistics_header)
         puts(colorize(statistics(result), result))
         pass_ratio = result.pass_ratio
         elapsed_time = result.elapsed_time
@@ -1520,14 +1563,28 @@ EOF
         puts(colorize(summary, result))
       end
 
+      def statistics_header
+        items = [
+          "tests/sec",
+          "tests",
+          "passes",
+          "failures",
+          "leaked",
+          "!checked",
+        ]
+        "  " + ((["%-9s"] * items.size).join(" | ") % items) + " |"
+      end
+
       def statistics(result)
         items = [
-          "#{result.n_tests} tests",
-          "#{result.n_passed_tests} passes",
-          "#{result.n_failed_tests} failures",
-          "#{result.n_not_checked_tests} not checked_tests",
+          "%9.2f" % throughput(result),
+          "%9d" % result.n_tests,
+          "%9d" % result.n_passed_tests,
+          "%9d" % result.n_failed_tests,
+          "%9d" % result.n_leaked_tests,
+          "%9d" % result.n_not_checked_tests,
         ]
-        "#{throughput(result)}: " + items.join(", ")
+        "  " + items.join(" | ") + " |"
       end
 
       def throughput(result)
@@ -1536,7 +1593,7 @@ EOF
         else
           tests_per_second = result.n_tests / result.elapsed_time
         end
-        "%.2f tests/sec" % tests_per_second
+        tests_per_second
       end
 
       def report_failure(result)
@@ -1689,6 +1746,8 @@ EOF
           "%s%s%s" % [success_color, message, reset_color]
         when :failure
           "%s%s%s" % [failure_color, message, reset_color]
+        when :leaked
+          "%s%s%s" % [leaked_color, message, reset_color]
         when :not_checked
           "%s%s%s" % [not_checked_color, message, reset_color]
         else
@@ -1713,6 +1772,19 @@ EOF
         escape_sequence({
                           :color => :red,
                           :color_256 => [3, 0, 0],
+                          :background => true,
+                        },
+                        {
+                          :color => :white,
+                          :color_256 => [5, 5, 5],
+                          :bold => true,
+                        })
+      end
+
+      def leaked_color
+        escape_sequence({
+                          :color => :magenta,
+                          :color_256 => [3, 0, 3],
                           :background => true,
                         },
                         {
@@ -1823,6 +1895,12 @@ EOF
         end
       end
 
+      def leaked_test(worker, result)
+        synchronize do
+          report_test_result_mark("L(#{result.n_leaked_objects})", result)
+        end
+      end
+
       def not_checked_test(worker, result)
         synchronize do
           report_test_result_mark("N", result)
@@ -1892,6 +1970,10 @@ EOF
         report_failure(result)
       end
 
+      def leaked_test(worker, result)
+        report_test_result(result, worker.status)
+      end
+
       def not_checked_test(worker, result)
         report_test_result(result, worker.status)
         report_actual(result)
@@ -1945,6 +2027,13 @@ EOF
         end
       end
 
+      def leaked_test(worker, result)
+        redraw do
+          report_test(worker, result)
+          report_marker(result)
+        end
+      end
+
       def not_checked_test(worker, result)
         redraw do
           report_test(worker, result)
@@ -1972,11 +2061,16 @@ EOF
 
       private
       def draw
+        draw_statistics_header_line
         @test_suites_result.workers.each do |worker|
           draw_status_line(worker)
           draw_test_line(worker)
         end
         draw_progress_line
+      end
+
+      def draw_statistics_header_line
+        puts(statistics_header)
       end
 
       def draw_status_line(worker)
@@ -1994,7 +2088,7 @@ EOF
         if worker.test_name
           label = "  #{worker.test_name}"
         else
-          label = "  #{statistics(worker.result)}"
+          label = statistics(worker.result)
         end
         puts(justify(label, @term_width))
       end
@@ -2054,7 +2148,11 @@ EOF
       end
 
       def n_using_lines
-        n_worker_lines * n_workers + n_progress_lines
+        n_statistics_header_line + n_worker_lines * n_workers + n_progress_lines
+      end
+
+      def n_statistics_header_line
+        1
       end
 
       def n_worker_lines
