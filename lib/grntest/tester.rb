@@ -1929,6 +1929,9 @@ EOF
 
       private
       def report_test_result_mark(mark, result)
+        if @term_width < @current_column + mark.bytesize
+          puts
+        end
         print(colorize(mark, result))
         if @term_width <= @current_column
           puts
