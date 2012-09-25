@@ -1726,6 +1726,8 @@ EOF
         else
           if result.n_failed_tests > 0
             :failure
+          elsif result.n_leaked_tests > 0
+            :leaked
           elsif result.n_not_checked_tests > 0
             :not_checked
           else
