@@ -501,10 +501,10 @@ module Grntest
         @reporter.fail_test(self, result)
       end
 
-      def not_check_test(result)
+      def not_checked_test(result)
         @status = "not checked"
         @result.test_not_checked
-        @reporter.not_check_test(self, result)
+        @reporter.not_checked_test(self, result)
       end
 
       def finish_test(result)
@@ -684,7 +684,7 @@ module Grntest
           output_reject_file(result.actual)
           succeeded = false
         else
-          @worker.not_check_test(result)
+          @worker.not_checked_test(result)
           output_actual_file(result.actual)
         end
         @worker.finish_test(result)
@@ -1823,7 +1823,7 @@ EOF
         end
       end
 
-      def not_check_test(worker, result)
+      def not_checked_test(worker, result)
         synchronize do
           report_test_result_mark("N", result)
           puts
@@ -1892,7 +1892,7 @@ EOF
         report_failure(result)
       end
 
-      def not_check_test(worker, result)
+      def not_checked_test(worker, result)
         report_test_result(result, worker.status)
         report_actual(result)
       end
@@ -1945,7 +1945,7 @@ EOF
         end
       end
 
-      def not_check_test(worker, result)
+      def not_checked_test(worker, result)
         redraw do
           report_test(worker, result)
           report_actual(result)
