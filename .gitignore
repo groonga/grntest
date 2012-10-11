@@ -1,4 +1,4 @@
 /pkg/
 /doc/reference/
-/doc/po/
+/doc/po/*.pot
 /.yardoc/

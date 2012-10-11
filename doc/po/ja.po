@@ -1,0 +1,2411 @@
+# Japanese translations for grntest package.
+# Copyright (C) 2012 Kouhei Sutou <kou@clear-code.com>
+# This file is distributed under the same license as the grntest package.
+# Kouhei Sutou <kou@clear-code.com>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: grntest 0.9.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-11-20 22:17+0900\n"
+"PO-Revision-Date: 2012-10-11 23:09+0900\n"
+"Last-Translator: Kouhei Sutou <kou@clear-code.com>\n"
+"Language-Team: Japanese\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: README.md:1
+msgid "# README"
+msgstr "# はじめに"
+
+#: README.md:3
+msgid "## Name"
+msgstr "## 名前"
+
+#: README.md:5
+msgid "grntest"
+msgstr ""
+
+#: README.md:7
+msgid "## Description"
+msgstr "## 説明"
+
+#: README.md:9
+msgid ""
+"Grntest is a testing framework for groonga. You can write a test for\n"
+"groonga by writing groonga commands and expected result."
+msgstr "grntestはgroonga用のテスティングフレームワークです。groongaのコマンドと期待する結果を用意すればgroonga用のテストを作成できます。"
+
+#: README.md:12
+msgid "## Install"
+msgstr "## インストール"
+
+#: README.md:14
+msgid ""
+"```\n"
+"% gem install grntest\n"
+"```"
+msgstr ""
+
+#: README.md:18
+msgid "## Basic usage"
+msgstr "## 基本的な使い方"
+
+#: README.md:20
+msgid ""
+"Write a test script that extension is `.test`. Here is a sample test\n"
+"script `select.test`:"
+msgstr ""
+
+#: README.md:23 README.md:88
+msgid ""
+"```\n"
+"table_create Users TABLE_HASH_KEY ShortText"
+msgstr ""
+
+#: README.md:26 README.md:91
+msgid ""
+"load --table Users\n"
+"[\n"
+"{\"_key\": \"Alice\"},\n"
+"{\"_key\": \"Bob\"}\n"
+"]"
+msgstr ""
+
+#: README.md:32
+msgid ""
+"select Users --query '_key:Alice'\n"
+"```"
+msgstr ""
+
+#: README.md:35
+msgid "Run `grntest` with `select.test` as command line argument:"
+msgstr ""
+
+#: README.md:37
+msgid ""
+"```\n"
+"% grntest select.test\n"
+"N\n"
+"================================================================================\n"
+".\n"
+"  select                                                   0.3866s [not "
+"checked]\n"
+"================================================================================\n"
+"table_create Users TABLE_HASH_KEY ShortText\n"
+"[[0,0.0,0.0],true]\n"
+"load --table Users\n"
+"[\n"
+"{\"_key\": \"Alice\"},\n"
+"{\"_key\": \"Bob\"}\n"
+"]\n"
+"[[0,0.0,0.0],2]\n"
+"select Users --query '_key:Alice'\n"
+"[[0,0.0,0.0],[[[1],[[\"_id\",\"UInt32\"],[\"_key\",\"ShortText\"]],[1,\"Alice"
+"\"]]]]\n"
+"================================================================================"
+msgstr ""
+
+#: README.md:57
+msgid ""
+"  tests/sec | tests     | passes    | failures  | leaked    | !checked  |\n"
+"       2.57 |         1 |         0 |         0 |         0 |         1 |\n"
+"0% passed in 0.3885s.\n"
+"```"
+msgstr ""
+
+#: README.md:62
+msgid ""
+"It generates `select.actual` file that contains actual result. If it\n"
+"is expected result, rename it to `select.expected`:"
+msgstr ""
+
+#: README.md:65
+msgid ""
+"```\n"
+"% mv select.actual select.expected\n"
+"```"
+msgstr ""
+
+#: README.md:69 README.md:100 README.md:139
+msgid "Run `grntest` again:"
+msgstr ""
+
+#: README.md:71 README.md:141
+msgid ""
+"```\n"
+"% grntest select.test\n"
+"."
+msgstr ""
+
+#: README.md:75
+msgid ""
+"  tests/sec | tests     | passes    | failures  | leaked    | !checked  |\n"
+"       5.76 |         1 |         1 |         0 |         0 |         0 |\n"
+"100% passed in 0.1736s.\n"
+"```"
+msgstr ""
+
+#: README.md:80
+msgid ""
+"It compares actual result and content of `select.expected` and\n"
+"reporots compared result. If they are the same contnet, `grntest`\n"
+"reports success. If they are not the same content, `grntest` reports\n"
+"failure and show diff of them."
+msgstr ""
+
+#: README.md:85
+msgid ""
+"Change `--query '_key:Alice'` to `--query '_key:Bob`' in\n"
+"`select.test`:"
+msgstr ""
+
+#: README.md:97
+msgid ""
+"select Users --query '_key:Bob'\n"
+"```"
+msgstr ""
+
+#: README.md:102
+msgid ""
+"```\n"
+"% grntest select.test\n"
+"F\n"
+"================================================================================\n"
+".\n"
+"  select                                                        0.1767s "
+"[failed]\n"
+"================================================================================\n"
+"--- (expected)\n"
+"+++ (actual)\n"
+"@@ -6,5 +6,5 @@\n"
+" {\"_key\": \"Bob\"}\n"
+" ]\n"
+" [[0,0.0,0.0],2]\n"
+"-select Users --query '_key:Alice'\n"
+"-[[0,0.0,0.0],[[[1],[[\"_id\",\"UInt32\"],[\"_key\",\"ShortText\"]],[1,"
+"\"Alice\"]]]]\n"
+"+select Users --query '_key:Bob'\n"
+"+[[0,0.0,0.0],[[[1],[[\"_id\",\"UInt32\"],[\"_key\",\"ShortText\"]],[2,\"Bob"
+"\"]]]]\n"
+"================================================================================"
+msgstr ""
+
+#: README.md:122
+msgid ""
+"  tests/sec | tests     | passes    | failures  | leaked    | !checked  |\n"
+"       4.65 |         1 |         0 |         1 |         0 |         0 |\n"
+"0% passed in 0.2153s.\n"
+"```"
+msgstr ""
+
+#: README.md:127
+msgid ""
+"It says the expected result that is read from `select.expected` and\n"
+"the actual result are not same. And the difference of them is shown in\n"
+"unified diff format. It is helpful to debug the test."
+msgstr ""
+
+#: README.md:131
+msgid ""
+"`select.reject` file is generated on failure. It contains the actual\n"
+"result. If the actual result is the expected result, rename it to\n"
+"`select.expected`."
+msgstr ""
+
+#: README.md:135
+msgid ""
+"```\n"
+"% mv select.reject select.expected\n"
+"```"
+msgstr ""
+
+#: README.md:145
+msgid ""
+"  tests/sec | tests     | passes    | failures  | leaked    | !checked  |\n"
+"       6.20 |         1 |         1 |         0 |         0 |         0 |\n"
+"100% passed in 0.1613s.\n"
+"```"
+msgstr ""
+
+#: README.md:150
+msgid "The test is succeeded again."
+msgstr ""
+
+#: README.md:152
+msgid "## Advanced usage"
+msgstr ""
+
+#: README.md:154
+msgid ""
+"There are more useful features. They are not needed for normal\n"
+"users but they are very useful for advanced users."
+msgstr ""
+
+#: README.md:157
+msgid "There are advanced features:"
+msgstr ""
+
+#: README.md:159
+msgid ""
+"* Comment\n"
+"* Continuation line\n"
+"* Directives"
+msgstr ""
+
+#: README.md:163
+msgid "### Comment"
+msgstr ""
+
+#: README.md:165
+msgid "Groonga supports comment line by `#`."
+msgstr ""
+
+#: README.md:167 README.md:180 README.md:230 README.md:270 README.md:304
+msgid "Example:"
+msgstr ""
+
+#: README.md:169
+msgid ""
+"```\n"
+"# This line is comment line.\n"
+"select Users\n"
+"```"
+msgstr ""
+
+#: README.md:174
+msgid "Grntest also supports the syntax. You can use `#` as comment mark."
+msgstr ""
+
+#: README.md:176
+msgid "### Continuation line"
+msgstr ""
+
+#: README.md:178
+msgid "You can split a long line by escaping new line with `\\`."
+msgstr ""
+
+#: README.md:182
+msgid ""
+"```\n"
+"select Users \\\n"
+"  --match_columns name \\\n"
+"  --query Ken\n"
+"```"
+msgstr ""
+
+#: README.md:188
+msgid "The command is processed as the following:"
+msgstr ""
+
+#: README.md:190
+msgid ""
+"```\n"
+"select Users  --match_columns name   --query Ken\n"
+"```"
+msgstr ""
+
+#: README.md:194
+msgid "You can make your test readable with this feature."
+msgstr ""
+
+#: README.md:196
+msgid "Groogna doesn't support this feature."
+msgstr ""
+
+#: README.md:198
+msgid "### Directives"
+msgstr ""
+
+#: README.md:200
+msgid "Grntest supports directives that control grntest behavior."
+msgstr ""
+
+#: README.md:202
+msgid "Here is directive syntax:"
+msgstr ""
+
+#: README.md:204
+msgid ""
+"```\n"
+"#@NAME [ARGUMENTS...]\n"
+"```"
+msgstr ""
+
+#: README.md:208
+msgid "Here are available `NAME` s:"
+msgstr ""
+
+#: README.md:210
+msgid ""
+"* `disable-logging`\n"
+"* `enable-logging`\n"
+"* `suggest-create-dataset`\n"
+"* `include`"
+msgstr ""
+
+#: README.md:215
+msgid ""
+"`ARGUMENTS...` are depends on directive. A directive doesn't require\n"
+"any arguments but a directive requires arguments."
+msgstr ""
+
+#: README.md:218
+msgid "#### `disable-logging`"
+msgstr ""
+
+#: README.md:220 README.md:249 README.md:261
+msgid "Usage:"
+msgstr ""
+
+#: README.md:222
+msgid ""
+"```\n"
+"#@disable-logging\n"
+"```"
+msgstr ""
+
+#: README.md:226
+msgid ""
+"It disables logging exected command and exected result until\n"
+"`enable-logging` directive is used. It is useful for executing\n"
+"commands that isn't important for test."
+msgstr ""
+
+#: README.md:232
+msgid ""
+"```\n"
+"#@disable-logging\n"
+"load --table Users\n"
+"[\n"
+"{\"_key\": \"User1\"},\n"
+"{\"_key\": \"...\"},\n"
+"{\"_key\": \"User9999999\"}\n"
+"]\n"
+"#@enable-logging"
+msgstr ""
+
+#: README.md:242
+msgid ""
+"select Users --query _key:User29\n"
+"```"
+msgstr ""
+
+#: README.md:245
+msgid "See also: `enable-logging`"
+msgstr ""
+
+#: README.md:247
+msgid "### `enable-logging`"
+msgstr ""
+
+#: README.md:251
+msgid ""
+"```\n"
+"#@enable-logging\n"
+"```"
+msgstr ""
+
+#: README.md:255
+msgid "It enables logging that is disabled by `disable-logging` directive."
+msgstr ""
+
+#: README.md:257
+msgid "See also: `disable-logging`"
+msgstr ""
+
+#: README.md:259
+msgid "### suggest-create-dataset"
+msgstr ""
+
+#: README.md:263
+msgid ""
+"```\n"
+"#@suggest-create-dataset DATASET_NAME\n"
+"```"
+msgstr ""
+
+#: README.md:267
+msgid ""
+"It creates dataset `DATASET_NAME` for suggest feature. It is useful\n"
+"for testing suggest feature."
+msgstr ""
+
+#: README.md:272
+msgid ""
+"```\n"
+"#@suggest-create-dataset rurema\n"
+"load --table event_rurema --each 'suggest_preparer(_id, type, item, "
+"sequence, time, pair_rurema)'\n"
+"[\n"
+"[\"sequence\", \"time\", \"item\", \"type\"],\n"
+"[\"21e80fd5e5bc2126469db1c927b7a48fb3353dd9\",1312134098.0,\"f\",null],\n"
+"[\"21e80fd5e5bc2126469db1c927b7a48fb3353dd9\",1312134105.0,\"er\",null],\n"
+"[\"21e80fd5e5bc2126469db1c927b7a48fb3353dd9\",1312134106.0,\"erb\",null],\n"
+"[\"21e80fd5e5bc2126469db1c927b7a48fb3353dd9\",1312134107.0,\"erb\",\"submit"
+"\"]\n"
+"]\n"
+"```"
+msgstr ""
+
+#: README.md:284
+msgid "See also: `--groonga-suggest-create-dataset` option"
+msgstr ""
+
+#: README.md:286
+msgid "### include"
+msgstr ""
+
+#: README.md:288
+msgid "Usage"
+msgstr ""
+
+#: README.md:290
+msgid ""
+"```\n"
+"#@include SUB_TEST_FILE_PATH\n"
+"```"
+msgstr ""
+
+#: README.md:294
+msgid ""
+"It includes `SUB_TEST_FILE_PATH` content. It is useful for sharing\n"
+"commands by many tests."
+msgstr ""
+
+#: README.md:297
+msgid ""
+"You can use `include` in included file. It means that an included file\n"
+"is processed in the same way as a test file."
+msgstr ""
+
+#: README.md:300
+msgid ""
+"If `SUB_TEST_FILE_PATH` is relative path, `SUB_TEST_FILE_PATH` is\n"
+"found from base directory. Base directory can be specified by\n"
+"`--base-directory` option."
+msgstr ""
+
+#: README.md:306
+msgid "init.grn:"
+msgstr ""
+
+#: README.md:308
+msgid ""
+"```\n"
+"#@disable-logging\n"
+"#@include ddl.grn\n"
+"#@include data.grn\n"
+"#@enable-logging\n"
+"```"
+msgstr ""
+
+#: README.md:315
+msgid "ddl.grn:"
+msgstr ""
+
+#: README.md:317
+msgid ""
+"```\n"
+"table_create Users TABLE_HASH_KEY ShortText\n"
+"```"
+msgstr ""
+
+#: README.md:321
+msgid "data.grn:"
+msgstr ""
+
+#: README.md:323
+msgid ""
+"```\n"
+"load --table Users\n"
+"[\n"
+"[\"_key\"],\n"
+"[\"Alice\"],\n"
+"[\"Bob\"]\n"
+"]\n"
+"```"
+msgstr ""
+
+#: README.md:332
+msgid "user.test:"
+msgstr ""
+
+#: README.md:334
+msgid ""
+"```\n"
+"#@include init.grn\n"
+"select Users --query _key:Alice\n"
+"```"
+msgstr ""
+
+#: README.md:339
+msgid "See also: `--base-directory` option"
+msgstr ""
+
+#: README.md:341
+msgid "## Options"
+msgstr ""
+
+#: README.md:343
+msgid ""
+"Grntest has many options. You don't need to specify many of them\n"
+"because they use suitable default values."
+msgstr ""
+
+#: README.md:346
+msgid ""
+"This section describes some important options. You can see all options\n"
+"by `grntest --help`. It contains many usuful features."
+msgstr ""
+
+#: README.md:349
+msgid "### `--test`"
+msgstr ""
+
+#: README.md:351
+msgid "### `--exclude-test`"
+msgstr ""
+
+#: README.md:353
+msgid "### `--test-suite`"
+msgstr ""
+
+#: README.md:355
+msgid "### `--exclude-test-suite`"
+msgstr ""
+
+#: README.md:357
+msgid "### `--gdb`"
+msgstr ""
+
+#: README.md:359
+msgid "### `--keep-database`"
+msgstr ""
+
+#: README.md:361
+msgid "### `--n-workers`"
+msgstr ""
+
+#: README.md:363
+msgid ""
+"`--n-workers` option is very useful. You can run many test scripts at\n"
+"once. Tests are finished quickly. You should specify one or more\n"
+"directories that contain many test scripts. If you have only a test\n"
+"script, `--n-workers` is not effective."
+msgstr ""
+
+#: README.md:368
+msgid "Here is a sample command line to use `--n-workers`:"
+msgstr ""
+
+#: README.md:370
+msgid ""
+"```\n"
+"% grntest --n-workers 4 test/function/suite/suggest\n"
+"  tests/sec | tests     | passes    | failures  | leaked    | !checked  |\n"
+"[0]                                                                   "
+"[finished]\n"
+"       9.95 |         5 |         5 |         0 |         0 |         0 "
+"|       \n"
+"[1]                                                                   "
+"[finished]\n"
+"       9.22 |         4 |         4 |         0 |         0 |         0 "
+"|       \n"
+"[2]                                                                   "
+"[finished]\n"
+"       9.11 |         4 |         4 |         0 |         0 |         0 "
+"|       \n"
+"[3]                                                                   "
+"[finished]\n"
+"      10.10 |         5 |         5 |         0 |         0 |         0 "
+"|       \n"
+"|-----------------------------------------------------------------------| "
+"[100%]"
+msgstr ""
+
+#: README.md:383
+msgid ""
+"  tests/sec | tests     | passes    | failures  | leaked    | !checked  |\n"
+"      34.61 |        18 |        18 |         0 |         0 |         0 |\n"
+"100% passed in 0.5201s.\n"
+"```"
+msgstr ""
+
+#: README.md:388
+msgid "### `--base-directory`"
+msgstr ""
+
+#: README.md:390
+msgid "### `--groonga`"
+msgstr ""
+
+#: README.md:392
+msgid "### `--groonga-httpd`"
+msgstr ""
+
+#: README.md:394
+msgid "### `--groonga-suggest-create-dataset`"
+msgstr ""
+
+#: README.md:396
+msgid "### `--interface`"
+msgstr ""
+
+#: README.md:398
+msgid "### `--output-type`"
+msgstr ""
+
+#: README.md:400
+msgid "### `--testee`"
+msgstr ""
+
+#: README.md:402
+msgid "## Examples"
+msgstr ""
+
+#: README.md:404
+msgid ""
+"See [test/command/ directory in groonga's\n"
+"source](https://github.com/groonga/groonga/tree/master/test/command). It\n"
+"has many test scripts and uses many useful features. They will help you."
+msgstr ""
+
+#: README.md:408
+msgid "## Dependencies"
+msgstr ""
+
+#: README.md:410
+msgid "* Ruby 1.9.3"
+msgstr ""
+
+#: README.md:412
+msgid "## Mailing list"
+msgstr ""
+
+#: README.md:414
+msgid ""
+"* English: [groonga-talk@lists.sourceforge.net](https://lists.sourceforge."
+"net/lists/listinfo/groonga-talk)\n"
+"* Japanese: [groonga-dev@lists.sourceforge.jp](http://lists.sourceforge.jp/"
+"mailman/listinfo/groonga-dev)"
+msgstr ""
+
+#: README.md:417
+msgid "## Thanks"
+msgstr ""
+
+#: README.md:419
+msgid "* ..."
+msgstr ""
+
+#: README.md:421
+msgid "## Authors"
+msgstr ""
+
+#: README.md:423
+msgid ""
+"* Kouhei Sutou \\<kou@clear-code.com\\>\n"
+"* Haruka Yoshihara \\<yoshihara@clear-code.com\\>"
+msgstr ""
+
+#: README.md:426
+msgid "## License"
+msgstr ""
+
+#: README.md:428
+msgid "GPLv3 or later. See doc/text/gpl-3.0.txt for details."
+msgstr ""
+
+#: README.md:430
+msgid ""
+"(Kouhei Sutou has a right to change the license including contributed\n"
+"patches.)"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:1
+msgid ""
+"                    GNU GENERAL PUBLIC LICENSE\n"
+"                       Version 3, 29 June 2007"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:4
+msgid ""
+" Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>\n"
+" Everyone is permitted to copy and distribute verbatim copies\n"
+" of this license document, but changing it is not allowed."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:8
+msgid "                            Preamble"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:10
+msgid ""
+"  The GNU General Public License is a free, copyleft license for\n"
+"software and other kinds of works."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:13
+msgid ""
+"  The licenses for most software and other practical works are designed\n"
+"to take away your freedom to share and change the works.  By contrast,\n"
+"the GNU General Public License is intended to guarantee your freedom to\n"
+"share and change all versions of a program--to make sure it remains free\n"
+"software for all its users.  We, the Free Software Foundation, use the\n"
+"GNU General Public License for most of our software; it applies also to\n"
+"any other work released this way by its authors.  You can apply it to\n"
+"your programs, too."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:22
+msgid ""
+"  When we speak of free software, we are referring to freedom, not\n"
+"price.  Our General Public Licenses are designed to make sure that you\n"
+"have the freedom to distribute copies of free software (and charge for\n"
+"them if you wish), that you receive source code or can get it if you\n"
+"want it, that you can change the software or use pieces of it in new\n"
+"free programs, and that you know you can do these things."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:29
+msgid ""
+"  To protect your rights, we need to prevent others from denying you\n"
+"these rights or asking you to surrender the rights.  Therefore, you have\n"
+"certain responsibilities if you distribute copies of the software, or if\n"
+"you modify it: responsibilities to respect the freedom of others."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:34
+msgid ""
+"  For example, if you distribute copies of such a program, whether\n"
+"gratis or for a fee, you must pass on to the recipients the same\n"
+"freedoms that you received.  You must make sure that they, too, receive\n"
+"or can get the source code.  And you must show them these terms so they\n"
+"know their rights."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:40
+msgid ""
+"  Developers that use the GNU GPL protect your rights with two steps:\n"
+"(1) assert copyright on the software, and (2) offer you this License\n"
+"giving you legal permission to copy, distribute and/or modify it."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:44
+msgid ""
+"  For the developers' and authors' protection, the GPL clearly explains\n"
+"that there is no warranty for this free software.  For both users' and\n"
+"authors' sake, the GPL requires that modified versions be marked as\n"
+"changed, so that their problems will not be attributed erroneously to\n"
+"authors of previous versions."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:50
+msgid ""
+"  Some devices are designed to deny users access to install or run\n"
+"modified versions of the software inside them, although the manufacturer\n"
+"can do so.  This is fundamentally incompatible with the aim of\n"
+"protecting users' freedom to change the software.  The systematic\n"
+"pattern of such abuse occurs in the area of products for individuals to\n"
+"use, which is precisely where it is most unacceptable.  Therefore, we\n"
+"have designed this version of the GPL to prohibit the practice for those\n"
+"products.  If such problems arise substantially in other domains, we\n"
+"stand ready to extend this provision to those domains in future versions\n"
+"of the GPL, as needed to protect the freedom of users."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:61
+msgid ""
+"  Finally, every program is threatened constantly by software patents.\n"
+"States should not allow patents to restrict development and use of\n"
+"software on general-purpose computers, but in those that do, we wish to\n"
+"avoid the special danger that patents applied to a free program could\n"
+"make it effectively proprietary.  To prevent this, the GPL assures that\n"
+"patents cannot be used to render the program non-free."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:68
+msgid ""
+"  The precise terms and conditions for copying, distribution and\n"
+"modification follow."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:71
+msgid "                       TERMS AND CONDITIONS"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:73
+msgid "  0. Definitions."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:75
+msgid ""
+"  \"This License\" refers to version 3 of the GNU General Public License."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:77
+msgid ""
+"  \"Copyright\" also means copyright-like laws that apply to other kinds of\n"
+"works, such as semiconductor masks."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:80
+msgid ""
+"  \"The Program\" refers to any copyrightable work licensed under this\n"
+"License.  Each licensee is addressed as \"you\".  \"Licensees\" and\n"
+"\"recipients\" may be individuals or organizations."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:84
+msgid ""
+"  To \"modify\" a work means to copy from or adapt all or part of the work\n"
+"in a fashion requiring copyright permission, other than the making of an\n"
+"exact copy.  The resulting work is called a \"modified version\" of the\n"
+"earlier work or a work \"based on\" the earlier work."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:89
+msgid ""
+"  A \"covered work\" means either the unmodified Program or a work based\n"
+"on the Program."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:92
+msgid ""
+"  To \"propagate\" a work means to do anything with it that, without\n"
+"permission, would make you directly or secondarily liable for\n"
+"infringement under applicable copyright law, except executing it on a\n"
+"computer or modifying a private copy.  Propagation includes copying,\n"
+"distribution (with or without modification), making available to the\n"
+"public, and in some countries other activities as well."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:99
+msgid ""
+"  To \"convey\" a work means any kind of propagation that enables other\n"
+"parties to make or receive copies.  Mere interaction with a user through\n"
+"a computer network, with no transfer of a copy, is not conveying."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:103
+msgid ""
+"  An interactive user interface displays \"Appropriate Legal Notices\"\n"
+"to the extent that it includes a convenient and prominently visible\n"
+"feature that (1) displays an appropriate copyright notice, and (2)\n"
+"tells the user that there is no warranty for the work (except to the\n"
+"extent that warranties are provided), that licensees may convey the\n"
+"work under this License, and how to view a copy of this License.  If\n"
+"the interface presents a list of user commands or options, such as a\n"
+"menu, a prominent item in the list meets this criterion."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:112
+msgid "  1. Source Code."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:114
+msgid ""
+"  The \"source code\" for a work means the preferred form of the work\n"
+"for making modifications to it.  \"Object code\" means any non-source\n"
+"form of a work."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:118
+msgid ""
+"  A \"Standard Interface\" means an interface that either is an official\n"
+"standard defined by a recognized standards body, or, in the case of\n"
+"interfaces specified for a particular programming language, one that\n"
+"is widely used among developers working in that language."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:123
+msgid ""
+"  The \"System Libraries\" of an executable work include anything, other\n"
+"than the work as a whole, that (a) is included in the normal form of\n"
+"packaging a Major Component, but which is not part of that Major\n"
+"Component, and (b) serves only to enable use of the work with that\n"
+"Major Component, or to implement a Standard Interface for which an\n"
+"implementation is available to the public in source code form.  A\n"
+"\"Major Component\", in this context, means a major essential component\n"
+"(kernel, window system, and so on) of the specific operating system\n"
+"(if any) on which the executable work runs, or a compiler used to\n"
+"produce the work, or an object code interpreter used to run it."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:134
+msgid ""
+"  The \"Corresponding Source\" for a work in object code form means all\n"
+"the source code needed to generate, install, and (for an executable\n"
+"work) run the object code and to modify the work, including scripts to\n"
+"control those activities.  However, it does not include the work's\n"
+"System Libraries, or general-purpose tools or generally available free\n"
+"programs which are used unmodified in performing those activities but\n"
+"which are not part of the work.  For example, Corresponding Source\n"
+"includes interface definition files associated with source files for\n"
+"the work, and the source code for shared libraries and dynamically\n"
+"linked subprograms that the work is specifically designed to require,\n"
+"such as by intimate data communication or control flow between those\n"
+"subprograms and other parts of the work."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:147
+msgid ""
+"  The Corresponding Source need not include anything that users\n"
+"can regenerate automatically from other parts of the Corresponding\n"
+"Source."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:151
+msgid ""
+"  The Corresponding Source for a work in source code form is that\n"
+"same work."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:154
+msgid "  2. Basic Permissions."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:156
+msgid ""
+"  All rights granted under this License are granted for the term of\n"
+"copyright on the Program, and are irrevocable provided the stated\n"
+"conditions are met.  This License explicitly affirms your unlimited\n"
+"permission to run the unmodified Program.  The output from running a\n"
+"covered work is covered by this License only if the output, given its\n"
+"content, constitutes a covered work.  This License acknowledges your\n"
+"rights of fair use or other equivalent, as provided by copyright law."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:164
+msgid ""
+"  You may make, run and propagate covered works that you do not\n"
+"convey, without conditions so long as your license otherwise remains\n"
+"in force.  You may convey covered works to others for the sole purpose\n"
+"of having them make modifications exclusively for you, or provide you\n"
+"with facilities for running those works, provided that you comply with\n"
+"the terms of this License in conveying all material for which you do\n"
+"not control copyright.  Those thus making or running the covered works\n"
+"for you must do so exclusively on your behalf, under your direction\n"
+"and control, on terms that prohibit them from making any copies of\n"
+"your copyrighted material outside their relationship with you."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:175
+msgid ""
+"  Conveying under any other circumstances is permitted solely under\n"
+"the conditions stated below.  Sublicensing is not allowed; section 10\n"
+"makes it unnecessary."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:179
+msgid "  3. Protecting Users' Legal Rights From Anti-Circumvention Law."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:181
+msgid ""
+"  No covered work shall be deemed part of an effective technological\n"
+"measure under any applicable law fulfilling obligations under article\n"
+"11 of the WIPO copyright treaty adopted on 20 December 1996, or\n"
+"similar laws prohibiting or restricting circumvention of such\n"
+"measures."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:187
+msgid ""
+"  When you convey a covered work, you waive any legal power to forbid\n"
+"circumvention of technological measures to the extent such circumvention\n"
+"is effected by exercising rights under this License with respect to\n"
+"the covered work, and you disclaim any intention to limit operation or\n"
+"modification of the work as a means of enforcing, against the work's\n"
+"users, your or third parties' legal rights to forbid circumvention of\n"
+"technological measures."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:195
+msgid "  4. Conveying Verbatim Copies."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:197
+msgid ""
+"  You may convey verbatim copies of the Program's source code as you\n"
+"receive it, in any medium, provided that you conspicuously and\n"
+"appropriately publish on each copy an appropriate copyright notice;\n"
+"keep intact all notices stating that this License and any\n"
+"non-permissive terms added in accord with section 7 apply to the code;\n"
+"keep intact all notices of the absence of any warranty; and give all\n"
+"recipients a copy of this License along with the Program."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:205
+msgid ""
+"  You may charge any price or no price for each copy that you convey,\n"
+"and you may offer support or warranty protection for a fee."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:208
+msgid "  5. Conveying Modified Source Versions."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:210
+msgid ""
+"  You may convey a work based on the Program, or the modifications to\n"
+"produce it from the Program, in the form of source code under the\n"
+"terms of section 4, provided that you also meet all of these conditions:"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:214
+msgid ""
+"    a) The work must carry prominent notices stating that you modified\n"
+"    it, and giving a relevant date."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:217
+msgid ""
+"    b) The work must carry prominent notices stating that it is\n"
+"    released under this License and any conditions added under section\n"
+"    7.  This requirement modifies the requirement in section 4 to\n"
+"    \"keep intact all notices\"."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:222
+msgid ""
+"    c) You must license the entire work, as a whole, under this\n"
+"    License to anyone who comes into possession of a copy.  This\n"
+"    License will therefore apply, along with any applicable section 7\n"
+"    additional terms, to the whole of the work, and all its parts,\n"
+"    regardless of how they are packaged.  This License gives no\n"
+"    permission to license the work in any other way, but it does not\n"
+"    invalidate such permission if you have separately received it."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:230
+msgid ""
+"    d) If the work has interactive user interfaces, each must display\n"
+"    Appropriate Legal Notices; however, if the Program has interactive\n"
+"    interfaces that do not display Appropriate Legal Notices, your\n"
+"    work need not make them do so."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:235
+msgid ""
+"  A compilation of a covered work with other separate and independent\n"
+"works, which are not by their nature extensions of the covered work,\n"
+"and which are not combined with it such as to form a larger program,\n"
+"in or on a volume of a storage or distribution medium, is called an\n"
+"\"aggregate\" if the compilation and its resulting copyright are not\n"
+"used to limit the access or legal rights of the compilation's users\n"
+"beyond what the individual works permit.  Inclusion of a covered work\n"
+"in an aggregate does not cause this License to apply to the other\n"
+"parts of the aggregate."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:245
+msgid "  6. Conveying Non-Source Forms."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:247
+msgid ""
+"  You may convey a covered work in object code form under the terms\n"
+"of sections 4 and 5, provided that you also convey the\n"
+"machine-readable Corresponding Source under the terms of this License,\n"
+"in one of these ways:"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:252
+msgid ""
+"    a) Convey the object code in, or embodied in, a physical product\n"
+"    (including a physical distribution medium), accompanied by the\n"
+"    Corresponding Source fixed on a durable physical medium\n"
+"    customarily used for software interchange."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:257
+msgid ""
+"    b) Convey the object code in, or embodied in, a physical product\n"
+"    (including a physical distribution medium), accompanied by a\n"
+"    written offer, valid for at least three years and valid for as\n"
+"    long as you offer spare parts or customer support for that product\n"
+"    model, to give anyone who possesses the object code either (1) a\n"
+"    copy of the Corresponding Source for all the software in the\n"
+"    product that is covered by this License, on a durable physical\n"
+"    medium customarily used for software interchange, for a price no\n"
+"    more than your reasonable cost of physically performing this\n"
+"    conveying of source, or (2) access to copy the\n"
+"    Corresponding Source from a network server at no charge."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:269
+msgid ""
+"    c) Convey individual copies of the object code with a copy of the\n"
+"    written offer to provide the Corresponding Source.  This\n"
+"    alternative is allowed only occasionally and noncommercially, and\n"
+"    only if you received the object code with such an offer, in accord\n"
+"    with subsection 6b."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:275
+msgid ""
+"    d) Convey the object code by offering access from a designated\n"
+"    place (gratis or for a charge), and offer equivalent access to the\n"
+"    Corresponding Source in the same way through the same place at no\n"
+"    further charge.  You need not require recipients to copy the\n"
+"    Corresponding Source along with the object code.  If the place to\n"
+"    copy the object code is a network server, the Corresponding Source\n"
+"    may be on a different server (operated by you or a third party)\n"
+"    that supports equivalent copying facilities, provided you maintain\n"
+"    clear directions next to the object code saying where to find the\n"
+"    Corresponding Source.  Regardless of what server hosts the\n"
+"    Corresponding Source, you remain obligated to ensure that it is\n"
+"    available for as long as needed to satisfy these requirements."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:288
+msgid ""
+"    e) Convey the object code using peer-to-peer transmission, provided\n"
+"    you inform other peers where the object code and Corresponding\n"
+"    Source of the work are being offered to the general public at no\n"
+"    charge under subsection 6d."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:293
+msgid ""
+"  A separable portion of the object code, whose source code is excluded\n"
+"from the Corresponding Source as a System Library, need not be\n"
+"included in conveying the object code work."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:297
+msgid ""
+"  A \"User Product\" is either (1) a \"consumer product\", which means any\n"
+"tangible personal property which is normally used for personal, family,\n"
+"or household purposes, or (2) anything designed or sold for incorporation\n"
+"into a dwelling.  In determining whether a product is a consumer product,\n"
+"doubtful cases shall be resolved in favor of coverage.  For a particular\n"
+"product received by a particular user, \"normally used\" refers to a\n"
+"typical or common use of that class of product, regardless of the status\n"
+"of the particular user or of the way in which the particular user\n"
+"actually uses, or expects or is expected to use, the product.  A product\n"
+"is a consumer product regardless of whether the product has substantial\n"
+"commercial, industrial or non-consumer uses, unless such uses represent\n"
+"the only significant mode of use of the product."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:310
+msgid ""
+"  \"Installation Information\" for a User Product means any methods,\n"
+"procedures, authorization keys, or other information required to install\n"
+"and execute modified versions of a covered work in that User Product from\n"
+"a modified version of its Corresponding Source.  The information must\n"
+"suffice to ensure that the continued functioning of the modified object\n"
+"code is in no case prevented or interfered with solely because\n"
+"modification has been made."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:318
+msgid ""
+"  If you convey an object code work under this section in, or with, or\n"
+"specifically for use in, a User Product, and the conveying occurs as\n"
+"part of a transaction in which the right of possession and use of the\n"
+"User Product is transferred to the recipient in perpetuity or for a\n"
+"fixed term (regardless of how the transaction is characterized), the\n"
+"Corresponding Source conveyed under this section must be accompanied\n"
+"by the Installation Information.  But this requirement does not apply\n"
+"if neither you nor any third party retains the ability to install\n"
+"modified object code on the User Product (for example, the work has\n"
+"been installed in ROM)."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:329
+msgid ""
+"  The requirement to provide Installation Information does not include a\n"
+"requirement to continue to provide support service, warranty, or updates\n"
+"for a work that has been modified or installed by the recipient, or for\n"
+"the User Product in which it has been modified or installed.  Access to a\n"
+"network may be denied when the modification itself materially and\n"
+"adversely affects the operation of the network or violates the rules and\n"
+"protocols for communication across the network."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:337
+msgid ""
+"  Corresponding Source conveyed, and Installation Information provided,\n"
+"in accord with this section must be in a format that is publicly\n"
+"documented (and with an implementation available to the public in\n"
+"source code form), and must require no special password or key for\n"
+"unpacking, reading or copying."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:343
+msgid "  7. Additional Terms."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:345
+msgid ""
+"  \"Additional permissions\" are terms that supplement the terms of this\n"
+"License by making exceptions from one or more of its conditions.\n"
+"Additional permissions that are applicable to the entire Program shall\n"
+"be treated as though they were included in this License, to the extent\n"
+"that they are valid under applicable law.  If additional permissions\n"
+"apply only to part of the Program, that part may be used separately\n"
+"under those permissions, but the entire Program remains governed by\n"
+"this License without regard to the additional permissions."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:354
+msgid ""
+"  When you convey a copy of a covered work, you may at your option\n"
+"remove any additional permissions from that copy, or from any part of\n"
+"it.  (Additional permissions may be written to require their own\n"
+"removal in certain cases when you modify the work.)  You may place\n"
+"additional permissions on material, added by you to a covered work,\n"
+"for which you have or can give appropriate copyright permission."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:361
+msgid ""
+"  Notwithstanding any other provision of this License, for material you\n"
+"add to a covered work, you may (if authorized by the copyright holders of\n"
+"that material) supplement the terms of this License with terms:"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:365
+msgid ""
+"    a) Disclaiming warranty or limiting liability differently from the\n"
+"    terms of sections 15 and 16 of this License; or"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:368
+msgid ""
+"    b) Requiring preservation of specified reasonable legal notices or\n"
+"    author attributions in that material or in the Appropriate Legal\n"
+"    Notices displayed by works containing it; or"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:372
+msgid ""
+"    c) Prohibiting misrepresentation of the origin of that material, or\n"
+"    requiring that modified versions of such material be marked in\n"
+"    reasonable ways as different from the original version; or"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:376
+msgid ""
+"    d) Limiting the use for publicity purposes of names of licensors or\n"
+"    authors of the material; or"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:379
+msgid ""
+"    e) Declining to grant rights under trademark law for use of some\n"
+"    trade names, trademarks, or service marks; or"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:382
+msgid ""
+"    f) Requiring indemnification of licensors and authors of that\n"
+"    material by anyone who conveys the material (or modified versions of\n"
+"    it) with contractual assumptions of liability to the recipient, for\n"
+"    any liability that these contractual assumptions directly impose on\n"
+"    those licensors and authors."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:388
+msgid ""
+"  All other non-permissive additional terms are considered \"further\n"
+"restrictions\" within the meaning of section 10.  If the Program as you\n"
+"received it, or any part of it, contains a notice stating that it is\n"
+"governed by this License along with a term that is a further\n"
+"restriction, you may remove that term.  If a license document contains\n"
+"a further restriction but permits relicensing or conveying under this\n"
+"License, you may add to a covered work material governed by the terms\n"
+"of that license document, provided that the further restriction does\n"
+"not survive such relicensing or conveying."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:398
+msgid ""
+"  If you add terms to a covered work in accord with this section, you\n"
+"must place, in the relevant source files, a statement of the\n"
+"additional terms that apply to those files, or a notice indicating\n"
+"where to find the applicable terms."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:403
+msgid ""
+"  Additional terms, permissive or non-permissive, may be stated in the\n"
+"form of a separately written license, or stated as exceptions;\n"
+"the above requirements apply either way."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:407
+msgid "  8. Termination."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:409
+msgid ""
+"  You may not propagate or modify a covered work except as expressly\n"
+"provided under this License.  Any attempt otherwise to propagate or\n"
+"modify it is void, and will automatically terminate your rights under\n"
+"this License (including any patent licenses granted under the third\n"
+"paragraph of section 11)."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:415
+msgid ""
+"  However, if you cease all violation of this License, then your\n"
+"license from a particular copyright holder is reinstated (a)\n"
+"provisionally, unless and until the copyright holder explicitly and\n"
+"finally terminates your license, and (b) permanently, if the copyright\n"
+"holder fails to notify you of the violation by some reasonable means\n"
+"prior to 60 days after the cessation."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:422
+msgid ""
+"  Moreover, your license from a particular copyright holder is\n"
+"reinstated permanently if the copyright holder notifies you of the\n"
+"violation by some reasonable means, this is the first time you have\n"
+"received notice of violation of this License (for any work) from that\n"
+"copyright holder, and you cure the violation prior to 30 days after\n"
+"your receipt of the notice."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:429
+msgid ""
+"  Termination of your rights under this section does not terminate the\n"
+"licenses of parties who have received copies or rights from you under\n"
+"this License.  If your rights have been terminated and not permanently\n"
+"reinstated, you do not qualify to receive new licenses for the same\n"
+"material under section 10."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:435
+msgid "  9. Acceptance Not Required for Having Copies."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:437
+msgid ""
+"  You are not required to accept this License in order to receive or\n"
+"run a copy of the Program.  Ancillary propagation of a covered work\n"
+"occurring solely as a consequence of using peer-to-peer transmission\n"
+"to receive a copy likewise does not require acceptance.  However,\n"
+"nothing other than this License grants you permission to propagate or\n"
+"modify any covered work.  These actions infringe copyright if you do\n"
+"not accept this License.  Therefore, by modifying or propagating a\n"
+"covered work, you indicate your acceptance of this License to do so."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:446
+msgid "  10. Automatic Licensing of Downstream Recipients."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:448
+msgid ""
+"  Each time you convey a covered work, the recipient automatically\n"
+"receives a license from the original licensors, to run, modify and\n"
+"propagate that work, subject to this License.  You are not responsible\n"
+"for enforcing compliance by third parties with this License."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:453
+msgid ""
+"  An \"entity transaction\" is a transaction transferring control of an\n"
+"organization, or substantially all assets of one, or subdividing an\n"
+"organization, or merging organizations.  If propagation of a covered\n"
+"work results from an entity transaction, each party to that\n"
+"transaction who receives a copy of the work also receives whatever\n"
+"licenses to the work the party's predecessor in interest had or could\n"
+"give under the previous paragraph, plus a right to possession of the\n"
+"Corresponding Source of the work from the predecessor in interest, if\n"
+"the predecessor has it or can get it with reasonable efforts."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:463
+msgid ""
+"  You may not impose any further restrictions on the exercise of the\n"
+"rights granted or affirmed under this License.  For example, you may\n"
+"not impose a license fee, royalty, or other charge for exercise of\n"
+"rights granted under this License, and you may not initiate litigation\n"
+"(including a cross-claim or counterclaim in a lawsuit) alleging that\n"
+"any patent claim is infringed by making, using, selling, offering for\n"
+"sale, or importing the Program or any portion of it."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:471
+msgid "  11. Patents."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:473
+msgid ""
+"  A \"contributor\" is a copyright holder who authorizes use under this\n"
+"License of the Program or a work on which the Program is based.  The\n"
+"work thus licensed is called the contributor's \"contributor version\"."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:477
+msgid ""
+"  A contributor's \"essential patent claims\" are all patent claims\n"
+"owned or controlled by the contributor, whether already acquired or\n"
+"hereafter acquired, that would be infringed by some manner, permitted\n"
+"by this License, of making, using, or selling its contributor version,\n"
+"but do not include claims that would be infringed only as a\n"
+"consequence of further modification of the contributor version.  For\n"
+"purposes of this definition, \"control\" includes the right to grant\n"
+"patent sublicenses in a manner consistent with the requirements of\n"
+"this License."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:487
+msgid ""
+"  Each contributor grants you a non-exclusive, worldwide, royalty-free\n"
+"patent license under the contributor's essential patent claims, to\n"
+"make, use, sell, offer for sale, import and otherwise run, modify and\n"
+"propagate the contents of its contributor version."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:492
+msgid ""
+"  In the following three paragraphs, a \"patent license\" is any express\n"
+"agreement or commitment, however denominated, not to enforce a patent\n"
+"(such as an express permission to practice a patent or covenant not to\n"
+"sue for patent infringement).  To \"grant\" such a patent license to a\n"
+"party means to make such an agreement or commitment not to enforce a\n"
+"patent against the party."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:499
+msgid ""
+"  If you convey a covered work, knowingly relying on a patent license,\n"
+"and the Corresponding Source of the work is not available for anyone\n"
+"to copy, free of charge and under the terms of this License, through a\n"
+"publicly available network server or other readily accessible means,\n"
+"then you must either (1) cause the Corresponding Source to be so\n"
+"available, or (2) arrange to deprive yourself of the benefit of the\n"
+"patent license for this particular work, or (3) arrange, in a manner\n"
+"consistent with the requirements of this License, to extend the patent\n"
+"license to downstream recipients.  \"Knowingly relying\" means you have\n"
+"actual knowledge that, but for the patent license, your conveying the\n"
+"covered work in a country, or your recipient's use of the covered work\n"
+"in a country, would infringe one or more identifiable patents in that\n"
+"country that you have reason to believe are valid."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:513
+msgid ""
+"  If, pursuant to or in connection with a single transaction or\n"
+"arrangement, you convey, or propagate by procuring conveyance of, a\n"
+"covered work, and grant a patent license to some of the parties\n"
+"receiving the covered work authorizing them to use, propagate, modify\n"
+"or convey a specific copy of the covered work, then the patent license\n"
+"you grant is automatically extended to all recipients of the covered\n"
+"work and works based on it."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:521
+msgid ""
+"  A patent license is \"discriminatory\" if it does not include within\n"
+"the scope of its coverage, prohibits the exercise of, or is\n"
+"conditioned on the non-exercise of one or more of the rights that are\n"
+"specifically granted under this License.  You may not convey a covered\n"
+"work if you are a party to an arrangement with a third party that is\n"
+"in the business of distributing software, under which you make payment\n"
+"to the third party based on the extent of your activity of conveying\n"
+"the work, and under which the third party grants, to any of the\n"
+"parties who would receive the covered work from you, a discriminatory\n"
+"patent license (a) in connection with copies of the covered work\n"
+"conveyed by you (or copies made from those copies), or (b) primarily\n"
+"for and in connection with specific products or compilations that\n"
+"contain the covered work, unless you entered into that arrangement,\n"
+"or that patent license was granted, prior to 28 March 2007."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:536
+msgid ""
+"  Nothing in this License shall be construed as excluding or limiting\n"
+"any implied license or other defenses to infringement that may\n"
+"otherwise be available to you under applicable patent law."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:540
+msgid "  12. No Surrender of Others' Freedom."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:542
+msgid ""
+"  If conditions are imposed on you (whether by court order, agreement or\n"
+"otherwise) that contradict the conditions of this License, they do not\n"
+"excuse you from the conditions of this License.  If you cannot convey a\n"
+"covered work so as to satisfy simultaneously your obligations under this\n"
+"License and any other pertinent obligations, then as a consequence you may\n"
+"not convey it at all.  For example, if you agree to terms that obligate you\n"
+"to collect a royalty for further conveying from those to whom you convey\n"
+"the Program, the only way you could satisfy both those terms and this\n"
+"License would be to refrain entirely from conveying the Program."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:552
+msgid "  13. Use with the GNU Affero General Public License."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:554
+msgid ""
+"  Notwithstanding any other provision of this License, you have\n"
+"permission to link or combine any covered work with a work licensed\n"
+"under version 3 of the GNU Affero General Public License into a single\n"
+"combined work, and to convey the resulting work.  The terms of this\n"
+"License will continue to apply to the part which is the covered work,\n"
+"but the special requirements of the GNU Affero General Public License,\n"
+"section 13, concerning interaction through a network will apply to the\n"
+"combination as such."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:563
+msgid "  14. Revised Versions of this License."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:565
+msgid ""
+"  The Free Software Foundation may publish revised and/or new versions of\n"
+"the GNU General Public License from time to time.  Such new versions will\n"
+"be similar in spirit to the present version, but may differ in detail to\n"
+"address new problems or concerns."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:570
+msgid ""
+"  Each version is given a distinguishing version number.  If the\n"
+"Program specifies that a certain numbered version of the GNU General\n"
+"Public License \"or any later version\" applies to it, you have the\n"
+"option of following the terms and conditions either of that numbered\n"
+"version or of any later version published by the Free Software\n"
+"Foundation.  If the Program does not specify a version number of the\n"
+"GNU General Public License, you may choose any version ever published\n"
+"by the Free Software Foundation."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:579
+msgid ""
+"  If the Program specifies that a proxy can decide which future\n"
+"versions of the GNU General Public License can be used, that proxy's\n"
+"public statement of acceptance of a version permanently authorizes you\n"
+"to choose that version for the Program."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:584
+msgid ""
+"  Later license versions may give you additional or different\n"
+"permissions.  However, no additional obligations are imposed on any\n"
+"author or copyright holder as a result of your choosing to follow a\n"
+"later version."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:589
+msgid "  15. Disclaimer of Warranty."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:591
+msgid ""
+"  THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY\n"
+"APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT\n"
+"HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY\n"
+"OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,\n"
+"THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n"
+"PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM\n"
+"IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF\n"
+"ALL NECESSARY SERVICING, REPAIR OR CORRECTION."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:600
+msgid "  16. Limitation of Liability."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:602
+msgid ""
+"  IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING\n"
+"WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS\n"
+"THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY\n"
+"GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE\n"
+"USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF\n"
+"DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD\n"
+"PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),\n"
+"EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF\n"
+"SUCH DAMAGES."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:612
+msgid "  17. Interpretation of Sections 15 and 16."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:614
+msgid ""
+"  If the disclaimer of warranty and limitation of liability provided\n"
+"above cannot be given local legal effect according to their terms,\n"
+"reviewing courts shall apply local law that most closely approximates\n"
+"an absolute waiver of all civil liability in connection with the\n"
+"Program, unless a warranty or assumption of liability accompanies a\n"
+"copy of the Program in return for a fee."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:621
+msgid "                     END OF TERMS AND CONDITIONS"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:623
+msgid "            How to Apply These Terms to Your New Programs"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:625
+msgid ""
+"  If you develop a new program, and you want it to be of the greatest\n"
+"possible use to the public, the best way to achieve this is to make it\n"
+"free software which everyone can redistribute and change under these terms."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:629
+msgid ""
+"  To do so, attach the following notices to the program.  It is safest\n"
+"to attach them to the start of each source file to most effectively\n"
+"state the exclusion of warranty; and each file should have at least\n"
+"the \"copyright\" line and a pointer to where the full notice is found."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:634
+msgid ""
+"    <one line to give the program's name and a brief idea of what it does.>\n"
+"    Copyright (C) <year>  <name of author>"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:637
+msgid ""
+"    This program is free software: you can redistribute it and/or modify\n"
+"    it under the terms of the GNU General Public License as published by\n"
+"    the Free Software Foundation, either version 3 of the License, or\n"
+"    (at your option) any later version."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:642
+msgid ""
+"    This program is distributed in the hope that it will be useful,\n"
+"    but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"    GNU General Public License for more details."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:647
+msgid ""
+"    You should have received a copy of the GNU General Public License\n"
+"    along with this program.  If not, see <http://www.gnu.org/licenses/>."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:650
+msgid ""
+"Also add information on how to contact you by electronic and paper mail."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:652
+msgid ""
+"  If the program does terminal interaction, make it output a short\n"
+"notice like this when it starts in an interactive mode:"
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:655
+msgid ""
+"    <program>  Copyright (C) <year>  <name of author>\n"
+"    This program comes with ABSOLUTELY NO WARRANTY; for details type `show "
+"w'.\n"
+"    This is free software, and you are welcome to redistribute it\n"
+"    under certain conditions; type `show c' for details."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:660
+msgid ""
+"The hypothetical commands `show w' and `show c' should show the appropriate\n"
+"parts of the General Public License.  Of course, your program's commands\n"
+"might be different; for a GUI interface, you would use an \"about box\"."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:664
+msgid ""
+"  You should also get your employer (if you work as a programmer) or "
+"school,\n"
+"if any, to sign a \"copyright disclaimer\" for the program, if necessary.\n"
+"For more information on this, and how to apply and follow the GNU GPL, see\n"
+"<http://www.gnu.org/licenses/>."
+msgstr ""
+
+#: doc/text/gpl-3.0.txt:669
+msgid ""
+"  The GNU General Public License does not permit incorporating your program\n"
+"into proprietary programs.  If your program is a subroutine library, you\n"
+"may consider it more useful to permit linking proprietary applications with\n"
+"the library.  If this is what you want to do, use the GNU Lesser General\n"
+"Public License instead of this License.  But first, please read\n"
+"<http://www.gnu.org/philosophy/why-not-lgpl.html>."
+msgstr ""
+
+#: doc/text/news.md:1
+msgid "# News"
+msgstr ""
+
+#: doc/text/news.md:3
+msgid "## 1.0.0: 2012-08-29"
+msgstr ""
+
+#: doc/text/news.md:5
+msgid "The first release!!!"
+msgstr ""
+
+# Grntest
+#: lib/grntest/tester.rb:2 lib/grntest/version.rb:2
+msgid "Copyright (C) 2012  Kouhei Sutou <kou@clear-code.com>"
+msgstr ""
+
+# Grntest
+#: lib/grntest/tester.rb:4 lib/grntest/version.rb:4
+msgid ""
+"This program is free software: you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation, either version 3 of the License, or\n"
+"(at your option) any later version."
+msgstr ""
+
+# Grntest
+#: lib/grntest/tester.rb:9 lib/grntest/version.rb:9
+msgid ""
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details."
+msgstr ""
+
+# Grntest
+#: lib/grntest/tester.rb:14 lib/grntest/version.rb:14
+msgid ""
+"You should have received a copy of the GNU General Public License\n"
+"along with this program.  If not, see <http://www.gnu.org/licenses/>."
+msgstr ""
+
+# @return [NotExist]
+#: lib/grntest/tester.rb:39
+msgid "a new instance of NotExist"
+msgstr ""
+
+# Grntest::Tester::NotExist#path
+#: lib/grntest/tester.rb:39
+msgid "Returns the value of attribute path"
+msgstr ""
+
+# @return [ParseError]
+#: lib/grntest/tester.rb:47
+msgid "a new instance of ParseError"
+msgstr ""
+
+# Grntest::Tester::ParseError#type
+#: lib/grntest/tester.rb:47
+msgid "Returns the value of attribute type"
+msgstr ""
+
+# Grntest::Tester::ParseError#content
+#: lib/grntest/tester.rb:47
+msgid "Returns the value of attribute content"
+msgstr ""
+
+# Grntest::Tester::ParseError#reason
+#: lib/grntest/tester.rb:47
+msgid "Returns the value of attribute reason"
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:225
+msgid "the value to set the attribute groonga to."
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:225 lib/grntest/tester.rb:1120
+msgid "the value to set the attribute groonga_suggest_create_dataset to."
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:225
+msgid "the value to set the attribute groonga_httpd to."
+msgstr ""
+
+# @param
+#: lib/grntest/tester.rb:225 lib/grntest/tester.rb:226
+#: lib/grntest/tester.rb:227 lib/grntest/tester.rb:228
+#: lib/grntest/tester.rb:229 lib/grntest/tester.rb:230
+#: lib/grntest/tester.rb:231 lib/grntest/tester.rb:385
+#: lib/grntest/tester.rb:531 lib/grntest/tester.rb:532
+#: lib/grntest/tester.rb:651 lib/grntest/tester.rb:652
+#: lib/grntest/tester.rb:1118 lib/grntest/tester.rb:1119
+#: lib/grntest/tester.rb:1120 lib/grntest/tester.rb:1121
+#: lib/grntest/tester.rb:1122
+msgid "tag|param|value"
+msgstr ""
+
+# Grntest::Tester#groonga_suggest_create_dataset=
+# Grntest::Tester::Executor::Context#groonga_suggest_create_dataset=
+#: lib/grntest/tester.rb:226 lib/grntest/tester.rb:1121
+msgid "Sets the attribute groonga_suggest_create_dataset"
+msgstr ""
+
+# Grntest::Tester#groonga_httpd
+#: lib/grntest/tester.rb:226
+msgid "Returns the value of attribute groonga_httpd"
+msgstr ""
+
+# Grntest::Tester#groonga_httpd=
+#: lib/grntest/tester.rb:226
+msgid "Sets the attribute groonga_httpd"
+msgstr ""
+
+# Grntest::Tester#groonga=
+#: lib/grntest/tester.rb:226
+msgid "Sets the attribute groonga"
+msgstr ""
+
+# Grntest::Tester#groonga_suggest_create_dataset
+# Grntest::Tester::Executor::Context#groonga_suggest_create_dataset
+#: lib/grntest/tester.rb:226 lib/grntest/tester.rb:1121
+msgid "Returns the value of attribute groonga_suggest_create_dataset"
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:226
+msgid "the value to set the attribute testee to."
+msgstr ""
+
+# Grntest::Tester#groonga
+#: lib/grntest/tester.rb:226
+msgid "Returns the value of attribute groonga"
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:226 lib/grntest/tester.rb:1122
+msgid "the value to set the attribute output_type to."
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:226
+msgid "the value to set the attribute interface to."
+msgstr ""
+
+# Grntest::Tester#interface=
+#: lib/grntest/tester.rb:227
+msgid "Sets the attribute interface"
+msgstr ""
+
+# Grntest::Tester#output_type
+# Grntest::Tester::Executor::Context#output_type
+#: lib/grntest/tester.rb:227 lib/grntest/tester.rb:1123
+msgid "Returns the value of attribute output_type"
+msgstr ""
+
+# Grntest::Tester#output_type=
+# Grntest::Tester::Executor::Context#output_type=
+#: lib/grntest/tester.rb:227 lib/grntest/tester.rb:1123
+msgid "Sets the attribute output_type"
+msgstr ""
+
+# Grntest::Tester#interface
+#: lib/grntest/tester.rb:227
+msgid "Returns the value of attribute interface"
+msgstr ""
+
+# Grntest::Tester#testee
+#: lib/grntest/tester.rb:227
+msgid "Returns the value of attribute testee"
+msgstr ""
+
+# Grntest::Tester#testee=
+#: lib/grntest/tester.rb:227
+msgid "Sets the attribute testee"
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:227
+msgid "the value to set the attribute diff to."
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:227
+msgid "the value to set the attribute diff_options to."
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:227 lib/grntest/tester.rb:1119
+msgid "the value to set the attribute base_directory to."
+msgstr ""
+
+# Grntest::Tester#diff_options
+#: lib/grntest/tester.rb:228
+msgid "Returns the value of attribute diff_options"
+msgstr ""
+
+# Grntest::Tester#base_directory
+# Grntest::Tester::Executor::Context#base_directory
+#: lib/grntest/tester.rb:228 lib/grntest/tester.rb:1120
+msgid "Returns the value of attribute base_directory"
+msgstr ""
+
+# Grntest::Tester#diff=
+#: lib/grntest/tester.rb:228
+msgid "Sets the attribute diff"
+msgstr ""
+
+# Grntest::Tester#base_directory=
+# Grntest::Tester::Executor::Context#base_directory=
+#: lib/grntest/tester.rb:228 lib/grntest/tester.rb:1120
+msgid "Sets the attribute base_directory"
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:228
+msgid "the value to set the attribute n_workers to."
+msgstr ""
+
+# Grntest::Tester#diff_options=
+#: lib/grntest/tester.rb:228
+msgid "Sets the attribute diff_options"
+msgstr ""
+
+# Grntest::Tester#diff
+#: lib/grntest/tester.rb:228
+msgid "Returns the value of attribute diff"
+msgstr ""
+
+# Grntest::Tester#n_workers
+#: lib/grntest/tester.rb:229
+msgid "Returns the value of attribute n_workers"
+msgstr ""
+
+# Grntest::Tester#n_workers=
+#: lib/grntest/tester.rb:229
+msgid "Sets the attribute n_workers"
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:229
+msgid "the value to set the attribute output to."
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:230
+msgid "the value to set the attribute gdb to."
+msgstr ""
+
+# Grntest::Tester#output=
+#: lib/grntest/tester.rb:230
+msgid "Sets the attribute output"
+msgstr ""
+
+# Grntest::Tester#output
+#: lib/grntest/tester.rb:230
+msgid "Returns the value of attribute output"
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:230
+msgid "the value to set the attribute default_gdb to."
+msgstr ""
+
+# Grntest::Tester#gdb=
+#: lib/grntest/tester.rb:231
+msgid "Sets the attribute gdb"
+msgstr ""
+
+# Grntest::Tester#gdb
+#: lib/grntest/tester.rb:231
+msgid "Returns the value of attribute gdb"
+msgstr ""
+
+# Grntest::Tester#default_gdb
+#: lib/grntest/tester.rb:231
+msgid "Returns the value of attribute default_gdb"
+msgstr ""
+
+# Grntest::Tester#default_gdb=
+#: lib/grntest/tester.rb:231
+msgid "Sets the attribute default_gdb"
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:231
+msgid "the value to set the attribute reporter to."
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:231
+msgid "the value to set the attribute keep_database to."
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:231
+msgid "the value to set the attribute use_color to."
+msgstr ""
+
+# Grntest::Tester#use_color=
+#: lib/grntest/tester.rb:232
+msgid "Sets the attribute use_color"
+msgstr ""
+
+# Grntest::Tester#reporter=
+#: lib/grntest/tester.rb:232
+msgid "Sets the attribute reporter"
+msgstr ""
+
+# Grntest::Tester#keep_database=
+#: lib/grntest/tester.rb:232
+msgid "Sets the attribute keep_database"
+msgstr ""
+
+# Grntest::Tester#test_suite_patterns
+#: lib/grntest/tester.rb:233
+msgid "Returns the value of attribute test_suite_patterns"
+msgstr ""
+
+# Grntest::Tester#test_patterns
+#: lib/grntest/tester.rb:233
+msgid "Returns the value of attribute test_patterns"
+msgstr ""
+
+# @return [Tester]
+#: lib/grntest/tester.rb:234
+msgid "a new instance of Tester"
+msgstr ""
+
+# Grntest::Tester#exclude_test_patterns
+#: lib/grntest/tester.rb:234
+msgid "Returns the value of attribute exclude_test_patterns"
+msgstr ""
+
+# Grntest::Tester#exclude_test_suite_patterns
+#: lib/grntest/tester.rb:234
+msgid "Returns the value of attribute exclude_test_suite_patterns"
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:385
+msgid "the value to set the attribute elapsed_time to."
+msgstr ""
+
+# Grntest::Tester::Result#elapsed_time=
+#: lib/grntest/tester.rb:386
+msgid "Sets the attribute elapsed_time"
+msgstr ""
+
+# Grntest::Tester::Result#elapsed_time
+#: lib/grntest/tester.rb:386
+msgid "Returns the value of attribute elapsed_time"
+msgstr ""
+
+# @return [Result]
+#: lib/grntest/tester.rb:386
+msgid "a new instance of Result"
+msgstr ""
+
+# Grntest::Tester::WorkerResult#n_tests
+#: lib/grntest/tester.rb:400
+msgid "Returns the value of attribute n_tests"
+msgstr ""
+
+# Grntest::Tester::WorkerResult#n_passed_tests
+#: lib/grntest/tester.rb:400
+msgid "Returns the value of attribute n_passed_tests"
+msgstr ""
+
+# Grntest::Tester::WorkerResult#n_leaked_tests
+#: lib/grntest/tester.rb:400
+msgid "Returns the value of attribute n_leaked_tests"
+msgstr ""
+
+# Grntest::Tester::WorkerResult#n_not_checked_tests
+#: lib/grntest/tester.rb:401
+msgid "Returns the value of attribute n_not_checked_tests"
+msgstr ""
+
+# @return [WorkerResult]
+#: lib/grntest/tester.rb:402
+msgid "a new instance of WorkerResult"
+msgstr ""
+
+# Grntest::Tester::WorkerResult#failed_tests
+#: lib/grntest/tester.rb:402
+msgid "Returns the value of attribute failed_tests"
+msgstr ""
+
+# Grntest::Tester::Worker#test_suites_rusult
+#: lib/grntest/tester.rb:438
+msgid "Returns the value of attribute test_suites_rusult"
+msgstr ""
+
+# Grntest::Tester::Worker#id
+#: lib/grntest/tester.rb:438
+msgid "Returns the value of attribute id"
+msgstr ""
+
+# Grntest::Tester::Worker#tester
+#: lib/grntest/tester.rb:438
+msgid "Returns the value of attribute tester"
+msgstr ""
+
+# Grntest::Tester::Worker#reporter
+#: lib/grntest/tester.rb:438
+msgid "Returns the value of attribute reporter"
+msgstr ""
+
+# Grntest::Tester::Worker#suite_name
+#: lib/grntest/tester.rb:439
+msgid "Returns the value of attribute suite_name"
+msgstr ""
+
+# @return [Worker]
+#: lib/grntest/tester.rb:439
+msgid "a new instance of Worker"
+msgstr ""
+
+# Grntest::Tester::Worker#test_script_path
+#: lib/grntest/tester.rb:439
+msgid "Returns the value of attribute test_script_path"
+msgstr ""
+
+# Grntest::Tester::TestResult#test_name
+# Grntest::Tester::Worker#test_name
+#: lib/grntest/tester.rb:439 lib/grntest/tester.rb:652
+msgid "Returns the value of attribute test_name"
+msgstr ""
+
+# Grntest::Tester::Worker#status
+#: lib/grntest/tester.rb:439
+msgid "Returns the value of attribute status"
+msgstr ""
+
+# Grntest::Tester::Executor::Context#result
+# Grntest::Tester::Worker#result
+#: lib/grntest/tester.rb:439 lib/grntest/tester.rb:1122
+msgid "Returns the value of attribute result"
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:531
+msgid "the value to set the attribute workers to."
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:532
+msgid "the value to set the attribute n_total_tests to."
+msgstr ""
+
+# Grntest::Tester::TestSuitesResult#workers=
+#: lib/grntest/tester.rb:532
+msgid "Sets the attribute workers"
+msgstr ""
+
+# Grntest::Tester::TestSuitesResult#workers
+#: lib/grntest/tester.rb:532
+msgid "Returns the value of attribute workers"
+msgstr ""
+
+# Grntest::Tester::TestSuitesResult#n_total_tests
+#: lib/grntest/tester.rb:533
+msgid "Returns the value of attribute n_total_tests"
+msgstr ""
+
+# Grntest::Tester::TestSuitesResult#n_total_tests=
+#: lib/grntest/tester.rb:533
+msgid "Sets the attribute n_total_tests"
+msgstr ""
+
+# @return [TestSuitesResult]
+#: lib/grntest/tester.rb:533
+msgid "a new instance of TestSuitesResult"
+msgstr ""
+
+# @return [TestSuitesRunner]
+#: lib/grntest/tester.rb:578
+msgid "a new instance of TestSuitesRunner"
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:651
+msgid "the value to set the attribute test_name to."
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:651
+msgid "the value to set the attribute worker_id to."
+msgstr ""
+
+# Grntest::Tester::TestResult#worker_id=
+#: lib/grntest/tester.rb:652
+msgid "Sets the attribute worker_id"
+msgstr ""
+
+# Grntest::Tester::TestResult#worker_id
+#: lib/grntest/tester.rb:652
+msgid "Returns the value of attribute worker_id"
+msgstr ""
+
+# Grntest::Tester::TestResult#test_name=
+#: lib/grntest/tester.rb:652
+msgid "Sets the attribute test_name"
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:652
+msgid "the value to set the attribute actual to."
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:652
+msgid "the value to set the attribute n_leaked_objects to."
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:652
+msgid "the value to set the attribute expected to."
+msgstr ""
+
+# Grntest::Tester::TestResult#expected=
+#: lib/grntest/tester.rb:653
+msgid "Sets the attribute expected"
+msgstr ""
+
+# Grntest::Tester::TestResult#actual
+#: lib/grntest/tester.rb:653
+msgid "Returns the value of attribute actual"
+msgstr ""
+
+# Grntest::Tester::TestResult#actual=
+#: lib/grntest/tester.rb:653
+msgid "Sets the attribute actual"
+msgstr ""
+
+# @return [TestResult]
+#: lib/grntest/tester.rb:653
+msgid "a new instance of TestResult"
+msgstr ""
+
+# Grntest::Tester::TestResult#n_leaked_objects
+#: lib/grntest/tester.rb:653
+msgid "Returns the value of attribute n_leaked_objects"
+msgstr ""
+
+# Grntest::Tester::TestResult#n_leaked_objects=
+#: lib/grntest/tester.rb:653
+msgid "Sets the attribute n_leaked_objects"
+msgstr ""
+
+# Grntest::Tester::TestResult#expected
+#: lib/grntest/tester.rb:653
+msgid "Returns the value of attribute expected"
+msgstr ""
+
+# @return [TestRunner]
+#: lib/grntest/tester.rb:686
+msgid "a new instance of TestRunner"
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:1118
+msgid "the value to set the attribute logging to."
+msgstr ""
+
+# Grntest::Tester::Executor::Context#logging=
+#: lib/grntest/tester.rb:1119
+msgid "Sets the attribute logging"
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:1119
+msgid "the value to set the attribute db_path to."
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:1119
+msgid "the value to set the attribute temporary_directory_path to."
+msgstr ""
+
+# Grntest::Tester::Executor::Context#temporary_directory_path
+#: lib/grntest/tester.rb:1120
+msgid "Returns the value of attribute temporary_directory_path"
+msgstr ""
+
+# Grntest::Tester::Executor::Context#temporary_directory_path=
+#: lib/grntest/tester.rb:1120
+msgid "Sets the attribute temporary_directory_path"
+msgstr ""
+
+# Grntest::Tester::Executor::Context#db_path
+#: lib/grntest/tester.rb:1120
+msgid "Returns the value of attribute db_path"
+msgstr ""
+
+# Grntest::Tester::Executor::Context#db_path=
+#: lib/grntest/tester.rb:1120
+msgid "Sets the attribute db_path"
+msgstr ""
+
+# @param value
+#: lib/grntest/tester.rb:1121
+msgid "the value to set the attribute result to."
+msgstr ""
+
+# Grntest::Tester::Executor::Context#result=
+#: lib/grntest/tester.rb:1122
+msgid "Sets the attribute result"
+msgstr ""
+
+# @return [Context]
+#: lib/grntest/tester.rb:1123
+msgid "a new instance of Context"
+msgstr ""
+
+# @return [Executor]
+#: lib/grntest/tester.rb:1164
+msgid "a new instance of Executor"
+msgstr ""
+
+# Grntest::Tester::Executor#context
+#: lib/grntest/tester.rb:1164
+msgid "Returns the value of attribute context"
+msgstr ""
+
+# @return [StandardIOExecutor]
+#: lib/grntest/tester.rb:1426
+msgid "a new instance of StandardIOExecutor"
+msgstr ""
+
+# @return [HTTPExecutor]
+#: lib/grntest/tester.rb:1463
+msgid "a new instance of HTTPExecutor"
+msgstr ""
+
+# @return [CommandFormatConverter]
+#: lib/grntest/tester.rb:1500
+msgid "a new instance of CommandFormatConverter"
+msgstr ""
+
+# @return [BaseReporter]
+#: lib/grntest/tester.rb:1587
+msgid "a new instance of BaseReporter"
+msgstr ""
+
+# @return [MarkReporter]
+#: lib/grntest/tester.rb:1914
+msgid "a new instance of MarkReporter"
+msgstr ""
+
+# @return [StreamReporter]
+#: lib/grntest/tester.rb:1990
+msgid "a new instance of StreamReporter"
+msgstr ""
+
+# @return [InplaceReporter]
+#: lib/grntest/tester.rb:2048
+msgid "a new instance of InplaceReporter"
+msgstr ""
