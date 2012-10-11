@@ -1235,6 +1235,14 @@ EOF
         end
       end
 
+      def resolve_path(path)
+        if path.relative?
+          @context.base_directory + path
+        else
+          path
+        end
+      end
+
       def execute_directive(line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -1258,6 +1266,21 @@ EOF
             return
           end
           execute_script(Pathname(path))
+        when "copy-path"
+          source, destination, = options
+          if source.nil? or destination.nil?
+            log_input(line)
+            if source.nil?
+              log_error("#|e| [copy-path] source is missing")
+            end
+            if destiantion.nil?
+              log_error("#|e| [copy-path] destination is missing")
+            end
+            return
+          end
+          source = resolve_path(Pathname(source))
+          destination = resolve_path(Pathname(destination))
+          FileUtils.cp_r(source.to_s, destination.to_s)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
@@ -1282,10 +1305,7 @@ EOF
 
       def execute_script(script_path)
         executor = create_sub_executor(@context)
-        if script_path.relative?
-          script_path = @context.base_directory + script_path
-        end
-        executor.execute(script_path)
+        executor.execute(resolve_path(script_path))
       end
 
       def execute_command_line(command_line)
