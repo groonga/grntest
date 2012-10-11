@@ -1243,6 +1243,43 @@ EOF
         end
       end
 
+      def execute_directive_suggest_create_dataset(line, content, options)
+        dataset_name = options.first
+        if dataset_name.nil?
+          log_input(line)
+          log_error("#|e| [suggest-create-dataset] dataset name is missing")
+          return
+        end
+        execute_suggest_create_dataset(dataset_name)
+      end
+
+      def execute_directive_include(line, content, options)
+        path = options.first
+        if path.nil?
+          log_input(line)
+          log_error("#|e| [include] path is missing")
+          return
+        end
+        execute_script(Pathname(path))
+      end
+
+      def execute_directive_copy_path(line, content, options)
+        source, destination, = options
+        if source.nil? or destination.nil?
+          log_input(line)
+          if source.nil?
+            log_error("#|e| [copy-path] source is missing")
+          end
+          if destiantion.nil?
+            log_error("#|e| [copy-path] destination is missing")
+          end
+          return
+        end
+        source = resolve_path(Pathname(source))
+        destination = resolve_path(Pathname(destination))
+        FileUtils.cp_r(source.to_s, destination.to_s)
+      end
+
       def execute_directive(line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -1251,36 +1288,11 @@ EOF
         when "enable-logging"
           @context.logging = true
         when "suggest-create-dataset"
-          dataset_name = options.first
-          if dataset_name.nil?
-            log_input(line)
-            log_error("#|e| [suggest-create-dataset] dataset name is missing")
-            return
-          end
-          execute_suggest_create_dataset(dataset_name)
+          execute_directive_suggest_create_dataset(line, content, options)
         when "include"
-          path = options.first
-          if path.nil?
-            log_input(line)
-            log_error("#|e| [include] path is missing")
-            return
-          end
-          execute_script(Pathname(path))
+          execute_directive_include(line, content, options)
         when "copy-path"
-          source, destination, = options
-          if source.nil? or destination.nil?
-            log_input(line)
-            if source.nil?
-              log_error("#|e| [copy-path] source is missing")
-            end
-            if destiantion.nil?
-              log_error("#|e| [copy-path] destination is missing")
-            end
-            return
-          end
-          source = resolve_path(Pathname(source))
-          destination = resolve_path(Pathname(destination))
-          FileUtils.cp_r(source.to_s, destination.to_s)
+          execute_directive_copy_path(line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
