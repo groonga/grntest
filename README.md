@@ -211,6 +211,7 @@ Here are available `NAME` s:
 * `enable-logging`
 * `suggest-create-dataset`
 * `include`
+* `copy-path`
 
 `ARGUMENTS...` are depends on directive. A directive doesn't require
 any arguments but a directive requires arguments.
@@ -337,6 +338,24 @@ select Users --query _key:Alice
 ```
 
 See also: `--base-directory` option
+
+### `copy-path`
+
+Usage
+
+```
+#@copy-path SOURCE DESTINATION
+```
+
+It copies a path from `SOURCE` to `DESTINATION`. You can use it for
+both file and directory. It is useful for using fixture data.
+
+Example:
+
+```
+#@copy-path fixture/query_expander/tsv/japanese_synonyms.tsv tmp/synonyms.tsv
+register "query_expanders/tsv"
+```
 
 ## Options
 
