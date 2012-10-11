@@ -304,6 +304,7 @@ found from base directory. Base directory can be specified by
 Example:
 
 init.grn:
+
 ```
 #@disable-logging
 #@include ddl.grn
@@ -312,11 +313,13 @@ init.grn:
 ```
 
 ddl.grn:
+
 ```
 table_create Users TABLE_HASH_KEY ShortText
 ```
 
 data.grn:
+
 ```
 load --table Users
 [
@@ -327,6 +330,7 @@ load --table Users
 ```
 
 user.test:
+
 ```
 #@include init.grn
 select Users --query _key:Alice
