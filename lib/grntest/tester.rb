@@ -1223,17 +1223,19 @@ EOF
 
       def execute_line(line)
         case line
+        when /\A\#@/
+          directive_content = $POSTMATCH
+          execute_directive(line, directive_content)
         when /\A\s*\z/
           # do nothing
         when /\A\s*\#/
-          comment_content = $POSTMATCH
-          execute_comment(comment_content)
+          # ignore comment
         else
           execute_command_line(line)
         end
       end
 
-      def execute_comment(content)
+      def execute_directive(line, content)
         command, *options = Shellwords.split(content)
         case command
         when "disable-logging"
@@ -1242,12 +1244,23 @@ EOF
           @context.logging = true
         when "suggest-create-dataset"
           dataset_name = options.first
-          return if dataset_name.nil?
+          if dataset_name.nil?
+            log_input(line)
+            log_error("#|e| [suggest-create-dataset] dataset name is missing")
+            return
+          end
           execute_suggest_create_dataset(dataset_name)
         when "include"
           path = options.first
-          return if path.nil?
+          if path.nil?
+            log_input(line)
+            log_error("#|e| [include] path is missing")
+            return
+          end
           execute_script(Pathname(path))
+        else
+          log_input(line)
+          log_error("#|e| unknown directive: <#{command}>")
         end
       end
 

@@ -202,7 +202,7 @@ Grntest supports directives that control grntest behavior.
 Here is directive syntax:
 
 ```
-# NAME [ARGUMENTS...]
+#@NAME [ARGUMENTS...]
 ```
 
 Here are available `NAME` s:
@@ -220,7 +220,7 @@ any arguments but a directive requires arguments.
 Usage:
 
 ```
-# disable-logging
+#@disable-logging
 ```
 
 It disables logging exected command and exected result until
@@ -230,14 +230,14 @@ commands that isn't important for test.
 Example:
 
 ```
-# disable-logging
+#@disable-logging
 load --table Users
 [
 {"_key": "User1"},
 {"_key": "..."},
 {"_key": "User9999999"}
 ]
-# enable-logging
+#@enable-logging
 
 select Users --query _key:User29
 ```
@@ -249,7 +249,7 @@ See also: `enable-logging`
 Usage:
 
 ```
-# enable-logging
+#@enable-logging
 ```
 
 It enables logging that is disabled by `disable-logging` directive.
@@ -261,7 +261,7 @@ See also: `disable-logging`
 Usage:
 
 ```
-# suggest-create-dataset DATASET_NAME
+#@suggest-create-dataset DATASET_NAME
 ```
 
 It creates dataset `DATASET_NAME` for suggest feature. It is useful
@@ -270,7 +270,7 @@ for testing suggest feature.
 Example:
 
 ```
-# suggest-create-dataset rurema
+#@suggest-create-dataset rurema
 load --table event_rurema --each 'suggest_preparer(_id, type, item, sequence, time, pair_rurema)'
 [
 ["sequence", "time", "item", "type"],
@@ -288,7 +288,7 @@ See also: `--groonga-suggest-create-dataset` option
 Usage
 
 ```
-# include SUB_TEST_FILE_PATH
+#@include SUB_TEST_FILE_PATH
 ```
 
 It includes `SUB_TEST_FILE_PATH` content. It is useful for sharing
@@ -305,10 +305,10 @@ Example:
 
 init.grn:
 ```
-# disable-logging
-# include ddl.grn
-# include data.grn
-# enable-logging
+#@disable-logging
+#@include ddl.grn
+#@include data.grn
+#@enable-logging
 ```
 
 ddl.grn:
@@ -328,7 +328,7 @@ load --table Users
 
 user.test:
 ```
-# include init.grn
+#@include init.grn
 select Users --query _key:Alice
 ```
 
