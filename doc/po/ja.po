@@ -5,7 +5,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: grntest 0.9.5\n"
+"Project-Id-Version: grntest 0.9.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-20 22:17+0900\n"
 "PO-Revision-Date: 2012-10-12 11:43+0900\n"
@@ -37,7 +37,9 @@ msgstr "## 説明"
 msgid ""
 "Grntest is a testing framework for groonga. You can write a test for\n"
 "groonga by writing groonga commands and expected result."
-msgstr "grntestはgroonga用のテスティングフレームワークです。groongaのコマンドと期待する結果を用意すればgroonga用のテストを作成できます。"
+msgstr ""
+"grntestはgroonga用のテスティングフレームワークです。groongaのコマンドと期待す"
+"る結果を用意すればgroonga用のテストを作成できます。"
 
 #: README.md:12
 msgid "## Install"
@@ -58,7 +60,9 @@ msgstr "## 基本的な使い方"
 msgid ""
 "Write a test script that extension is `.test`. Here is a sample test\n"
 "script `select.test`:"
-msgstr "拡張子が `.test` のテストスクリプトを書きます。以下はサンプルテストスクリプト `select.test` です。"
+msgstr ""
+"拡張子が `.test` のテストスクリプトを書きます。以下はサンプルテストスクリプ"
+"ト `select.test` です。"
 
 #: README.md:23 README.md:88
 msgid ""
@@ -121,7 +125,10 @@ msgstr ""
 msgid ""
 "It generates `select.actual` file that contains actual result. If it\n"
 "is expected result, rename it to `select.expected`:"
-msgstr "実行すると `select.actual` というファイルを生成します。このファイルには実際の実行結果が含まれています。もし、この結果が期待した結果だった場合は `select.expected` に名前を変更します。"
+msgstr ""
+"実行すると `select.actual` というファイルを生成します。このファイルには実際の"
+"実行結果が含まれています。もし、この結果が期待した結果だった場合は `select."
+"expected` に名前を変更します。"
 
 #: README.md:65
 msgid ""
@@ -155,13 +162,18 @@ msgid ""
 "reporots compared result. If they are the same contnet, `grntest`\n"
 "reports success. If they are not the same content, `grntest` reports\n"
 "failure and show diff of them."
-msgstr "実行すると、実際の実行結果と `select.expected` の中身を比較し、比較結果を報告します。もし、同じ内容なら成功したと報告します。もし、違う内容なら失敗したと報告し、差分を表示します。"
+msgstr ""
+"実行すると、実際の実行結果と `select.expected` の中身を比較し、比較結果を報告"
+"します。もし、同じ内容なら成功したと報告します。もし、違う内容なら失敗したと"
+"報告し、差分を表示します。"
 
 #: README.md:85
 msgid ""
 "Change `--query '_key:Alice'` to `--query '_key:Bob`' in\n"
 "`select.test`:"
-msgstr "`select.test` 内の `--query '_key:Alice'` を `--query '_key:Bob`' に変更します。"
+msgstr ""
+"`select.test` 内の `--query '_key:Alice'` を `--query '_key:Bob`' に変更しま"
+"す。"
 
 #: README.md:97
 msgid ""
@@ -207,14 +219,20 @@ msgid ""
 "It says the expected result that is read from `select.expected` and\n"
 "the actual result are not same. And the difference of them is shown in\n"
 "unified diff format. It is helpful to debug the test."
-msgstr "`select.expected` から読み込んだ期待する結果が実際の値と異なっていると言っています。そして、違いをunified diff形式で表示しています。この差分表示はデバッグに便利です。"
+msgstr ""
+"`select.expected` から読み込んだ期待する結果が実際の値と異なっていると言って"
+"います。そして、違いをunified diff形式で表示しています。この差分表示はデバッ"
+"グに便利です。"
 
 #: README.md:131
 msgid ""
 "`select.reject` file is generated on failure. It contains the actual\n"
 "result. If the actual result is the expected result, rename it to\n"
 "`select.expected`."
-msgstr "失敗すると `select.reject` ファイルが生成されます。この中には実際の実行結果が書かれています。もしお、実際の結果が期待する結果だったらこのファイルの名前を `select.expected` に変えてください。"
+msgstr ""
+"失敗すると `select.reject` ファイルが生成されます。この中には実際の実行結果が"
+"書かれています。もしお、実際の結果が期待する結果だったらこのファイルの名前を "
+"`select.expected` に変えてください。"
 
 #: README.md:135
 msgid ""
@@ -243,7 +261,9 @@ msgstr "## 高度な使い方"
 msgid ""
 "There are more useful features. They are not needed for normal\n"
 "users but they are very useful for advanced users."
-msgstr "もっと便利な機能がたくさんあります。これらは普通の使い方では必要ないものですが、高度な使い方をする人にはとても便利です。"
+msgstr ""
+"もっと便利な機能がたくさんあります。これらは普通の使い方では必要ないものです"
+"が、高度な使い方をする人にはとても便利です。"
 
 #: README.md:157
 msgid "There are advanced features:"
@@ -267,7 +287,8 @@ msgstr "### コメント"
 msgid "Groonga supports comment line by `#`."
 msgstr "groongaは `#` を使ったコメント行をサポートしています。"
 
-#: README.md:167 README.md:180 README.md:230 README.md:270 README.md:304
+#: README.md:167 README.md:180 README.md:231 README.md:271 README.md:305
+#: README.md:353
 msgid "Example:"
 msgstr "例："
 
@@ -285,7 +306,9 @@ msgstr ""
 
 #: README.md:174
 msgid "Grntest also supports the syntax. You can use `#` as comment mark."
-msgstr "grntestもこの構文をサポートしています。コメントであることを示すために `#` を使うことができます。"
+msgstr ""
+"grntestもこの構文をサポートしています。コメントであることを示すために `#` を"
+"使うことができます。"
 
 #: README.md:176
 msgid "### Continuation line"
@@ -329,7 +352,9 @@ msgstr "### ディレクティブ"
 
 #: README.md:200
 msgid "Grntest supports directives that control grntest behavior."
-msgstr "grntestはディレクティブをサポートしています。ディレクティブはgrntestの挙動をコントロールするための機能です。"
+msgstr ""
+"grntestはディレクティブをサポートしています。ディレクティブはgrntestの挙動を"
+"コントロールするための機能です。"
 
 #: README.md:202
 msgid "Here is directive syntax:"
@@ -354,38 +379,44 @@ msgid ""
 "* `disable-logging`\n"
 "* `enable-logging`\n"
 "* `suggest-create-dataset`\n"
-"* `include`"
+"* `include`\n"
+"* `copy-path`"
 msgstr ""
 
-#: README.md:215
+#: README.md:216
 msgid ""
 "`ARGUMENTS...` are depends on directive. A directive doesn't require\n"
 "any arguments but a directive requires arguments."
-msgstr "`引数...` はそれぞれのディレクティブ毎に違います。あるディレクティブは1つも引数をとりませんが、あるディレクティブは必須の引数があったりします。"
+msgstr ""
+"`引数...` はそれぞれのディレクティブ毎に違います。あるディレクティブは1つも引"
+"数をとりませんが、あるディレクティブは必須の引数があったりします。"
 
-#: README.md:218
+#: README.md:219
 msgid "#### `disable-logging`"
 msgstr ""
 
-#: README.md:220 README.md:249 README.md:261
+#: README.md:221 README.md:250 README.md:262 README.md:289 README.md:370
 msgid "Usage:"
 msgstr "使い方："
 
-#: README.md:222
+#: README.md:223
 msgid ""
 "```\n"
 "#@disable-logging\n"
 "```"
 msgstr ""
 
-#: README.md:226
+#: README.md:227
 msgid ""
 "It disables logging executed command and executed result until\n"
 "`enable-logging` directive is used. It is useful for executing\n"
 "commands that isn't important for test."
-msgstr "実行したコマンドと実行結果をログに残さなくします。 `enable-logging` ディレクティブを使うと再びログに残すように成ります。これはテストの本質ではないコマンドを実行する時に便利です。"
+msgstr ""
+"実行したコマンドと実行結果をログに残さなくします。 `enable-logging` ディレク"
+"ティブを使うと再びログに残すように成ります。これはテストの本質ではないコマン"
+"ドを実行する時に便利です。"
 
-#: README.md:232
+#: README.md:233
 msgid ""
 "```\n"
 "#@disable-logging\n"
@@ -398,40 +429,40 @@ msgid ""
 "#@enable-logging"
 msgstr ""
 
-#: README.md:242
+#: README.md:243
 msgid ""
 "select Users --query _key:User29\n"
 "```"
 msgstr ""
 
-#: README.md:245
+#: README.md:246
 msgid "See also: `enable-logging`"
 msgstr "参考： `enable-logging`"
 
-#: README.md:247
+#: README.md:248
 msgid "### `enable-logging`"
 msgstr ""
 
-#: README.md:251
+#: README.md:252
 msgid ""
 "```\n"
 "#@enable-logging\n"
 "```"
 msgstr ""
 
-#: README.md:255
+#: README.md:256
 msgid "It enables logging that is disabled by `disable-logging` directive."
 msgstr "`disable-logging` ディレクティブで無効にしたログを有効にします。"
 
-#: README.md:257
+#: README.md:258
 msgid "See also: `disable-logging`"
 msgstr "参考： `disable-logging`"
 
-#: README.md:259
+#: README.md:260
 msgid "### suggest-create-dataset"
 msgstr ""
 
-#: README.md:263
+#: README.md:264
 msgid ""
 "```\n"
 "#@suggest-create-dataset DATASET_NAME\n"
@@ -441,13 +472,15 @@ msgstr ""
 "#@suggest-create-dataset データセット名\n"
 "```"
 
-#: README.md:267
+#: README.md:268
 msgid ""
 "It creates dataset `DATASET_NAME` for suggest feature. It is useful\n"
 "for testing suggest feature."
-msgstr "サジェスト機能用に `データセット名` のデータセットを作成します。サジェスト機能をテストする時に便利です。"
+msgstr ""
+"サジェスト機能用に `データセット名` のデータセットを作成します。サジェスト機"
+"能をテストする時に便利です。"
 
-#: README.md:272
+#: README.md:273
 msgid ""
 "```\n"
 "#@suggest-create-dataset rurema\n"
@@ -464,15 +497,15 @@ msgid ""
 "```"
 msgstr ""
 
-#: README.md:284
+#: README.md:285
 msgid "See also: `--groonga-suggest-create-dataset` option"
 msgstr "参考： `--groonga-suggest-create-dataset` オプション"
 
-#: README.md:286
+#: README.md:287
 msgid "### include"
 msgstr ""
 
-#: README.md:290
+#: README.md:291
 msgid ""
 "```\n"
 "#@include SUB_TEST_FILE_PATH\n"
@@ -482,30 +515,37 @@ msgstr ""
 "#@include サブテストファイルのパス\n"
 "```"
 
-#: README.md:294
+#: README.md:295
 msgid ""
 "It includes `SUB_TEST_FILE_PATH` content. It is useful for sharing\n"
 "commands by many tests."
-msgstr "`サブテストファイルのパス` にあるファイルの中身をここに取り込みます。たくさんのテストでコマンドを共有する時に便利です。"
+msgstr ""
+"`サブテストファイルのパス` にあるファイルの中身をここに取り込みます。たくさん"
+"のテストでコマンドを共有する時に便利です。"
 
-#: README.md:297
+#: README.md:298
 msgid ""
 "You can use `include` in included file. It means that an included file\n"
 "is processed in the same way as a test file."
-msgstr "取り込んだファイルの中でさらに `include` を使うこともできます。これは、取り込んだファイルも通常のテストファイルと同じように処理されるということです。"
+msgstr ""
+"取り込んだファイルの中でさらに `include` を使うこともできます。これは、取り込"
+"んだファイルも通常のテストファイルと同じように処理されるということです。"
 
-#: README.md:300
+#: README.md:301
 msgid ""
 "If `SUB_TEST_FILE_PATH` is relative path, `SUB_TEST_FILE_PATH` is\n"
 "found from base directory. Base directory can be specified by\n"
 "`--base-directory` option."
-msgstr "もし、 `サブテストファイルのパス` が相対パスだった場合、 `サブテストファイルのパス` はベースディレクトリを基準に探します。ベースディレクトリは `--base-directory` で指定できます。"
+msgstr ""
+"もし、 `サブテストファイルのパス` が相対パスだった場合、 `サブテストファイル"
+"のパス` はベースディレクトリを基準に探します。ベースディレクトリは `--base-"
+"directory` で指定できます。"
 
-#: README.md:306
+#: README.md:307
 msgid "init.grn:"
 msgstr ""
 
-#: README.md:308
+#: README.md:309
 msgid ""
 "```\n"
 "#@disable-logging\n"
@@ -515,22 +555,22 @@ msgid ""
 "```"
 msgstr ""
 
-#: README.md:315
+#: README.md:316
 msgid "ddl.grn:"
 msgstr ""
 
-#: README.md:317
+#: README.md:318
 msgid ""
 "```\n"
 "table_create Users TABLE_HASH_KEY ShortText\n"
 "```"
 msgstr ""
 
-#: README.md:321
+#: README.md:322
 msgid "data.grn:"
 msgstr ""
 
-#: README.md:323
+#: README.md:324
 msgid ""
 "```\n"
 "load --table Users\n"
@@ -542,11 +582,11 @@ msgid ""
 "```"
 msgstr ""
 
-#: README.md:332
+#: README.md:333
 msgid "user.test:"
 msgstr ""
 
-#: README.md:334
+#: README.md:335
 msgid ""
 "```\n"
 "#@include init.grn\n"
@@ -554,67 +594,182 @@ msgid ""
 "```"
 msgstr ""
 
-#: README.md:339
+#: README.md:340
 msgid "See also: `--base-directory` option"
 msgstr "参考： `--base-directory` オプション"
 
-#: README.md:341
-msgid "## Options"
-msgstr "## オプション"
+#: README.md:342
+msgid "### `copy-path`"
+msgstr ""
 
-#: README.md:343
-msgid ""
-"Grntest has many options. You don't need to specify many of them\n"
-"because they use suitable default values."
-msgstr "grntestにはたくさんのオプションがあります。ただし、適切なデフォルト値を使うため、ほとんどのオプションは指定する必要がありません。"
+#: README.md:344
+#, fuzzy
+msgid "Usage"
+msgstr "使い方："
 
 #: README.md:346
 msgid ""
-"This section describes some important options. You can see all options\n"
-"by `grntest --help`. You will find many usuful features from it."
-msgstr "このセクションではいくつかの重要なオプションを説明します。 `grntest --help` ですべてのオプションを確認することができます。出力結果の中にたくさんの便利な機能を見つけることができるはずです。"
-
-#: README.md:349
-msgid "### `--test`"
+"```\n"
+"#@copy-path SOURCE DESTINATION\n"
+"```"
 msgstr ""
 
-#: README.md:351
-msgid "### `--exclude-test`"
-msgstr ""
-
-#: README.md:353
-msgid "### `--test-suite`"
+#: README.md:350
+msgid ""
+"It copies a path from `SOURCE` to `DESTINATION`. You can use it for\n"
+"both file and directory. It is useful for using fixture data."
 msgstr ""
 
 #: README.md:355
+msgid ""
+"```\n"
+"#@copy-path fixture/query_expander/tsv/japanese_synonyms.tsv tmp/synonyms."
+"tsv\n"
+"register \"query_expanders/tsv\"\n"
+"```"
+msgstr ""
+
+#: README.md:360
+msgid "## Options"
+msgstr "## オプション"
+
+#: README.md:362
+msgid ""
+"Grntest has many options. You don't need to specify many of them\n"
+"because they use suitable default values."
+msgstr ""
+"grntestにはたくさんのオプションがあります。ただし、適切なデフォルト値を使うた"
+"め、ほとんどのオプションは指定する必要がありません。"
+
+#: README.md:365
+msgid ""
+"This section describes some important options. You can see all options\n"
+"by `grntest --help`. You will find many usuful features from it."
+msgstr ""
+"このセクションではいくつかの重要なオプションを説明します。 `grntest --help` "
+"ですべてのオプションを確認することができます。出力結果の中にたくさんの便利な"
+"機能を見つけることができるはずです。"
+
+#: README.md:368
+msgid "### `--test`"
+msgstr ""
+
+#: README.md:372
+msgid ""
+"```\n"
+"% grntest --test TEST_NAME ...\n"
+"% grntest --test /TEST_NAME_REGEXP/ ...\n"
+"% grntest --test TEST_NAME1 --test TEST_NAME2 ...\n"
+"% grntest --test /TEST_NAME_REGEXP1/ --test /TEST_NAME_REGEXP2/ ...\n"
+"```"
+msgstr ""
+
+#: README.md:379
+msgid ""
+"`--test` option specifies tests that should be ran. It is useful when\n"
+"you are interested in only one test."
+msgstr ""
+
+#: README.md:382
+msgid ""
+"For example, the following command line runs only `vector-geo-point`\n"
+"test."
+msgstr ""
+
+#: README.md:385
+msgid ""
+"```\n"
+"% grntest --test vector-geo-point ...\n"
+"```"
+msgstr ""
+
+#: README.md:389
+msgid ""
+"You can use `--test` option multiple times to run only multiple\n"
+"interested tests."
+msgstr ""
+
+#: README.md:392
+msgid ""
+"For example, the following command line runs only `vector-geo-point`\n"
+"and `hash` tests."
+msgstr ""
+
+#: README.md:395
+msgid ""
+"```\n"
+"% grntest --test vector-geo-point --test hash ...\n"
+"```"
+msgstr ""
+
+#: README.md:399
+msgid "You can use regular expression to select tests by `/.../` syntax."
+msgstr ""
+
+#: README.md:401
+msgid ""
+"For example, the following command line runs tests that have `geo` in\n"
+"its name."
+msgstr ""
+
+#: README.md:404
+msgid ""
+"```\n"
+"% grntest --test /geo/ ...\n"
+"```"
+msgstr ""
+
+#: README.md:408
+msgid "You can also use multiple --test options with regular expression."
+msgstr ""
+
+#: README.md:410
+#, fuzzy
+msgid "See also: `--exclude-test` option"
+msgstr "参考： `--base-directory` オプション"
+
+#: README.md:412
+msgid "### `--exclude-test`"
+msgstr ""
+
+#: README.md:414
+msgid "### `--test-suite`"
+msgstr ""
+
+#: README.md:416
 msgid "### `--exclude-test-suite`"
 msgstr ""
 
-#: README.md:357
+#: README.md:418
 msgid "### `--gdb`"
 msgstr ""
 
-#: README.md:359
+#: README.md:420
 msgid "### `--keep-database`"
 msgstr ""
 
-#: README.md:361
+#: README.md:422
 msgid "### `--n-workers`"
 msgstr ""
 
-#: README.md:363
+#: README.md:424
 msgid ""
 "`--n-workers` option is very useful. You can run many test scripts at\n"
 "once. Tests are finished quickly. You should specify one or more\n"
 "directories that contain many test scripts. If you have only a test\n"
 "script, `--n-workers` is not effective."
-msgstr "`--n-workers` オプションはとても便利です。一度にたくさんのテストを実行することができます。そうすると、テストは速く終わります。このオプションを使うときはたくさんのテストスクリプトが入ったディレクトリを指定してください。もし、テストスクリプトだけを指定した場合は、 `--n-workers` オプションの効果はあまりありません。"
+msgstr ""
+"`--n-workers` オプションはとても便利です。一度にたくさんのテストを実行するこ"
+"とができます。そうすると、テストは速く終わります。このオプションを使うときは"
+"たくさんのテストスクリプトが入ったディレクトリを指定してください。もし、テス"
+"トスクリプトだけを指定した場合は、 `--n-workers` オプションの効果はあまりあり"
+"ません。"
 
-#: README.md:368
+#: README.md:429
 msgid "Here is a sample command line to use `--n-workers`:"
 msgstr "`--n-workers` を使ったコマンドラインの例です。"
 
-#: README.md:370
+#: README.md:431
 msgid ""
 "```\n"
 "% grntest --n-workers 4 test/function/suite/suggest\n"
@@ -639,7 +794,7 @@ msgid ""
 "[100%]"
 msgstr ""
 
-#: README.md:383
+#: README.md:444
 msgid ""
 "  tests/sec | tests     | passes    | failures  | leaked    | !checked  |\n"
 "      34.61 |        18 |        18 |         0 |         0 |         0 |\n"
@@ -647,98 +802,109 @@ msgid ""
 "```"
 msgstr ""
 
-#: README.md:388
+#: README.md:449
 msgid "### `--base-directory`"
 msgstr ""
 
-#: README.md:390
+#: README.md:451
 msgid "### `--groonga`"
 msgstr ""
 
-#: README.md:392
+#: README.md:453
 msgid "### `--groonga-httpd`"
 msgstr ""
 
-#: README.md:394
+#: README.md:455
 msgid "### `--groonga-suggest-create-dataset`"
 msgstr ""
 
-#: README.md:396
+#: README.md:457
 msgid "### `--interface`"
 msgstr ""
 
-#: README.md:398
+#: README.md:459
 msgid "### `--output-type`"
 msgstr ""
 
-#: README.md:400
+#: README.md:461
 msgid "### `--testee`"
 msgstr ""
 
-#: README.md:402
+#: README.md:463
 msgid "## Examples"
 msgstr "## 例"
 
-#: README.md:404
+#: README.md:465
 msgid ""
 "See [test/command/ directory in groonga's\n"
 "source](https://github.com/groonga/groonga/tree/master/test/command). It\n"
 "has many test scripts and uses many useful features. They will help you."
-msgstr "[groongaのソースの中にあるtest/command/ディレクトリ](https://github.com/groonga/groonga/tree/master/test/command) を見てください。ここにはたくさんのテストスクリプトがあり、多くの便利な機能を使っています。参考になるでしょう。"
+msgstr ""
+"[groongaのソースの中にあるtest/command/ディレクトリ](https://github.com/"
+"groonga/groonga/tree/master/test/command) を見てください。ここにはたくさんの"
+"テストスクリプトがあり、多くの便利な機能を使っています。参考になるでしょう。"
 
-#: README.md:408
+#: README.md:469
 msgid "## Dependencies"
 msgstr "## 依存ソフトウェア"
 
-#: README.md:410
-msgid "* Ruby 1.9.3"
+#: README.md:471
+msgid ""
+"* Ruby 1.9.3\n"
+"* msgpack gem"
 msgstr ""
 
-#: README.md:412
+#: README.md:474
 msgid "## Mailing list"
 msgstr "## メーリングリスト"
 
-#: README.md:414
+#: README.md:476
 msgid ""
 "* English: [groonga-talk@lists.sourceforge.net](https://lists.sourceforge."
 "net/lists/listinfo/groonga-talk)\n"
 "* Japanese: [groonga-dev@lists.sourceforge.jp](http://lists.sourceforge.jp/"
 "mailman/listinfo/groonga-dev)"
 msgstr ""
-"* 英語: [groonga-talk@lists.sourceforge.net](https://lists.sourceforge.net/lists/listinfo/groonga-talk)\n"
-"* 日本語: [groonga-dev@lists.sourceforge.jp](http://lists.sourceforge.jp/mailman/listinfo/groonga-dev)"
+"* 英語: [groonga-talk@lists.sourceforge.net](https://lists.sourceforge.net/"
+"lists/listinfo/groonga-talk)\n"
+"* 日本語: [groonga-dev@lists.sourceforge.jp](http://lists.sourceforge.jp/"
+"mailman/listinfo/groonga-dev)"
 
-#: README.md:417
+#: README.md:479
 msgid "## Thanks"
 msgstr "## 感謝"
 
-#: README.md:419
+#: README.md:481
 msgid "* ..."
 msgstr ""
 
-#: README.md:421
+#: README.md:483
 msgid "## Authors"
 msgstr "## 作者"
 
-#: README.md:423
+#: README.md:485
 msgid ""
 "* Kouhei Sutou \\<kou@clear-code.com\\>\n"
 "* Haruka Yoshihara \\<yoshihara@clear-code.com\\>"
 msgstr ""
 
-#: README.md:426
+#: README.md:488
 msgid "## License"
 msgstr "## ライセンス"
 
-#: README.md:428
+#: README.md:490
 msgid "GPLv3 or later. See doc/text/gpl-3.0.txt for details."
-msgstr "GPLv3またはそれ以降のバージョン。詳細は doc/text/gpl-3.0.txt を確認してください。"
+msgstr ""
+"GPLv3またはそれ以降のバージョン。詳細は doc/text/gpl-3.0.txt を確認してくださ"
+"い。"
 
-#: README.md:430
+#: README.md:492
 msgid ""
 "(Kouhei Sutou has a right to change the license including contributed\n"
 "patches.)"
-msgstr "（提供してもらったパッチも含めてKouhei Sutouがライセンスを変更する権利を持ちます。）"
+msgstr ""
+"（提供してもらったパッチも含めてKouhei Sutouがライセンスを変更する権利を持ち"
+"ます。）"
 
 #: doc/text/gpl-3.0.txt:1
 msgid ""
@@ -1839,7 +2005,7 @@ msgid "the value to set the attribute groonga to."
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:225 lib/grntest/tester.rb:1120
+#: lib/grntest/tester.rb:225 lib/grntest/tester.rb:1122
 msgid "the value to set the attribute groonga_suggest_create_dataset to."
 msgstr ""
 
@@ -1852,18 +2018,18 @@ msgstr ""
 #: lib/grntest/tester.rb:225 lib/grntest/tester.rb:226
 #: lib/grntest/tester.rb:227 lib/grntest/tester.rb:228
 #: lib/grntest/tester.rb:229 lib/grntest/tester.rb:230
-#: lib/grntest/tester.rb:231 lib/grntest/tester.rb:385
-#: lib/grntest/tester.rb:531 lib/grntest/tester.rb:532
-#: lib/grntest/tester.rb:651 lib/grntest/tester.rb:652
-#: lib/grntest/tester.rb:1118 lib/grntest/tester.rb:1119
+#: lib/grntest/tester.rb:231 lib/grntest/tester.rb:387
+#: lib/grntest/tester.rb:533 lib/grntest/tester.rb:534
+#: lib/grntest/tester.rb:653 lib/grntest/tester.rb:654
 #: lib/grntest/tester.rb:1120 lib/grntest/tester.rb:1121
-#: lib/grntest/tester.rb:1122
+#: lib/grntest/tester.rb:1122 lib/grntest/tester.rb:1123
+#: lib/grntest/tester.rb:1124
 msgid "tag|param|value"
 msgstr ""
 
 # Grntest::Tester#groonga_suggest_create_dataset=
 # Grntest::Tester::Executor::Context#groonga_suggest_create_dataset=
-#: lib/grntest/tester.rb:226 lib/grntest/tester.rb:1121
+#: lib/grntest/tester.rb:226 lib/grntest/tester.rb:1123
 msgid "Sets the attribute groonga_suggest_create_dataset"
 msgstr ""
 
@@ -1884,7 +2050,7 @@ msgstr ""
 
 # Grntest::Tester#groonga_suggest_create_dataset
 # Grntest::Tester::Executor::Context#groonga_suggest_create_dataset
-#: lib/grntest/tester.rb:226 lib/grntest/tester.rb:1121
+#: lib/grntest/tester.rb:226 lib/grntest/tester.rb:1123
 msgid "Returns the value of attribute groonga_suggest_create_dataset"
 msgstr ""
 
@@ -1899,7 +2065,7 @@ msgid "Returns the value of attribute groonga"
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:226 lib/grntest/tester.rb:1122
+#: lib/grntest/tester.rb:226 lib/grntest/tester.rb:1124
 msgid "the value to set the attribute output_type to."
 msgstr ""
 
@@ -1915,13 +2081,13 @@ msgstr ""
 
 # Grntest::Tester#output_type
 # Grntest::Tester::Executor::Context#output_type
-#: lib/grntest/tester.rb:227 lib/grntest/tester.rb:1123
+#: lib/grntest/tester.rb:227 lib/grntest/tester.rb:1125
 msgid "Returns the value of attribute output_type"
 msgstr ""
 
 # Grntest::Tester#output_type=
 # Grntest::Tester::Executor::Context#output_type=
-#: lib/grntest/tester.rb:227 lib/grntest/tester.rb:1123
+#: lib/grntest/tester.rb:227 lib/grntest/tester.rb:1125
 msgid "Sets the attribute output_type"
 msgstr ""
 
@@ -1951,7 +2117,7 @@ msgid "the value to set the attribute diff_options to."
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:227 lib/grntest/tester.rb:1119
+#: lib/grntest/tester.rb:227 lib/grntest/tester.rb:1121
 msgid "the value to set the attribute base_directory to."
 msgstr ""
 
@@ -1962,7 +2128,7 @@ msgstr ""
 
 # Grntest::Tester#base_directory
 # Grntest::Tester::Executor::Context#base_directory
-#: lib/grntest/tester.rb:228 lib/grntest/tester.rb:1120
+#: lib/grntest/tester.rb:228 lib/grntest/tester.rb:1122
 msgid "Returns the value of attribute base_directory"
 msgstr ""
 
@@ -1973,7 +2139,7 @@ msgstr ""
 
 # Grntest::Tester#base_directory=
 # Grntest::Tester::Executor::Context#base_directory=
-#: lib/grntest/tester.rb:228 lib/grntest/tester.rb:1120
+#: lib/grntest/tester.rb:228 lib/grntest/tester.rb:1122
 msgid "Sets the attribute base_directory"
 msgstr ""
 
@@ -2103,323 +2269,323 @@ msgid "Returns the value of attribute exclude_test_suite_patterns"
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:385
+#: lib/grntest/tester.rb:387
 msgid "the value to set the attribute elapsed_time to."
 msgstr ""
 
 # Grntest::Tester::Result#elapsed_time=
-#: lib/grntest/tester.rb:386
+#: lib/grntest/tester.rb:388
 msgid "Sets the attribute elapsed_time"
 msgstr ""
 
 # Grntest::Tester::Result#elapsed_time
-#: lib/grntest/tester.rb:386
+#: lib/grntest/tester.rb:388
 msgid "Returns the value of attribute elapsed_time"
 msgstr ""
 
 # @return [Result]
-#: lib/grntest/tester.rb:386
+#: lib/grntest/tester.rb:388
 msgid "a new instance of Result"
 msgstr ""
 
 # Grntest::Tester::WorkerResult#n_tests
-#: lib/grntest/tester.rb:400
+#: lib/grntest/tester.rb:402
 msgid "Returns the value of attribute n_tests"
 msgstr ""
 
 # Grntest::Tester::WorkerResult#n_passed_tests
-#: lib/grntest/tester.rb:400
+#: lib/grntest/tester.rb:402
 msgid "Returns the value of attribute n_passed_tests"
 msgstr ""
 
 # Grntest::Tester::WorkerResult#n_leaked_tests
-#: lib/grntest/tester.rb:400
+#: lib/grntest/tester.rb:402
 msgid "Returns the value of attribute n_leaked_tests"
 msgstr ""
 
 # Grntest::Tester::WorkerResult#n_not_checked_tests
-#: lib/grntest/tester.rb:401
+#: lib/grntest/tester.rb:403
 msgid "Returns the value of attribute n_not_checked_tests"
 msgstr ""
 
 # @return [WorkerResult]
-#: lib/grntest/tester.rb:402
+#: lib/grntest/tester.rb:404
 msgid "a new instance of WorkerResult"
 msgstr ""
 
 # Grntest::Tester::WorkerResult#failed_tests
-#: lib/grntest/tester.rb:402
+#: lib/grntest/tester.rb:404
 msgid "Returns the value of attribute failed_tests"
 msgstr ""
 
 # Grntest::Tester::Worker#test_suites_rusult
-#: lib/grntest/tester.rb:438
+#: lib/grntest/tester.rb:440
 msgid "Returns the value of attribute test_suites_rusult"
 msgstr ""
 
 # Grntest::Tester::Worker#id
-#: lib/grntest/tester.rb:438
+#: lib/grntest/tester.rb:440
 msgid "Returns the value of attribute id"
 msgstr ""
 
 # Grntest::Tester::Worker#tester
-#: lib/grntest/tester.rb:438
+#: lib/grntest/tester.rb:440
 msgid "Returns the value of attribute tester"
 msgstr ""
 
 # Grntest::Tester::Worker#reporter
-#: lib/grntest/tester.rb:438
+#: lib/grntest/tester.rb:440
 msgid "Returns the value of attribute reporter"
 msgstr ""
 
 # Grntest::Tester::Worker#suite_name
-#: lib/grntest/tester.rb:439
+#: lib/grntest/tester.rb:441
 msgid "Returns the value of attribute suite_name"
 msgstr ""
 
 # @return [Worker]
-#: lib/grntest/tester.rb:439
+#: lib/grntest/tester.rb:441
 msgid "a new instance of Worker"
 msgstr ""
 
 # Grntest::Tester::Worker#test_script_path
-#: lib/grntest/tester.rb:439
+#: lib/grntest/tester.rb:441
 msgid "Returns the value of attribute test_script_path"
 msgstr ""
 
 # Grntest::Tester::TestResult#test_name
 # Grntest::Tester::Worker#test_name
-#: lib/grntest/tester.rb:439 lib/grntest/tester.rb:652
+#: lib/grntest/tester.rb:441 lib/grntest/tester.rb:654
 msgid "Returns the value of attribute test_name"
 msgstr ""
 
 # Grntest::Tester::Worker#status
-#: lib/grntest/tester.rb:439
+#: lib/grntest/tester.rb:441
 msgid "Returns the value of attribute status"
 msgstr ""
 
 # Grntest::Tester::Executor::Context#result
 # Grntest::Tester::Worker#result
-#: lib/grntest/tester.rb:439 lib/grntest/tester.rb:1122
+#: lib/grntest/tester.rb:441 lib/grntest/tester.rb:1124
 msgid "Returns the value of attribute result"
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:531
+#: lib/grntest/tester.rb:533
 msgid "the value to set the attribute workers to."
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:532
+#: lib/grntest/tester.rb:534
 msgid "the value to set the attribute n_total_tests to."
 msgstr ""
 
 # Grntest::Tester::TestSuitesResult#workers=
-#: lib/grntest/tester.rb:532
+#: lib/grntest/tester.rb:534
 msgid "Sets the attribute workers"
 msgstr ""
 
 # Grntest::Tester::TestSuitesResult#workers
-#: lib/grntest/tester.rb:532
+#: lib/grntest/tester.rb:534
 msgid "Returns the value of attribute workers"
 msgstr ""
 
 # Grntest::Tester::TestSuitesResult#n_total_tests
-#: lib/grntest/tester.rb:533
+#: lib/grntest/tester.rb:535
 msgid "Returns the value of attribute n_total_tests"
 msgstr ""
 
 # Grntest::Tester::TestSuitesResult#n_total_tests=
-#: lib/grntest/tester.rb:533
+#: lib/grntest/tester.rb:535
 msgid "Sets the attribute n_total_tests"
 msgstr ""
 
 # @return [TestSuitesResult]
-#: lib/grntest/tester.rb:533
+#: lib/grntest/tester.rb:535
 msgid "a new instance of TestSuitesResult"
 msgstr ""
 
 # @return [TestSuitesRunner]
-#: lib/grntest/tester.rb:578
+#: lib/grntest/tester.rb:580
 msgid "a new instance of TestSuitesRunner"
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:651
+#: lib/grntest/tester.rb:653
 msgid "the value to set the attribute test_name to."
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:651
+#: lib/grntest/tester.rb:653
 msgid "the value to set the attribute worker_id to."
 msgstr ""
 
 # Grntest::Tester::TestResult#worker_id=
-#: lib/grntest/tester.rb:652
+#: lib/grntest/tester.rb:654
 msgid "Sets the attribute worker_id"
 msgstr ""
 
 # Grntest::Tester::TestResult#worker_id
-#: lib/grntest/tester.rb:652
+#: lib/grntest/tester.rb:654
 msgid "Returns the value of attribute worker_id"
 msgstr ""
 
 # Grntest::Tester::TestResult#test_name=
-#: lib/grntest/tester.rb:652
+#: lib/grntest/tester.rb:654
 msgid "Sets the attribute test_name"
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:652
+#: lib/grntest/tester.rb:654
 msgid "the value to set the attribute actual to."
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:652
+#: lib/grntest/tester.rb:654
 msgid "the value to set the attribute n_leaked_objects to."
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:652
+#: lib/grntest/tester.rb:654
 msgid "the value to set the attribute expected to."
 msgstr ""
 
 # Grntest::Tester::TestResult#expected=
-#: lib/grntest/tester.rb:653
+#: lib/grntest/tester.rb:655
 msgid "Sets the attribute expected"
 msgstr ""
 
 # Grntest::Tester::TestResult#actual
-#: lib/grntest/tester.rb:653
+#: lib/grntest/tester.rb:655
 msgid "Returns the value of attribute actual"
 msgstr ""
 
 # Grntest::Tester::TestResult#actual=
-#: lib/grntest/tester.rb:653
+#: lib/grntest/tester.rb:655
 msgid "Sets the attribute actual"
 msgstr ""
 
 # @return [TestResult]
-#: lib/grntest/tester.rb:653
+#: lib/grntest/tester.rb:655
 msgid "a new instance of TestResult"
 msgstr ""
 
 # Grntest::Tester::TestResult#n_leaked_objects
-#: lib/grntest/tester.rb:653
+#: lib/grntest/tester.rb:655
 msgid "Returns the value of attribute n_leaked_objects"
 msgstr ""
 
 # Grntest::Tester::TestResult#n_leaked_objects=
-#: lib/grntest/tester.rb:653
+#: lib/grntest/tester.rb:655
 msgid "Sets the attribute n_leaked_objects"
 msgstr ""
 
 # Grntest::Tester::TestResult#expected
-#: lib/grntest/tester.rb:653
+#: lib/grntest/tester.rb:655
 msgid "Returns the value of attribute expected"
 msgstr ""
 
 # @return [TestRunner]
-#: lib/grntest/tester.rb:686
+#: lib/grntest/tester.rb:688
 msgid "a new instance of TestRunner"
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:1118
+#: lib/grntest/tester.rb:1120
 msgid "the value to set the attribute logging to."
 msgstr ""
 
 # Grntest::Tester::Executor::Context#logging=
-#: lib/grntest/tester.rb:1119
+#: lib/grntest/tester.rb:1121
 msgid "Sets the attribute logging"
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:1119
+#: lib/grntest/tester.rb:1121
 msgid "the value to set the attribute db_path to."
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:1119
+#: lib/grntest/tester.rb:1121
 msgid "the value to set the attribute temporary_directory_path to."
 msgstr ""
 
 # Grntest::Tester::Executor::Context#temporary_directory_path
-#: lib/grntest/tester.rb:1120
+#: lib/grntest/tester.rb:1122
 msgid "Returns the value of attribute temporary_directory_path"
 msgstr ""
 
 # Grntest::Tester::Executor::Context#temporary_directory_path=
-#: lib/grntest/tester.rb:1120
+#: lib/grntest/tester.rb:1122
 msgid "Sets the attribute temporary_directory_path"
 msgstr ""
 
 # Grntest::Tester::Executor::Context#db_path
-#: lib/grntest/tester.rb:1120
+#: lib/grntest/tester.rb:1122
 msgid "Returns the value of attribute db_path"
 msgstr ""
 
 # Grntest::Tester::Executor::Context#db_path=
-#: lib/grntest/tester.rb:1120
+#: lib/grntest/tester.rb:1122
 msgid "Sets the attribute db_path"
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:1121
+#: lib/grntest/tester.rb:1123
 msgid "the value to set the attribute result to."
 msgstr ""
 
 # Grntest::Tester::Executor::Context#result=
-#: lib/grntest/tester.rb:1122
+#: lib/grntest/tester.rb:1124
 msgid "Sets the attribute result"
 msgstr ""
 
 # @return [Context]
-#: lib/grntest/tester.rb:1123
+#: lib/grntest/tester.rb:1125
 msgid "a new instance of Context"
 msgstr ""
 
 # @return [Executor]
-#: lib/grntest/tester.rb:1164
+#: lib/grntest/tester.rb:1166
 msgid "a new instance of Executor"
 msgstr ""
 
 # Grntest::Tester::Executor#context
-#: lib/grntest/tester.rb:1164
+#: lib/grntest/tester.rb:1166
 msgid "Returns the value of attribute context"
 msgstr ""
 
 # @return [StandardIOExecutor]
-#: lib/grntest/tester.rb:1426
+#: lib/grntest/tester.rb:1428
 msgid "a new instance of StandardIOExecutor"
 msgstr ""
 
 # @return [HTTPExecutor]
-#: lib/grntest/tester.rb:1463
+#: lib/grntest/tester.rb:1465
 msgid "a new instance of HTTPExecutor"
 msgstr ""
 
 # @return [CommandFormatConverter]
-#: lib/grntest/tester.rb:1500
+#: lib/grntest/tester.rb:1502
 msgid "a new instance of CommandFormatConverter"
 msgstr ""
 
 # @return [BaseReporter]
-#: lib/grntest/tester.rb:1587
+#: lib/grntest/tester.rb:1589
 msgid "a new instance of BaseReporter"
 msgstr ""
 
 # @return [MarkReporter]
-#: lib/grntest/tester.rb:1914
+#: lib/grntest/tester.rb:1916
 msgid "a new instance of MarkReporter"
 msgstr ""
 
 # @return [StreamReporter]
-#: lib/grntest/tester.rb:1990
+#: lib/grntest/tester.rb:1992
 msgid "a new instance of StreamReporter"
 msgstr ""
 
 # @return [InplaceReporter]
-#: lib/grntest/tester.rb:2048
+#: lib/grntest/tester.rb:2050
 msgid "a new instance of InplaceReporter"
 msgstr ""
