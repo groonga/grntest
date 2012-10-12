@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: grntest 0.9.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-20 22:17+0900\n"
-"PO-Revision-Date: 2012-10-12 11:43+0900\n"
+"PO-Revision-Date: 2012-10-12 13:04+0900\n"
 "Last-Translator: Kouhei Sutou <kou@clear-code.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -663,18 +663,24 @@ msgid ""
 "% grntest --test /TEST_NAME_REGEXP1/ --test /TEST_NAME_REGEXP2/ ...\n"
 "```"
 msgstr ""
+"```\n"
+"% grntest --test テスト名 ...\n"
+"% grntest --test /テスト名の正規表現/ ...\n"
+"% grntest --test テスト名1 --test テスト名2 ...\n"
+"% grntest --test /テスト名の正規表現1/ --test /テスト名の正規表現2/ ...\n"
+"```"
 
 #: README.md:379
 msgid ""
 "`--test` option specifies tests that should be ran. It is useful when\n"
 "you are interested in only one test."
-msgstr ""
+msgstr "`--test` オプションは実行するテストを指定します。特定のテストだけを実行したいときに便利です。"
 
 #: README.md:382
 msgid ""
 "For example, the following command line runs only `vector-geo-point`\n"
 "test."
-msgstr ""
+msgstr "例えば、以下のコマンドラインは `vector-geo-point` テストだけを実行します。"
 
 #: README.md:385
 msgid ""
@@ -687,13 +693,13 @@ msgstr ""
 msgid ""
 "You can use `--test` option multiple times to run only multiple\n"
 "interested tests."
-msgstr ""
+msgstr "複数の指定したテストだけを実行したい場合は `--test` オプションを複数回指定します。"
 
 #: README.md:392
 msgid ""
 "For example, the following command line runs only `vector-geo-point`\n"
 "and `hash` tests."
-msgstr ""
+msgstr "例えば、以下のコマンドは `vector-geo-point` テストと `hash` テストを実行します。"
 
 #: README.md:395
 msgid ""
@@ -704,13 +710,13 @@ msgstr ""
 
 #: README.md:399
 msgid "You can use regular expression to select tests by `/.../` syntax."
-msgstr ""
+msgstr "`/.../` という構文を使えば、正規表現でテストを指定できます。"
 
 #: README.md:401
 msgid ""
 "For example, the following command line runs tests that have `geo` in\n"
 "its name."
-msgstr ""
+msgstr "例えば、以下のコマンドラインはテスト名に `geo` を含んでいるテストを選択します。"
 
 #: README.md:404
 msgid ""
@@ -721,12 +727,11 @@ msgstr ""
 
 #: README.md:408
 msgid "You can also use multiple --test options with regular expression."
-msgstr ""
+msgstr "正規表現を使った場合でも複数の --test オプションを指定できます。"
 
 #: README.md:410
-#, fuzzy
 msgid "See also: `--exclude-test` option"
-msgstr "参考： `--base-directory` オプション"
+msgstr "参考： `--exclude-test` オプション"
 
 #: README.md:412
 msgid "### `--exclude-test`"
