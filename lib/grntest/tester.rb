@@ -288,7 +288,8 @@ module Grntest
     end
 
     def selected_test?(test_name)
-      @test_patterns.all? do |pattern|
+      return true if @test_patterns.empty?
+      @test_patterns.any? do |pattern|
         pattern === test_name
       end
     end
@@ -305,7 +306,8 @@ module Grntest
     end
 
     def selected_test_suite?(test_suite_name)
-      @test_suite_patterns.all? do |pattern|
+      return true if @test_suite_patterns.empty?
+      @test_suite_patterns.any? do |pattern|
         pattern === test_suite_name
       end
     end
