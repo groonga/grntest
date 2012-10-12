@@ -367,6 +367,48 @@ by `grntest --help`. You will find many usuful features from it.
 
 ### `--test`
 
+Usage:
+
+```
+% grntest --test TEST_NAME ...
+% grntest --test /TEST_NAME_REGEXP/ ...
+% grntest --test TEST_NAME1 --test TEST_NAME2 ...
+% grntest --test /TEST_NAME_REGEXP1/ --test /TEST_NAME_REGEXP2/ ...
+```
+
+`--test` option specifies tests that should be ran. It is useful when
+you are interested in only one test.
+
+For example, the following command line runs only `vector-geo-point`
+test.
+
+```
+% grntest --test vector-geo-point ...
+```
+
+You can use `--test` option multiple times to run only multiple
+interested tests.
+
+For example, the following command line runs only `vector-geo-point`
+and `hash` tests.
+
+```
+% grntest --test vector-geo-point --test hash ...
+```
+
+You can use regular expression to select tests by `/.../` syntax.
+
+For example, the following command line runs tests that have `geo` in
+its name.
+
+```
+% grntest --test /geo/ ...
+```
+
+You can also use multiple --test options with regular expression.
+
+See also: `--exclude-test` option
+
 ### `--exclude-test`
 
 ### `--test-suite`
