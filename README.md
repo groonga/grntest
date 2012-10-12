@@ -427,6 +427,7 @@ has many test scripts and uses many useful features. They will help you.
 ## Dependencies
 
 * Ruby 1.9.3
+* msgpack gem
 
 ## Mailing list
 
