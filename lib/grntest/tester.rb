@@ -2146,7 +2146,11 @@ EOF
       def draw_progress_line
         n_done_tests = @test_suites_result.n_tests
         n_total_tests = @test_suites_result.n_total_tests
-        finished_test_ratio = n_done_tests.to_f / n_total_tests
+        if n_total_tests.zero?
+          finished_test_ratio = 0.0
+        else
+          finished_test_ratio = n_done_tests.to_f / n_total_tests
+        end
 
         start_mark = "|"
         finish_mark = "|"
