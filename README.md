@@ -175,7 +175,7 @@ Grntest also supports the syntax. You can use `#` as comment mark.
 
 ### Continuation line
 
-You can split a long line by escaping new line with `\`.
+You can break a long line by escaping new line with `\`.
 
 Example:
 
@@ -185,7 +185,7 @@ select Users \
   --query Ken
 ```
 
-The command is processed as the following:
+The command is processed as the following command:
 
 ```
 select Users  --match_columns name   --query Ken
@@ -224,7 +224,7 @@ Usage:
 #@disable-logging
 ```
 
-It disables logging exected command and exected result until
+It disables logging executed command and executed result until
 `enable-logging` directive is used. It is useful for executing
 commands that isn't important for test.
 
@@ -286,7 +286,7 @@ See also: `--groonga-suggest-create-dataset` option
 
 ### include
 
-Usage
+Usage:
 
 ```
 #@include SUB_TEST_FILE_PATH
@@ -363,7 +363,7 @@ Grntest has many options. You don't need to specify many of them
 because they use suitable default values.
 
 This section describes some important options. You can see all options
-by `grntest --help`. It contains many usuful features.
+by `grntest --help`. You will find many usuful features from it.
 
 ### `--test`
 

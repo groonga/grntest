@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: grntest 0.9.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-20 22:17+0900\n"
-"PO-Revision-Date: 2012-10-11 23:09+0900\n"
+"PO-Revision-Date: 2012-10-12 11:43+0900\n"
 "Last-Translator: Kouhei Sutou <kou@clear-code.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -58,7 +58,7 @@ msgstr "## 基本的な使い方"
 msgid ""
 "Write a test script that extension is `.test`. Here is a sample test\n"
 "script `select.test`:"
-msgstr ""
+msgstr "拡張子が `.test` のテストスクリプトを書きます。以下はサンプルテストスクリプト `select.test` です。"
 
 #: README.md:23 README.md:88
 msgid ""
@@ -83,7 +83,7 @@ msgstr ""
 
 #: README.md:35
 msgid "Run `grntest` with `select.test` as command line argument:"
-msgstr ""
+msgstr "コマンドライン引数に `select.test` を指定して `grntest` を実行します。"
 
 #: README.md:37
 msgid ""
@@ -121,7 +121,7 @@ msgstr ""
 msgid ""
 "It generates `select.actual` file that contains actual result. If it\n"
 "is expected result, rename it to `select.expected`:"
-msgstr ""
+msgstr "実行すると `select.actual` というファイルを生成します。このファイルには実際の実行結果が含まれています。もし、この結果が期待した結果だった場合は `select.expected` に名前を変更します。"
 
 #: README.md:65
 msgid ""
@@ -132,7 +132,7 @@ msgstr ""
 
 #: README.md:69 README.md:100 README.md:139
 msgid "Run `grntest` again:"
-msgstr ""
+msgstr "もう一度 `grntest` を実行します。"
 
 #: README.md:71 README.md:141
 msgid ""
@@ -155,13 +155,13 @@ msgid ""
 "reporots compared result. If they are the same contnet, `grntest`\n"
 "reports success. If they are not the same content, `grntest` reports\n"
 "failure and show diff of them."
-msgstr ""
+msgstr "実行すると、実際の実行結果と `select.expected` の中身を比較し、比較結果を報告します。もし、同じ内容なら成功したと報告します。もし、違う内容なら失敗したと報告し、差分を表示します。"
 
 #: README.md:85
 msgid ""
 "Change `--query '_key:Alice'` to `--query '_key:Bob`' in\n"
 "`select.test`:"
-msgstr ""
+msgstr "`select.test` 内の `--query '_key:Alice'` を `--query '_key:Bob`' に変更します。"
 
 #: README.md:97
 msgid ""
@@ -207,14 +207,14 @@ msgid ""
 "It says the expected result that is read from `select.expected` and\n"
 "the actual result are not same. And the difference of them is shown in\n"
 "unified diff format. It is helpful to debug the test."
-msgstr ""
+msgstr "`select.expected` から読み込んだ期待する結果が実際の値と異なっていると言っています。そして、違いをunified diff形式で表示しています。この差分表示はデバッグに便利です。"
 
 #: README.md:131
 msgid ""
 "`select.reject` file is generated on failure. It contains the actual\n"
 "result. If the actual result is the expected result, rename it to\n"
 "`select.expected`."
-msgstr ""
+msgstr "失敗すると `select.reject` ファイルが生成されます。この中には実際の実行結果が書かれています。もしお、実際の結果が期待する結果だったらこのファイルの名前を `select.expected` に変えてください。"
 
 #: README.md:135
 msgid ""
@@ -233,21 +233,21 @@ msgstr ""
 
 #: README.md:150
 msgid "The test is succeeded again."
-msgstr ""
+msgstr "再びテストが成功するように成りました。"
 
 #: README.md:152
 msgid "## Advanced usage"
-msgstr ""
+msgstr "## 高度な使い方"
 
 #: README.md:154
 msgid ""
 "There are more useful features. They are not needed for normal\n"
 "users but they are very useful for advanced users."
-msgstr ""
+msgstr "もっと便利な機能がたくさんあります。これらは普通の使い方では必要ないものですが、高度な使い方をする人にはとても便利です。"
 
 #: README.md:157
 msgid "There are advanced features:"
-msgstr ""
+msgstr "高度な機能は以下の通りです。"
 
 #: README.md:159
 msgid ""
@@ -255,18 +255,21 @@ msgid ""
 "* Continuation line\n"
 "* Directives"
 msgstr ""
+"* コメント\n"
+"* 継続行\n"
+"* ディレクティブ"
 
 #: README.md:163
 msgid "### Comment"
-msgstr ""
+msgstr "### コメント"
 
 #: README.md:165
 msgid "Groonga supports comment line by `#`."
-msgstr ""
+msgstr "groongaは `#` を使ったコメント行をサポートしています。"
 
 #: README.md:167 README.md:180 README.md:230 README.md:270 README.md:304
 msgid "Example:"
-msgstr ""
+msgstr "例："
 
 #: README.md:169
 msgid ""
@@ -275,18 +278,22 @@ msgid ""
 "select Users\n"
 "```"
 msgstr ""
+"```\n"
+"# ここはコメント行です。\n"
+"select Users\n"
+"```"
 
 #: README.md:174
 msgid "Grntest also supports the syntax. You can use `#` as comment mark."
-msgstr ""
+msgstr "grntestもこの構文をサポートしています。コメントであることを示すために `#` を使うことができます。"
 
 #: README.md:176
 msgid "### Continuation line"
-msgstr ""
+msgstr "### 継続行"
 
 #: README.md:178
-msgid "You can split a long line by escaping new line with `\\`."
-msgstr ""
+msgid "You can break a long line by escaping new line with `\\`."
+msgstr "`\\` で改行文字をエスケープすることで、長い行を分割できます。"
 
 #: README.md:182
 msgid ""
@@ -298,8 +305,8 @@ msgid ""
 msgstr ""
 
 #: README.md:188
-msgid "The command is processed as the following:"
-msgstr ""
+msgid "The command is processed as the following command:"
+msgstr "このコマンドは以下のようなコマンドとして処理されます。"
 
 #: README.md:190
 msgid ""
@@ -310,23 +317,23 @@ msgstr ""
 
 #: README.md:194
 msgid "You can make your test readable with this feature."
-msgstr ""
+msgstr "この機能を使って、テストを読みやすくできます。"
 
 #: README.md:196
 msgid "Groogna doesn't support this feature."
-msgstr ""
+msgstr "なお、groongaはこの機能をサポートしていません。"
 
 #: README.md:198
 msgid "### Directives"
-msgstr ""
+msgstr "### ディレクティブ"
 
 #: README.md:200
 msgid "Grntest supports directives that control grntest behavior."
-msgstr ""
+msgstr "grntestはディレクティブをサポートしています。ディレクティブはgrntestの挙動をコントロールするための機能です。"
 
 #: README.md:202
 msgid "Here is directive syntax:"
-msgstr ""
+msgstr "ディレクティブの構文は以下の通りです。"
 
 #: README.md:204
 msgid ""
@@ -334,10 +341,13 @@ msgid ""
 "#@NAME [ARGUMENTS...]\n"
 "```"
 msgstr ""
+"```\n"
+"#@名前 [引数...]\n"
+"```"
 
 #: README.md:208
 msgid "Here are available `NAME` s:"
-msgstr ""
+msgstr "利用可能な `名前` は以下の通りです。"
 
 #: README.md:210
 msgid ""
@@ -351,7 +361,7 @@ msgstr ""
 msgid ""
 "`ARGUMENTS...` are depends on directive. A directive doesn't require\n"
 "any arguments but a directive requires arguments."
-msgstr ""
+msgstr "`引数...` はそれぞれのディレクティブ毎に違います。あるディレクティブは1つも引数をとりませんが、あるディレクティブは必須の引数があったりします。"
 
 #: README.md:218
 msgid "#### `disable-logging`"
@@ -359,7 +369,7 @@ msgstr ""
 
 #: README.md:220 README.md:249 README.md:261
 msgid "Usage:"
-msgstr ""
+msgstr "使い方："
 
 #: README.md:222
 msgid ""
@@ -370,10 +380,10 @@ msgstr ""
 
 #: README.md:226
 msgid ""
-"It disables logging exected command and exected result until\n"
+"It disables logging executed command and executed result until\n"
 "`enable-logging` directive is used. It is useful for executing\n"
 "commands that isn't important for test."
-msgstr ""
+msgstr "実行したコマンドと実行結果をログに残さなくします。 `enable-logging` ディレクティブを使うと再びログに残すように成ります。これはテストの本質ではないコマンドを実行する時に便利です。"
 
 #: README.md:232
 msgid ""
@@ -396,7 +406,7 @@ msgstr ""
 
 #: README.md:245
 msgid "See also: `enable-logging`"
-msgstr ""
+msgstr "参考： `enable-logging`"
 
 #: README.md:247
 msgid "### `enable-logging`"
@@ -411,11 +421,11 @@ msgstr ""
 
 #: README.md:255
 msgid "It enables logging that is disabled by `disable-logging` directive."
-msgstr ""
+msgstr "`disable-logging` ディレクティブで無効にしたログを有効にします。"
 
 #: README.md:257
 msgid "See also: `disable-logging`"
-msgstr ""
+msgstr "参考： `disable-logging`"
 
 #: README.md:259
 msgid "### suggest-create-dataset"
@@ -427,12 +437,15 @@ msgid ""
 "#@suggest-create-dataset DATASET_NAME\n"
 "```"
 msgstr ""
+"```\n"
+"#@suggest-create-dataset データセット名\n"
+"```"
 
 #: README.md:267
 msgid ""
 "It creates dataset `DATASET_NAME` for suggest feature. It is useful\n"
 "for testing suggest feature."
-msgstr ""
+msgstr "サジェスト機能用に `データセット名` のデータセットを作成します。サジェスト機能をテストする時に便利です。"
 
 #: README.md:272
 msgid ""
@@ -453,14 +466,10 @@ msgstr ""
 
 #: README.md:284
 msgid "See also: `--groonga-suggest-create-dataset` option"
-msgstr ""
+msgstr "参考： `--groonga-suggest-create-dataset` オプション"
 
 #: README.md:286
 msgid "### include"
-msgstr ""
-
-#: README.md:288
-msgid "Usage"
 msgstr ""
 
 #: README.md:290
@@ -469,25 +478,28 @@ msgid ""
 "#@include SUB_TEST_FILE_PATH\n"
 "```"
 msgstr ""
+"```\n"
+"#@include サブテストファイルのパス\n"
+"```"
 
 #: README.md:294
 msgid ""
 "It includes `SUB_TEST_FILE_PATH` content. It is useful for sharing\n"
 "commands by many tests."
-msgstr ""
+msgstr "`サブテストファイルのパス` にあるファイルの中身をここに取り込みます。たくさんのテストでコマンドを共有する時に便利です。"
 
 #: README.md:297
 msgid ""
 "You can use `include` in included file. It means that an included file\n"
 "is processed in the same way as a test file."
-msgstr ""
+msgstr "取り込んだファイルの中でさらに `include` を使うこともできます。これは、取り込んだファイルも通常のテストファイルと同じように処理されるということです。"
 
 #: README.md:300
 msgid ""
 "If `SUB_TEST_FILE_PATH` is relative path, `SUB_TEST_FILE_PATH` is\n"
 "found from base directory. Base directory can be specified by\n"
 "`--base-directory` option."
-msgstr ""
+msgstr "もし、 `サブテストファイルのパス` が相対パスだった場合、 `サブテストファイルのパス` はベースディレクトリを基準に探します。ベースディレクトリは `--base-directory` で指定できます。"
 
 #: README.md:306
 msgid "init.grn:"
@@ -544,23 +556,23 @@ msgstr ""
 
 #: README.md:339
 msgid "See also: `--base-directory` option"
-msgstr ""
+msgstr "参考： `--base-directory` オプション"
 
 #: README.md:341
 msgid "## Options"
-msgstr ""
+msgstr "## オプション"
 
 #: README.md:343
 msgid ""
 "Grntest has many options. You don't need to specify many of them\n"
 "because they use suitable default values."
-msgstr ""
+msgstr "grntestにはたくさんのオプションがあります。ただし、適切なデフォルト値を使うため、ほとんどのオプションは指定する必要がありません。"
 
 #: README.md:346
 msgid ""
 "This section describes some important options. You can see all options\n"
-"by `grntest --help`. It contains many usuful features."
-msgstr ""
+"by `grntest --help`. You will find many usuful features from it."
+msgstr "このセクションではいくつかの重要なオプションを説明します。 `grntest --help` ですべてのオプションを確認することができます。出力結果の中にたくさんの便利な機能を見つけることができるはずです。"
 
 #: README.md:349
 msgid "### `--test`"
@@ -596,11 +608,11 @@ msgid ""
 "once. Tests are finished quickly. You should specify one or more\n"
 "directories that contain many test scripts. If you have only a test\n"
 "script, `--n-workers` is not effective."
-msgstr ""
+msgstr "`--n-workers` オプションはとても便利です。一度にたくさんのテストを実行することができます。そうすると、テストは速く終わります。このオプションを使うときはたくさんのテストスクリプトが入ったディレクトリを指定してください。もし、テストスクリプトだけを指定した場合は、 `--n-workers` オプションの効果はあまりありません。"
 
 #: README.md:368
 msgid "Here is a sample command line to use `--n-workers`:"
-msgstr ""
+msgstr "`--n-workers` を使ったコマンドラインの例です。"
 
 #: README.md:370
 msgid ""
@@ -665,18 +677,18 @@ msgstr ""
 
 #: README.md:402
 msgid "## Examples"
-msgstr ""
+msgstr "## 例"
 
 #: README.md:404
 msgid ""
 "See [test/command/ directory in groonga's\n"
 "source](https://github.com/groonga/groonga/tree/master/test/command). It\n"
 "has many test scripts and uses many useful features. They will help you."
-msgstr ""
+msgstr "[groongaのソースの中にあるtest/command/ディレクトリ](https://github.com/groonga/groonga/tree/master/test/command) を見てください。ここにはたくさんのテストスクリプトがあり、多くの便利な機能を使っています。参考になるでしょう。"
 
 #: README.md:408
 msgid "## Dependencies"
-msgstr ""
+msgstr "## 依存ソフトウェア"
 
 #: README.md:410
 msgid "* Ruby 1.9.3"
@@ -684,7 +696,7 @@ msgstr ""
 
 #: README.md:412
 msgid "## Mailing list"
-msgstr ""
+msgstr "## メーリングリスト"
 
 #: README.md:414
 msgid ""
@@ -693,10 +705,12 @@ msgid ""
 "* Japanese: [groonga-dev@lists.sourceforge.jp](http://lists.sourceforge.jp/"
 "mailman/listinfo/groonga-dev)"
 msgstr ""
+"* 英語: [groonga-talk@lists.sourceforge.net](https://lists.sourceforge.net/lists/listinfo/groonga-talk)\n"
+"* 日本語: [groonga-dev@lists.sourceforge.jp](http://lists.sourceforge.jp/mailman/listinfo/groonga-dev)"
 
 #: README.md:417
 msgid "## Thanks"
-msgstr ""
+msgstr "## 感謝"
 
 #: README.md:419
 msgid "* ..."
@@ -704,7 +718,7 @@ msgstr ""
 
 #: README.md:421
 msgid "## Authors"
-msgstr ""
+msgstr "## 作者"
 
 #: README.md:423
 msgid ""
@@ -714,17 +728,17 @@ msgstr ""
 
 #: README.md:426
 msgid "## License"
-msgstr ""
+msgstr "## ライセンス"
 
 #: README.md:428
 msgid "GPLv3 or later. See doc/text/gpl-3.0.txt for details."
-msgstr ""
+msgstr "GPLv3またはそれ以降のバージョン。詳細は doc/text/gpl-3.0.txt を確認してください。"
 
 #: README.md:430
 msgid ""
 "(Kouhei Sutou has a right to change the license including contributed\n"
 "patches.)"
-msgstr ""
+msgstr "（提供してもらったパッチも含めてKouhei Sutouがライセンスを変更する権利を持ちます。）"
 
 #: doc/text/gpl-3.0.txt:1
 msgid ""
