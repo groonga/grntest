@@ -448,6 +448,20 @@ Here is a sample command line to use `--n-workers`:
 
 ### `--base-directory`
 
+### `--database=PATH`
+
+Usage:
+
+```
+% grntest --database /PATH/TO/EXISTING/DATABASE ...
+```
+
+`--database` option specifies an existing database that is used for
+test. Normally, grntest uses a new empty database for test.
+
+`--database` option is very useful for testing against existing
+database.
+
 ### `--groonga`
 
 ### `--groonga-httpd`

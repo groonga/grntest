@@ -122,6 +122,13 @@ module Grntest
           tester.base_directory = Pathname(directory)
         end
 
+        parser.on("--database=PATH",
+                  "Use existing database at PATH " +
+                    "instead of creating a new database",
+                  "(creating a new database)") do |path|
+          tester.database_path = path
+        end
+
         parser.on("--diff=DIFF",
                   "Use DIFF as diff command",
                   "(#{tester.diff})") do |diff|
@@ -224,7 +231,7 @@ module Grntest
 
     attr_accessor :groonga, :groonga_httpd, :groonga_suggest_create_dataset
     attr_accessor :interface, :output_type, :testee
-    attr_accessor :base_directory, :diff, :diff_options
+    attr_accessor :base_directory, :database_path, :diff, :diff_options
     attr_accessor :n_workers
     attr_accessor :output
     attr_accessor :gdb, :default_gdb
@@ -239,6 +246,7 @@ module Grntest
       @output_type = "json"
       @testee = "groonga"
       @base_directory = Pathname(".")
+      @database_path = nil
       @reporter = nil
       @n_workers = 1
       @output = $stdout
@@ -725,9 +733,13 @@ module Grntest
       private
       def execute_groonga_script
         create_temporary_directory do |directory_path|
-          db_dir = directory_path + "db"
-          FileUtils.mkdir_p(db_dir.to_s)
-          db_path = db_dir + "db"
+          if @tester.database_path
+            db_path = Pathname(@tester.database_path).expand_path
+          else
+            db_dir = directory_path + "db"
+            FileUtils.mkdir_p(db_dir.to_s)
+            db_path = db_dir + "db"
+          end
           context = Executor::Context.new
           context.temporary_directory_path = directory_path
           context.db_path = db_path
@@ -765,6 +777,10 @@ module Grntest
       end
 
       def run_groonga(context, &block)
+        unless @tester.database_path
+          create_empty_database(context.db_path.to_s)
+        end
+
         case @tester.interface
         when :stdio
           run_groonga_stdio(context, &block)
@@ -791,7 +807,6 @@ module Grntest
             command_line += [
               "--input-fd", input_fd.to_s,
               "--output-fd", output_fd.to_s,
-              "-n",
               context.relative_db_path.to_s,
             ]
             pid = Process.spawn(env, *command_line, spawn_options)
@@ -921,7 +936,6 @@ EOC
             "--port", port.to_s,
             "--protocol", "http",
             "-s",
-            "-n",
             context.relative_db_path.to_s,
           ]
         when "groonga-httpd"
@@ -938,7 +952,6 @@ EOC
       end
 
       def create_config_file(context, host, port, pid_file_path)
-        create_empty_database(context.db_path.to_s)
         config_file_path =
           context.temporary_directory_path + "groonga-httpd.conf"
         config_file_path.open("w") do |config_file|
