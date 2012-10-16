@@ -12,7 +12,7 @@ New:
 
     #@NAME ARGUMENT
 
-This change is for easy to debug. Conssider about we have a typo in
+This change is for easy to debug. Consider about we have a typo in
 `NAME`. It is just ignored in old syntax because it is also a comment
 line. It is reported in new syntax because it syntax is only for
 directive. Grntest can know that user want to use a directive. If
