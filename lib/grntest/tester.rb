@@ -1396,8 +1396,10 @@ EOF
         timeout = first_timeout
         while IO.select([output], [], [], timeout)
           break if output.eof?
-          content << output.readpartial(65535)
-          timeout = 0
+          request_bytes = 1024
+          read_content = output.readpartial(request_bytes)
+          content << read_content
+          timeout = 0 if read_content.bytesize < request_bytes
         end
         content
       end
