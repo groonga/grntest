@@ -257,7 +257,7 @@ It enables logging that is disabled by `disable-logging` directive.
 
 See also: `disable-logging`
 
-### suggest-create-dataset
+### `suggest-create-dataset`
 
 Usage:
 
@@ -284,7 +284,7 @@ load --table event_rurema --each 'suggest_preparer(_id, type, item, sequence, ti
 
 See also: `--groonga-suggest-create-dataset` option
 
-### include
+### `include`
 
 Usage:
 
