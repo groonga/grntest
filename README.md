@@ -212,6 +212,7 @@ Here are available `NAME` s:
 * `suggest-create-dataset`
 * `include`
 * `copy-path`
+* `long-timeout`
 
 `ARGUMENTS...` are depends on directive. A directive doesn't require
 any arguments but a directive requires arguments.
@@ -355,6 +356,32 @@ Example:
 ```
 #@copy-path fixture/query_expander/tsv/japanese_synonyms.tsv tmp/synonyms.tsv
 register "query_expanders/tsv"
+```
+
+### `long-timeout`
+
+Usage
+
+```
+#@long-timeout TIMEOUT
+```
+
+It specifies a timeout for commands that may take long time.
+`TIMEOUT` must be a number. You can omit `TIMEOUT`. If you omit it,
+the default timeout is used. The default timeout is 180 seconds.
+
+Here are the commands that may take long time:
+
+* `column_create`
+
+Example:
+
+```
+# Wait 300 times untile the following commands output their results.
+#@long-timeout 300
+column_create Lexicon users_name COLUMN_INDEX Users name
+# Reset custom timeout for commands that may take long time.
+#@long-timeout
 ```
 
 ## Options
