@@ -1182,6 +1182,7 @@ EOF
         @pending_load_command = nil
         @current_command_name = nil
         @output_type = nil
+        @long_timeout = default_long_timeout
         @context = context || Context.new
       end
 
@@ -1295,6 +1296,21 @@ EOF
         FileUtils.cp_r(source.to_s, destination.to_s)
       end
 
+      def execute_directive_long_timeout(line, content, options)
+        long_timeout, = options
+        if long_timeout.nil?
+          @long_timeout = default_long_timeout
+        else
+          begin
+            @long_timeout = Float(long_timeout)
+          rescue ArgumentError
+            log_input(line)
+            message = "long-timeout must be number: <#{long_timeout}>"
+            log_error("#|e| [long-timeout] #{message}")
+          end
+        end
+      end
+
       def execute_directive(line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -1308,6 +1324,8 @@ EOF
           execute_directive_include(line, content, options)
         when "copy-path"
           execute_directive_copy_path(line, content, options)
+        when "long-timeout"
+          execute_directive_long_timeout(line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
@@ -1437,6 +1455,10 @@ EOF
       def log_error(content)
         log_force(:error, content, {})
       end
+
+      def default_long_timeout
+        180
+      end
     end
 
     class StandardIOExecutor < Executor
@@ -1473,7 +1495,7 @@ EOF
       private
       def read_output
         options = {}
-        options[:first_timeout] = long_timeout if may_slow_command?
+        options[:first_timeout] = @long_timeout if may_slow_command?
         read_all_readable_content(@output, options)
       end
 
@@ -1482,10 +1504,6 @@ EOF
       ]
       def may_slow_command?
         MAY_SLOW_COMMANDS.include?(@current_command)
-      end
-
-      def long_timeout
-        180
       end
     end
 
