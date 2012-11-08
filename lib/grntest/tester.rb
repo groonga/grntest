@@ -1472,7 +1472,20 @@ EOF
 
       private
       def read_output
-        read_all_readable_content(@output)
+        options = {}
+        options[:first_timeout] = long_timeout if may_slow_command?
+        read_all_readable_content(@output, options)
+      end
+
+      MAY_SLOW_COMMANDS = [
+        "column_create",
+      ]
+      def may_slow_command?
+        MAY_SLOW_COMMANDS.include?(@current_command)
+      end
+
+      def long_timeout
+        180
       end
     end
 
