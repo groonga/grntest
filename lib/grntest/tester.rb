@@ -1766,7 +1766,9 @@ EOF
       end
 
       def guess_term_width_from_stty
-        case `stty -a`
+        return nil unless STDIN.tty?
+
+        case tty_info
         when /(\d+) columns/
           $1
         when /columns (\d+)/
@@ -1774,8 +1776,14 @@ EOF
         else
           nil
         end
-      rescue SystemCallError
-        nil
+      end
+
+      def tty_info
+        begin
+          `stty -a`
+        rescue SystemCallError
+          nil
+        end
       end
 
       def string_width(string)
