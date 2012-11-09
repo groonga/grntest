@@ -1298,16 +1298,24 @@ EOF
 
       def execute_directive_long_timeout(line, content, options)
         long_timeout, = options
-        if long_timeout.nil?
+        invalid_value_p = false
+        case long_timeout
+        when "default"
           @long_timeout = default_long_timeout
+        when nil
+          invalid_value_p = true
         else
           begin
             @long_timeout = Float(long_timeout)
           rescue ArgumentError
-            log_input(line)
-            message = "long-timeout must be number: <#{long_timeout}>"
-            log_error("#|e| [long-timeout] #{message}")
+            invalid_value_p = true
           end
+        end
+
+        if invalid_value_p
+          log_input(line)
+          message = "long-timeout must be number or 'default': <#{long_timeout}>"
+          log_error("#|e| [long-timeout] #{message}")
         end
       end
 

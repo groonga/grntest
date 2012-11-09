@@ -367,8 +367,9 @@ Usage
 ```
 
 It specifies a timeout for commands that may take long time.
-`TIMEOUT` must be a number. You can omit `TIMEOUT`. If you omit it,
-the default timeout is used. The default timeout is 180 seconds.
+`TIMEOUT` must be a number or `default`. If you specify `default` as
+`TIMEOUT`, the default timeout is used. The default timeout is 180
+seconds.
 
 Here are the commands that may take long time:
 
@@ -381,7 +382,7 @@ Example:
 #@long-timeout 300
 column_create Lexicon users_name COLUMN_INDEX Users name
 # Reset custom timeout for commands that may take long time.
-#@long-timeout
+#@long-timeout default
 ```
 
 ## Options
