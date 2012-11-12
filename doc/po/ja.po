@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: grntest 0.9.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-20 22:17+0900\n"
-"PO-Revision-Date: 2012-11-12 11:50+0900\n"
+"PO-Revision-Date: 2012-11-12 13:23+0900\n"
 "Last-Translator: Kouhei Sutou <kou@clear-code.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -884,18 +884,23 @@ msgid ""
 "% grntest --database /PATH/TO/EXISTING/DATABASE ...\n"
 "```"
 msgstr ""
+"```\n"
+"% grntest --database /既存の/データベースの/パス ...\n"
+"```"
 
 #: README.md:487
 msgid ""
 "`--database` option specifies an existing database that is used for\n"
 "test. Normally, grntest uses a new empty database for test."
 msgstr ""
+"`--database` オプションはテストに使う既存のデータベースを指定します。\n"
+"通常、grntestはテスト用に空の新しいデータベースを使います。"
 
 #: README.md:490
 msgid ""
 "`--database` option is very useful for testing against existing\n"
 "database."
-msgstr ""
+msgstr "`--database` オプションは既存のデータベースに対してテストするのにとても便利です。"
 
 #: README.md:493
 msgid "### `--groonga`"
