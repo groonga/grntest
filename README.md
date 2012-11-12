@@ -342,7 +342,7 @@ See also: `--base-directory` option
 
 ### `copy-path`
 
-Usage
+Usage:
 
 ```
 #@copy-path SOURCE DESTINATION
@@ -360,7 +360,7 @@ register "query_expanders/tsv"
 
 ### `long-timeout`
 
-Usage
+Usage:
 
 ```
 #@long-timeout TIMEOUT
