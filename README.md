@@ -378,7 +378,7 @@ Here are the commands that may take long time:
 Example:
 
 ```
-# Wait 300 times untile the following commands output their results.
+# Wait 300 seconds until commands that may take long time output their results
 #@long-timeout 300
 column_create Lexicon users_name COLUMN_INDEX Users name
 # Reset custom timeout for commands that may take long time.
