@@ -1509,6 +1509,7 @@ EOF
 
       MAY_SLOW_COMMANDS = [
         "column_create",
+        "register",
       ]
       def may_slow_command?
         MAY_SLOW_COMMANDS.include?(@current_command)

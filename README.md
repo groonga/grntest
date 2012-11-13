@@ -374,6 +374,7 @@ seconds.
 Here are the commands that may take long time:
 
 * `column_create`
+* `register`
 
 Example:
 
