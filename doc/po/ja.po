@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: grntest 0.9.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-20 22:17+0900\n"
-"PO-Revision-Date: 2012-11-12 13:23+0900\n"
+"PO-Revision-Date: 2012-11-13 13:29+0900\n"
 "Last-Translator: Kouhei Sutou <kou@clear-code.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -251,7 +251,7 @@ msgstr ""
 
 #: README.md:150
 msgid "The test is succeeded again."
-msgstr "再びテストが成功するように成りました。"
+msgstr "再びテストが成功するようになりました。"
 
 #: README.md:152
 msgid "## Advanced usage"
@@ -413,10 +413,7 @@ msgid ""
 "It disables logging executed command and executed result until\n"
 "`enable-logging` directive is used. It is useful for executing\n"
 "commands that isn't important for test."
-msgstr ""
-"実行したコマンドと実行結果をログに残さなくします。 `enable-logging` ディレク"
-"ティブを使うと再びログに残すように成ります。これはテストの本質ではないコマン"
-"ドを実行する時に便利です。"
+msgstr "実行したコマンドと実行結果をログに残さなくします。 `enable-logging` ディレクティブを使うと再びログに残すようになります。これはテストの本質ではないコマンドを実行する時に便利です。"
 
 #: README.md:234
 msgid ""
