@@ -51,6 +51,12 @@ class TestExecutor < Test::Unit::TestCase
       mock(@executor).execute_suggest_create_dataset("shop")
       execute("\#@suggest-create-dataset shop")
     end
+
+    def test_enable_ignore_feature_on_error
+      assert_not_predicate(@context, :ignore_feature?)
+      execute("\#@ignore-feature-on-error")
+      assert_predicate(@context, :ignore_feature?)
+    end
   end
 
   class TestCommandFormatConveter < self
