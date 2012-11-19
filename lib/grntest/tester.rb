@@ -698,6 +698,7 @@ module Grntest
         @worker = worker
         @max_n_columns = MAX_N_COLUMNS
         @id = nil
+        @on_error = :default
       end
 
       def run
@@ -715,9 +716,13 @@ module Grntest
           @worker.pass_test(result)
           remove_reject_file
         when :failure
-          @worker.fail_test(result)
-          output_reject_file(result.actual)
-          succeeded = false
+          if @on_error == :omit
+            @worker.not_checked_test(result)
+          else
+            @worker.fail_test(result)
+            output_reject_file(result.actual)
+            succeeded = false
+          end
         when :leaked
           @worker.leaked_test(result)
           succeeded = false
@@ -749,6 +754,7 @@ module Grntest
           context.output_type = @tester.output_type
           run_groonga(context) do |executor|
             executor.execute(test_script_path)
+            @on_error = context.on_error
           end
           check_memory_leak(context)
           context.result
@@ -1135,6 +1141,7 @@ EOF
         attr_accessor :groonga_suggest_create_dataset
         attr_accessor :result
         attr_accessor :output_type
+        attr_accessor :on_error
         def initialize
           @logging = true
           @base_directory = Pathname(".")
@@ -1145,6 +1152,7 @@ EOF
           @result = []
           @output_type = "json"
           @log = nil
+          @on_error = :default
         end
 
         def logging?
@@ -1172,6 +1180,10 @@ EOF
 
         def relative_db_path
           @db_path.relative_path_from(@temporary_directory_path)
+        end
+
+        def on_error?
+          @on_error
         end
       end
 
@@ -1319,6 +1331,25 @@ EOF
         end
       end
 
+      def execute_directive_on_error(line, content, options)
+        error_mode, = options
+        invalid_value_p = false
+        case error_mode
+        when "default"
+          @context.on_error = :default
+        when "omit"
+          @context.on_error = :omit
+        else
+          invalid_value_p = true
+        end
+
+        if invalid_value_p
+          log_input(line)
+          message = "on-error must be 'default' or 'omit': <#{error_mode}>"
+          log_error("#|e| [on-error] #{message}")
+        end
+      end
+
       def execute_directive(line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -1334,6 +1365,8 @@ EOF
           execute_directive_copy_path(line, content, options)
         when "long-timeout"
           execute_directive_long_timeout(line, content, options)
+        when "on-error"
+          execute_directive_on_error(line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
