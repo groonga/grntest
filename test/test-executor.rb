@@ -53,9 +53,9 @@ class TestExecutor < Test::Unit::TestCase
     end
 
     def test_enable_ignore_feature_on_error
-      assert_not_equal(@context.on_error?, :omit)
+      assert_not_equal(@context.on_error, :omit)
       execute("\#@on-error omit")
-      assert_equal(@context.on_error?, :omit)
+      assert_equal(@context.on_error, :omit)
     end
   end
 

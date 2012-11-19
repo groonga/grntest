@@ -1182,7 +1182,7 @@ EOF
           @db_path.relative_path_from(@temporary_directory_path)
         end
 
-        def on_error?
+        def on_error
           @on_error
         end
       end
