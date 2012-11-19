@@ -1181,10 +1181,6 @@ EOF
         def relative_db_path
           @db_path.relative_path_from(@temporary_directory_path)
         end
-
-        def on_error
-          @on_error
-        end
       end
 
       attr_reader :context
