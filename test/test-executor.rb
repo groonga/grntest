@@ -36,20 +36,20 @@ class TestExecutor < Test::Unit::TestCase
   class TestComment < self
     def test_disable_logging
       assert_predicate(@context, :logging?)
-      execute("# disable-logging")
+      execute("\#@disable-logging")
       assert_not_predicate(@context, :logging?)
     end
 
     def test_enable_logging
       @context.logging = false
       assert_not_predicate(@context, :logging?)
-      execute("# enable-logging")
+      execute("\#@enable-logging")
       assert_predicate(@context, :logging?)
     end
 
     def test_suggest_create_dataset
       mock(@executor).execute_suggest_create_dataset("shop")
-      execute("# suggest-create-dataset shop")
+      execute("\#@suggest-create-dataset shop")
     end
   end
 
