@@ -386,6 +386,29 @@ column_create Lexicon users_name COLUMN_INDEX Users name
 #@long-timeout default
 ```
 
+### `on-error`
+
+Usage:
+
+```
+#@on-error ACTION
+```
+
+It specifies a action on error. `ACTION` must be `default` or
+`omit`. If you specify `default` as `ACTION`, the running test is
+continued. If you specify `omit` as `ACTION`, the running test is
+aborted and the running test is marked as omitted.
+
+Example:
+
+```
+# Omit this test if TokenKyTea tokenizer isn't available.
+#@on-error omit
+register tokenizers/kytea
+# Don't omit this test when any error is occurred in the following commands.
+#@on-error default
+```
+
 ## Options
 
 Grntest has many options. You don't need to specify many of them
