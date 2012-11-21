@@ -407,13 +407,14 @@ module Grntest
 
     class WorkerResult < Result
       attr_reader :n_tests, :n_passed_tests, :n_leaked_tests
-      attr_reader :n_not_checked_tests
+      attr_reader :n_omitted_tests, :n_not_checked_tests
       attr_reader :failed_tests
       def initialize
         super
         @n_tests = 0
         @n_passed_tests = 0
         @n_leaked_tests = 0
+        @n_omitted_tests = 0
         @n_not_checked_tests = 0
         @failed_tests = []
       end
@@ -436,6 +437,10 @@ module Grntest
 
       def test_leaked(name)
         @n_leaked_tests += 1
+      end
+
+      def test_omitted
+        @n_omitted_tests += 1
       end
 
       def test_not_checked
@@ -523,6 +528,12 @@ module Grntest
         @reporter.leaked_test(self, result)
       end
 
+      def omitted_test(result)
+        @status = "omitted"
+        @result.test_omitted
+        @reporter.omitted_test(self, result)
+      end
+
       def not_checked_test(result)
         @status = "not checked"
         @result.test_not_checked
@@ -569,6 +580,10 @@ module Grntest
 
       def n_leaked_tests
         collect_count(:n_leaked_tests)
+      end
+
+      def n_omitted_tests
+        collect_count(:n_omitted_tests)
       end
 
       def n_not_checked_tests
@@ -660,6 +675,7 @@ module Grntest
     class TestResult < Result
       attr_accessor :worker_id, :test_name
       attr_accessor :expected, :actual, :n_leaked_objects
+      attr_writer :omitted
       def initialize(worker)
         super()
         @worker_id = worker.id
@@ -667,9 +683,12 @@ module Grntest
         @actual = nil
         @expected = nil
         @n_leaked_objects = 0
+        @omitted = false
       end
 
       def status
+        return :omitted if omitted?
+
         if @expected
           if @actual == @expected
             if @n_leaked_objects.zero?
@@ -688,6 +707,51 @@ module Grntest
           end
         end
       end
+
+      def omitted?
+        @omitted
+      end
+    end
+
+    class ResponseParser
+      class << self
+        def parse(content, type)
+          parser = new(type)
+          parser.parse(content)
+        end
+      end
+
+      def initialize(type)
+        @type = type
+      end
+
+      def parse(content)
+        case @type
+        when "json", "msgpack"
+          parse_result(content.chomp)
+        else
+          content
+        end
+      end
+
+      def parse_result(result)
+        case @type
+        when "json"
+          begin
+            JSON.parse(result)
+          rescue JSON::ParserError
+            raise ParseError.new(@type, result, $!.message)
+          end
+        when "msgpack"
+          begin
+            MessagePack.unpack(result.chomp)
+          rescue MessagePack::UnpackError, NoMemoryError
+            raise ParseError.new(@type, result, $!.message)
+          end
+        else
+          raise ParseError.new(@type, result, "unknown type")
+        end
+      end
     end
 
     class TestRunner
@@ -698,7 +762,6 @@ module Grntest
         @worker = worker
         @max_n_columns = MAX_N_COLUMNS
         @id = nil
-        @on_error = :default
       end
 
       def run
@@ -707,7 +770,7 @@ module Grntest
         @worker.start_test
         result = TestResult.new(@worker)
         result.measure do
-          result.actual = execute_groonga_script
+          execute_groonga_script(result)
         end
         normalize_actual_result(result)
         result.expected = read_expected_result
@@ -716,16 +779,14 @@ module Grntest
           @worker.pass_test(result)
           remove_reject_file
         when :failure
-          if @on_error == :omit
-            @worker.not_checked_test(result)
-          else
-            @worker.fail_test(result)
-            output_reject_file(result.actual)
-            succeeded = false
-          end
+          @worker.fail_test(result)
+          output_reject_file(result.actual)
+          succeeded = false
         when :leaked
           @worker.leaked_test(result)
           succeeded = false
+        when :omitted
+          @worker.omitted_test(result)
         else
           @worker.not_checked_test(result)
           output_actual_file(result.actual)
@@ -736,7 +797,7 @@ module Grntest
       end
 
       private
-      def execute_groonga_script
+      def execute_groonga_script(result)
         create_temporary_directory do |directory_path|
           if @tester.database_path
             db_path = Pathname(@tester.database_path).expand_path
@@ -754,10 +815,10 @@ module Grntest
           context.output_type = @tester.output_type
           run_groonga(context) do |executor|
             executor.execute(test_script_path)
-            @on_error = context.on_error
           end
           check_memory_leak(context)
-          context.result
+          result.omitted = context.omitted?
+          result.actual = context.result
         end
       end
 
@@ -787,11 +848,14 @@ module Grntest
           create_empty_database(context.db_path.to_s)
         end
 
-        case @tester.interface
-        when :stdio
-          run_groonga_stdio(context, &block)
-        when :http
-          run_groonga_http(context, &block)
+        catch do |tag|
+          context.abort_tag = tag
+          case @tester.interface
+          when :stdio
+            run_groonga_stdio(context, &block)
+          when :http
+            run_groonga_http(context, &block)
+          end
         end
       end
 
@@ -1028,7 +1092,7 @@ EOF
           status = nil
           values = nil
           begin
-            status, *values = parse_result(content.chomp, type)
+            status, *values = ResponseParser.parse(content.chomp, type)
           rescue ParseError
             return $!.message
           end
@@ -1041,25 +1105,6 @@ EOF
           normalize_raw_content(normalized_output)
         else
           normalize_raw_content(content)
-        end
-      end
-
-      def parse_result(result, type)
-        case type
-        when "json"
-          begin
-            JSON.parse(result)
-          rescue JSON::ParserError
-            raise ParseError.new(type, result, $!.message)
-          end
-        when "msgpack"
-          begin
-            MessagePack.unpack(result.chomp)
-          rescue MessagePack::UnpackError, NoMemoryError
-            raise ParseError.new(type, result, $!.message)
-          end
-        else
-          raise ParseError.new(type, result, "unknown type")
         end
       end
 
@@ -1142,6 +1187,7 @@ EOF
         attr_accessor :result
         attr_accessor :output_type
         attr_accessor :on_error
+        attr_accessor :abort_tag
         def initialize
           @logging = true
           @base_directory = Pathname(".")
@@ -1153,6 +1199,8 @@ EOF
           @output_type = "json"
           @log = nil
           @on_error = :default
+          @abort_tag = nil
+          @omitted = false
         end
 
         def logging?
@@ -1181,6 +1229,22 @@ EOF
         def relative_db_path
           @db_path.relative_path_from(@temporary_directory_path)
         end
+
+        def omitted?
+          @omitted
+        end
+
+        def error
+          case @on_error
+          when :omit
+            @omitted = true
+            throw @abort_tag
+          end
+        end
+      end
+
+      module ReturnCode
+        SUCCESS = 0
       end
 
       attr_reader :context
@@ -1428,8 +1492,12 @@ EOF
       end
 
       def execute_command(command)
-        log_output(send_command(command))
+        response = send_command(command)
+        type = @output_type
+        log_output(response)
         log_error(read_error_log)
+
+        @context.error if error_response?(response, type)
       end
 
       def read_error_log
@@ -1465,6 +1533,18 @@ EOF
 
       def backtrace_log_message?(message)
         message.start_with?("/")
+      end
+
+      def error_response?(response, type)
+        status = nil
+        begin
+          status, = ResponseParser.parse(response, type)
+        rescue ParseError
+          return false
+        end
+
+        return_code, = status
+        return_code != ReturnCode::SUCCESS
       end
 
       def log(tag, content, options={})
@@ -1701,6 +1781,7 @@ EOF
           "passes",
           "failures",
           "leaked",
+          "omitted",
           "!checked",
         ]
         "  " + ((["%-9s"] * items.size).join(" | ") % items) + " |"
@@ -1713,6 +1794,7 @@ EOF
           "%9d" % result.n_passed_tests,
           "%9d" % result.n_failed_tests,
           "%9d" % result.n_leaked_tests,
+          "%9d" % result.n_omitted_tests,
           "%9d" % result.n_not_checked_tests,
         ]
         "  " + items.join(" | ") + " |"
@@ -2042,6 +2124,15 @@ EOF
         end
       end
 
+      def omitted_test(worker, result)
+        synchronize do
+          report_test_result_mark("O", result)
+          puts
+          report_test(worker, result)
+          report_actual(result)
+        end
+      end
+
       def not_checked_test(worker, result)
         synchronize do
           report_test_result_mark("N", result)
@@ -2118,6 +2209,11 @@ EOF
         report_test_result(result, worker.status)
       end
 
+      def omitted_test(worker, result)
+        report_test_result(result, worker.status)
+        report_actual(result)
+      end
+
       def not_checked_test(worker, result)
         report_test_result(result, worker.status)
         report_actual(result)
@@ -2175,6 +2271,13 @@ EOF
         redraw do
           report_test(worker, result)
           report_marker(result)
+        end
+      end
+
+      def omitted_test(worker, result)
+        redraw do
+          report_test(worker, result)
+          report_actual(result)
         end
       end
 
