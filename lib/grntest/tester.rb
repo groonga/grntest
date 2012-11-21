@@ -504,43 +504,43 @@ module Grntest
         succeeded
       end
 
-      def on_start_test
+      def on_test_start
         @status = "running"
         @test_result = nil
         @reporter.on_test_start(self)
       end
 
-      def on_pass_test(result)
+      def on_test_pass(result)
         @status = "passed"
         @result.test_passed
         @reporter.on_test_success(self, result)
       end
 
-      def on_fail_test(result)
+      def on_test_fail(result)
         @status = "failed"
         @result.test_failed(test_name)
         @reporter.on_test_failure(self, result)
       end
 
-      def on_leaked_test(result)
+      def on_test_leaked(result)
         @status = "leaked(#{result.n_leaked_objects})"
         @result.test_leaked(test_name)
         @reporter.on_test_leak(self, result)
       end
 
-      def on_omitted_test(result)
+      def on_test_omitted(result)
         @status = "omitted"
         @result.test_omitted
         @reporter.on_test_omission(self, result)
       end
 
-      def on_not_checked_test(result)
+      def on_test_not_checked(result)
         @status = "not checked"
         @result.test_not_checked
         @reporter.on_test_no_check(self, result)
       end
 
-      def on_finish_test(result)
+      def on_test_finish(result)
         @result.test_finished
         @reporter.on_test_finish(self, result)
         @test_script_path = nil
@@ -767,7 +767,7 @@ module Grntest
       def run
         succeeded = true
 
-        @worker.on_start_test
+        @worker.on_test_start
         result = TestResult.new(@worker)
         result.measure do
           execute_groonga_script(result)
@@ -776,22 +776,22 @@ module Grntest
         result.expected = read_expected_result
         case result.status
         when :success
-          @worker.on_pass_test(result)
+          @worker.on_test_pass(result)
           remove_reject_file
         when :failure
-          @worker.on_fail_test(result)
+          @worker.on_test_fail(result)
           output_reject_file(result.actual)
           succeeded = false
         when :leaked
-          @worker.on_leaked_test(result)
+          @worker.on_test_leaked(result)
           succeeded = false
         when :omitted
-          @worker.on_omitted_test(result)
+          @worker.on_test_omitted(result)
         else
-          @worker.on_not_checked_test(result)
+          @worker.on_test_not_checked(result)
           output_actual_file(result.actual)
         end
-        @worker.on_finish_test(result)
+        @worker.on_test_finish(result)
 
         succeeded
       end
