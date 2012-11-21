@@ -431,7 +431,7 @@ module Grntest
         @n_passed_tests += 1
       end
 
-      def on_test_failed(name)
+      def on_test_failure(name)
         @failed_tests << name
       end
 
@@ -518,7 +518,7 @@ module Grntest
 
       def on_test_failure(result)
         @status = "failed"
-        @result.on_test_failed(test_name)
+        @result.on_test_failure(test_name)
         @reporter.on_test_failure(self, result)
       end
 
