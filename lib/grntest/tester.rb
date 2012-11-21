@@ -439,7 +439,7 @@ module Grntest
         @n_leaked_tests += 1
       end
 
-      def on_test_omitted
+      def on_test_omission
         @n_omitted_tests += 1
       end
 
@@ -530,7 +530,7 @@ module Grntest
 
       def on_test_omission(result)
         @status = "omitted"
-        @result.on_test_omitted
+        @result.on_test_omission
         @reporter.on_test_omission(self, result)
       end
 
