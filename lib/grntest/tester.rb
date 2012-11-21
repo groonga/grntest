@@ -528,7 +528,7 @@ module Grntest
         @reporter.on_test_leak(self, result)
       end
 
-      def on_test_omitted(result)
+      def on_test_omission(result)
         @status = "omitted"
         @result.test_omitted
         @reporter.on_test_omission(self, result)
@@ -786,7 +786,7 @@ module Grntest
           @worker.on_test_leak(result)
           succeeded = false
         when :omitted
-          @worker.on_test_omitted(result)
+          @worker.on_test_omission(result)
         else
           @worker.on_test_not_checked(result)
           output_actual_file(result.actual)
