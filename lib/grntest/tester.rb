@@ -476,16 +476,16 @@ module Grntest
         succeeded = true
 
         @result.measure do
-          @reporter.start_worker(self)
+          @reporter.on_start_worker(self)
           catch do |tag|
             loop do
               suite_name, test_script_path, test_name = queue.pop
               break if test_script_path.nil?
 
               unless @suite_name == suite_name
-                @reporter.finish_suite(self) if @suite_name
+                @reporter.on_finish_suite(self) if @suite_name
                 @suite_name = suite_name
-                @reporter.start_suite(self)
+                @reporter.on_start_suite(self)
               end
               @test_script_path = test_script_path
               @test_name = test_name
@@ -495,11 +495,11 @@ module Grntest
               break if interruptted?
             end
             @status = "finished"
-            @reporter.finish_suite(@suite_name) if @suite_name
+            @reporter.on_finish_suite(@suite_name) if @suite_name
             @suite_name = nil
           end
         end
-        @reporter.finish_worker(self)
+        @reporter.on_finish_worker(self)
 
         succeeded
       end
@@ -507,42 +507,42 @@ module Grntest
       def start_test
         @status = "running"
         @test_result = nil
-        @reporter.start_test(self)
+        @reporter.on_start_test(self)
       end
 
       def pass_test(result)
         @status = "passed"
         @result.test_passed
-        @reporter.pass_test(self, result)
+        @reporter.on_pass_test(self, result)
       end
 
       def fail_test(result)
         @status = "failed"
         @result.test_failed(test_name)
-        @reporter.fail_test(self, result)
+        @reporter.on_fail_test(self, result)
       end
 
       def leaked_test(result)
         @status = "leaked(#{result.n_leaked_objects})"
         @result.test_leaked(test_name)
-        @reporter.leaked_test(self, result)
+        @reporter.on_leaked_test(self, result)
       end
 
       def omitted_test(result)
         @status = "omitted"
         @result.test_omitted
-        @reporter.omitted_test(self, result)
+        @reporter.on_omitted_test(self, result)
       end
 
       def not_checked_test(result)
         @status = "not checked"
         @result.test_not_checked
-        @reporter.not_checked_test(self, result)
+        @reporter.on_not_checked_test(self, result)
       end
 
       def finish_test(result)
         @result.test_finished
-        @reporter.finish_test(self, result)
+        @reporter.on_finish_test(self, result)
         @test_script_path = nil
         @test_name = nil
       end
@@ -612,7 +612,7 @@ module Grntest
         @result.measure do
           succeeded = run_test_suites(test_suites)
         end
-        @reporter.finish(@result)
+        @reporter.on_finish(@result)
 
         succeeded
       end
@@ -638,7 +638,7 @@ module Grntest
           workers << Worker.new(i, @tester, @result, @reporter)
         end
         @result.workers = workers
-        @reporter.start(@result)
+        @reporter.on_start(@result)
 
         succeeded = true
         worker_threads = []
@@ -2096,25 +2096,25 @@ EOF
         super
       end
 
-      def start(result)
+      def on_start(result)
       end
 
-      def start_worker(worker)
+      def on_start_worker(worker)
       end
 
-      def start_suite(worker)
+      def on_start_suite(worker)
       end
 
-      def start_test(worker)
+      def on_start_test(worker)
       end
 
-      def pass_test(worker, result)
+      def on_pass_test(worker, result)
         synchronize do
           report_test_result_mark(".", result)
         end
       end
 
-      def fail_test(worker, result)
+      def on_fail_test(worker, result)
         synchronize do
           report_test_result_mark("F", result)
           puts
@@ -2123,13 +2123,13 @@ EOF
         end
       end
 
-      def leaked_test(worker, result)
+      def on_leaked_test(worker, result)
         synchronize do
           report_test_result_mark("L(#{result.n_leaked_objects})", result)
         end
       end
 
-      def omitted_test(worker, result)
+      def on_omitted_test(worker, result)
         synchronize do
           report_test_result_mark("O", result)
           puts
@@ -2138,7 +2138,7 @@ EOF
         end
       end
 
-      def not_checked_test(worker, result)
+      def on_not_checked_test(worker, result)
         synchronize do
           report_test_result_mark("N", result)
           puts
@@ -2147,16 +2147,16 @@ EOF
         end
       end
 
-      def finish_test(worker, result)
+      def on_finish_test(worker, result)
       end
 
-      def finish_suite(worker)
+      def on_finish_suite(worker)
       end
 
-      def finish_worker(worker_id)
+      def on_finish_worker(worker_id)
       end
 
-      def finish(result)
+      def on_finish(result)
         puts
         puts
         report_summary(result)
@@ -2181,13 +2181,13 @@ EOF
         super
       end
 
-      def start(result)
+      def on_start(result)
       end
 
-      def start_worker(worker)
+      def on_start_worker(worker)
       end
 
-      def start_suite(worker)
+      def on_start_suite(worker)
         if worker.suite_name.bytesize <= @term_width
           puts(worker.suite_name)
         else
@@ -2196,44 +2196,44 @@ EOF
         @output.flush
       end
 
-      def start_test(worker)
+      def on_start_test(worker)
         print("  #{worker.test_name}")
         @output.flush
       end
 
-      def pass_test(worker, result)
+      def on_pass_test(worker, result)
         report_test_result(result, worker.status)
       end
 
-      def fail_test(worker, result)
+      def on_fail_test(worker, result)
         report_test_result(result, worker.status)
         report_failure(result)
       end
 
-      def leaked_test(worker, result)
+      def on_leaked_test(worker, result)
         report_test_result(result, worker.status)
       end
 
-      def omitted_test(worker, result)
-        report_test_result(result, worker.status)
-        report_actual(result)
-      end
-
-      def not_checked_test(worker, result)
+      def on_omitted_test(worker, result)
         report_test_result(result, worker.status)
         report_actual(result)
       end
 
-      def finish_test(worker, result)
+      def on_not_checked_test(worker, result)
+        report_test_result(result, worker.status)
+        report_actual(result)
       end
 
-      def finish_suite(worker)
+      def on_finish_test(worker, result)
       end
 
-      def finish_worker(worker_id)
+      def on_finish_suite(worker)
       end
 
-      def finish(result)
+      def on_finish_worker(worker_id)
+      end
+
+      def on_finish(result)
         puts
         report_summary(result)
       end
@@ -2246,66 +2246,66 @@ EOF
         @minimum_redraw_interval = 0.1
       end
 
-      def start(result)
+      def on_start(result)
         @test_suites_result = result
       end
 
-      def start_worker(worker)
+      def on_start_worker(worker)
       end
 
-      def start_suite(worker)
+      def on_start_suite(worker)
         redraw
       end
 
-      def start_test(worker)
+      def on_start_test(worker)
         redraw
       end
 
-      def pass_test(worker, result)
+      def on_pass_test(worker, result)
         redraw
       end
 
-      def fail_test(worker, result)
+      def on_fail_test(worker, result)
         redraw do
           report_test(worker, result)
           report_failure(result)
         end
       end
 
-      def leaked_test(worker, result)
+      def on_leaked_test(worker, result)
         redraw do
           report_test(worker, result)
           report_marker(result)
         end
       end
 
-      def omitted_test(worker, result)
+      def on_omitted_test(worker, result)
         redraw do
           report_test(worker, result)
           report_actual(result)
         end
       end
 
-      def not_checked_test(worker, result)
+      def on_not_checked_test(worker, result)
         redraw do
           report_test(worker, result)
           report_actual(result)
         end
       end
 
-      def finish_test(worker, result)
+      def on_finish_test(worker, result)
         redraw
       end
 
-      def finish_suite(worker)
+      def on_finish_suite(worker)
         redraw
       end
 
-      def finish_worker(worker)
+      def on_finish_worker(worker)
         redraw
       end
 
-      def finish(result)
+      def on_finish(result)
         draw
         puts
         report_summary(result)
