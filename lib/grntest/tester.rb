@@ -525,7 +525,7 @@ module Grntest
       def leaked_test(result)
         @status = "leaked(#{result.n_leaked_objects})"
         @result.test_leaked(test_name)
-        @reporter.on_test_leaked(self, result)
+        @reporter.on_test_leak(self, result)
       end
 
       def omitted_test(result)
@@ -2123,7 +2123,7 @@ EOF
         end
       end
 
-      def on_test_leaked(worker, result)
+      def on_test_leak(worker, result)
         synchronize do
           report_test_result_mark("L(#{result.n_leaked_objects})", result)
         end
@@ -2210,7 +2210,7 @@ EOF
         report_failure(result)
       end
 
-      def on_test_leaked(worker, result)
+      def on_test_leak(worker, result)
         report_test_result(result, worker.status)
       end
 
@@ -2272,7 +2272,7 @@ EOF
         end
       end
 
-      def on_test_leaked(worker, result)
+      def on_test_leak(worker, result)
         redraw do
           report_test(worker, result)
           report_marker(result)
