@@ -435,7 +435,7 @@ module Grntest
         @failed_tests << name
       end
 
-      def on_test_leaked(name)
+      def on_test_leak(name)
         @n_leaked_tests += 1
       end
 
@@ -524,7 +524,7 @@ module Grntest
 
       def on_test_leak(result)
         @status = "leaked(#{result.n_leaked_objects})"
-        @result.on_test_leaked(test_name)
+        @result.on_test_leak(test_name)
         @reporter.on_test_leak(self, result)
       end
 
