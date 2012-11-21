@@ -1976,6 +1976,8 @@ EOF
           "%s%s%s" % [failure_color, message, reset_color]
         when :leaked
           "%s%s%s" % [leaked_color, message, reset_color]
+        when :omitted
+          "%s%s%s" % [omitted_color, message, reset_color]
         when :not_checked
           "%s%s%s" % [not_checked_color, message, reset_color]
         else
@@ -2013,6 +2015,19 @@ EOF
         escape_sequence({
                           :color => :magenta,
                           :color_256 => [3, 0, 3],
+                          :background => true,
+                        },
+                        {
+                          :color => :white,
+                          :color_256 => [5, 5, 5],
+                          :bold => true,
+                        })
+      end
+
+      def omitted_color
+        escape_sequence({
+                          :color => :blue,
+                          :color_256 => [0, 0, 1],
                           :background => true,
                         },
                         {
