@@ -537,7 +537,7 @@ module Grntest
       def not_checked_test(result)
         @status = "not checked"
         @result.test_not_checked
-        @reporter.on_test_not_checked(self, result)
+        @reporter.on_test_no_check(self, result)
       end
 
       def finish_test(result)
@@ -2138,7 +2138,7 @@ EOF
         end
       end
 
-      def on_test_not_checked(worker, result)
+      def on_test_no_check(worker, result)
         synchronize do
           report_test_result_mark("N", result)
           puts
@@ -2219,7 +2219,7 @@ EOF
         report_actual(result)
       end
 
-      def on_test_not_checked(worker, result)
+      def on_test_no_check(worker, result)
         report_test_result(result, worker.status)
         report_actual(result)
       end
@@ -2286,7 +2286,7 @@ EOF
         end
       end
 
-      def on_test_not_checked(worker, result)
+      def on_test_no_check(worker, result)
         redraw do
           report_test(worker, result)
           report_actual(result)
