@@ -409,6 +409,24 @@ register tokenizers/kytea
 #@on-error default
 ```
 
+### `omit`
+
+Usage:
+
+```
+#@omit REASON
+```
+
+Omit the test with `REASON`.
+
+Example:
+
+```
+# Omit this test until the feature is implemented.
+#@omit "This feature is not implemented yet."
+new_excelent_command
+```
+
 ## Options
 
 Grntest has many options. You don't need to specify many of them

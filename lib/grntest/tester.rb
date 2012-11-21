@@ -1413,6 +1413,13 @@ EOF
         end
       end
 
+      def execute_directive_omit(line, content, options)
+        reason, = options
+        @output_type = "raw"
+        log_output("omit: #{reason}")
+        @context.omit
+      end
+
       def execute_directive(line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -1430,6 +1437,8 @@ EOF
           execute_directive_long_timeout(line, content, options)
         when "on-error"
           execute_directive_on_error(line, content, options)
+        when "omit"
+          execute_directive_omit(line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
