@@ -1398,19 +1398,18 @@ EOF
       def execute_directive_on_error(line, content, options)
         action, = options
         invalid_value_p = false
-        case action
-        when "default"
-          @context.on_error = :default
-        when "omit"
-          @context.on_error = :omit
+        valid_actions = ["default", "omit"]
+        if valid_actions.include?(action)
+          @context.on_error = action.to_sym
         else
           invalid_value_p = true
         end
 
         if invalid_value_p
           log_input(line)
-          message = "on-error must be 'default' or 'omit': <#{action}>"
-          log_error("#|e| [on-error] #{message}")
+          valid_actions_label = "[#{valid_actions.join(', ')}]"
+          message = "on-error must be one of #{valid_actions_label}"
+          log_error("#|e| [on-error] #{message}: <#{action}>")
         end
       end
 
