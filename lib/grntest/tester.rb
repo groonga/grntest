@@ -510,7 +510,7 @@ module Grntest
         @reporter.on_test_start(self)
       end
 
-      def on_test_pass(result)
+      def on_test_success(result)
         @status = "passed"
         @result.test_passed
         @reporter.on_test_success(self, result)
@@ -776,7 +776,7 @@ module Grntest
         result.expected = read_expected_result
         case result.status
         when :success
-          @worker.on_test_pass(result)
+          @worker.on_test_success(result)
           remove_reject_file
         when :failure
           @worker.on_test_fail(result)
