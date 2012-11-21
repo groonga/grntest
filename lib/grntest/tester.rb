@@ -443,7 +443,7 @@ module Grntest
         @n_omitted_tests += 1
       end
 
-      def on_test_not_checked
+      def on_test_no_check
         @n_not_checked_tests += 1
       end
     end
@@ -536,7 +536,7 @@ module Grntest
 
       def on_test_no_check(result)
         @status = "not checked"
-        @result.on_test_not_checked
+        @result.on_test_no_check
         @reporter.on_test_no_check(self, result)
       end
 
