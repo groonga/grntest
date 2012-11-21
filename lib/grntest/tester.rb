@@ -513,7 +513,7 @@ module Grntest
       def pass_test(result)
         @status = "passed"
         @result.test_passed
-        @reporter.on_test_pass(self, result)
+        @reporter.on_test_success(self, result)
       end
 
       def fail_test(result)
@@ -2108,7 +2108,7 @@ EOF
       def on_test_start(worker)
       end
 
-      def on_test_pass(worker, result)
+      def on_test_success(worker, result)
         synchronize do
           report_test_result_mark(".", result)
         end
@@ -2201,7 +2201,7 @@ EOF
         @output.flush
       end
 
-      def on_test_pass(worker, result)
+      def on_test_success(worker, result)
         report_test_result(result, worker.status)
       end
 
@@ -2261,7 +2261,7 @@ EOF
         redraw
       end
 
-      def on_test_pass(worker, result)
+      def on_test_success(worker, result)
         redraw
       end
 
