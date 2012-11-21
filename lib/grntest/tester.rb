@@ -1396,9 +1396,9 @@ EOF
       end
 
       def execute_directive_on_error(line, content, options)
-        error_mode, = options
+        action, = options
         invalid_value_p = false
-        case error_mode
+        case action
         when "default"
           @context.on_error = :default
         when "omit"
@@ -1409,7 +1409,7 @@ EOF
 
         if invalid_value_p
           log_input(line)
-          message = "on-error must be 'default' or 'omit': <#{error_mode}>"
+          message = "on-error must be 'default' or 'omit': <#{action}>"
           log_error("#|e| [on-error] #{message}")
         end
       end
