@@ -534,7 +534,7 @@ module Grntest
         @reporter.on_test_omission(self, result)
       end
 
-      def on_test_not_checked(result)
+      def on_test_no_check(result)
         @status = "not checked"
         @result.test_not_checked
         @reporter.on_test_no_check(self, result)
@@ -788,7 +788,7 @@ module Grntest
         when :omitted
           @worker.on_test_omission(result)
         else
-          @worker.on_test_not_checked(result)
+          @worker.on_test_no_check(result)
           output_actual_file(result.actual)
         end
         @worker.on_test_finish(result)
