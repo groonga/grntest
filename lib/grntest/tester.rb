@@ -531,7 +531,7 @@ module Grntest
       def omitted_test(result)
         @status = "omitted"
         @result.test_omitted
-        @reporter.on_test_omitted(self, result)
+        @reporter.on_test_omission(self, result)
       end
 
       def not_checked_test(result)
@@ -2129,7 +2129,7 @@ EOF
         end
       end
 
-      def on_test_omitted(worker, result)
+      def on_test_omission(worker, result)
         synchronize do
           report_test_result_mark("O", result)
           puts
@@ -2214,7 +2214,7 @@ EOF
         report_test_result(result, worker.status)
       end
 
-      def on_test_omitted(worker, result)
+      def on_test_omission(worker, result)
         report_test_result(result, worker.status)
         report_actual(result)
       end
@@ -2279,7 +2279,7 @@ EOF
         end
       end
 
-      def on_test_omitted(worker, result)
+      def on_test_omission(worker, result)
         redraw do
           report_test(worker, result)
           report_actual(result)
