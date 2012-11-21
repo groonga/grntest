@@ -476,16 +476,16 @@ module Grntest
         succeeded = true
 
         @result.measure do
-          @reporter.on_start_worker(self)
+          @reporter.on_worker_start(self)
           catch do |tag|
             loop do
               suite_name, test_script_path, test_name = queue.pop
               break if test_script_path.nil?
 
               unless @suite_name == suite_name
-                @reporter.on_finish_suite(self) if @suite_name
+                @reporter.on_suite_finish(self) if @suite_name
                 @suite_name = suite_name
-                @reporter.on_start_suite(self)
+                @reporter.on_suite_start(self)
               end
               @test_script_path = test_script_path
               @test_name = test_name
@@ -495,11 +495,11 @@ module Grntest
               break if interruptted?
             end
             @status = "finished"
-            @reporter.on_finish_suite(@suite_name) if @suite_name
+            @reporter.on_suite_finish(@suite_name) if @suite_name
             @suite_name = nil
           end
         end
-        @reporter.on_finish_worker(self)
+        @reporter.on_worker_finish(self)
 
         succeeded
       end
@@ -507,42 +507,42 @@ module Grntest
       def start_test
         @status = "running"
         @test_result = nil
-        @reporter.on_start_test(self)
+        @reporter.on_test_start(self)
       end
 
       def pass_test(result)
         @status = "passed"
         @result.test_passed
-        @reporter.on_pass_test(self, result)
+        @reporter.on_test_pass(self, result)
       end
 
       def fail_test(result)
         @status = "failed"
         @result.test_failed(test_name)
-        @reporter.on_fail_test(self, result)
+        @reporter.on_test_fail(self, result)
       end
 
       def leaked_test(result)
         @status = "leaked(#{result.n_leaked_objects})"
         @result.test_leaked(test_name)
-        @reporter.on_leaked_test(self, result)
+        @reporter.on_test_leaked(self, result)
       end
 
       def omitted_test(result)
         @status = "omitted"
         @result.test_omitted
-        @reporter.on_omitted_test(self, result)
+        @reporter.on_test_omitted(self, result)
       end
 
       def not_checked_test(result)
         @status = "not checked"
         @result.test_not_checked
-        @reporter.on_not_checked_test(self, result)
+        @reporter.on_test_not_checked(self, result)
       end
 
       def finish_test(result)
         @result.test_finished
-        @reporter.on_finish_test(self, result)
+        @reporter.on_test_finish(self, result)
         @test_script_path = nil
         @test_name = nil
       end
@@ -2099,22 +2099,22 @@ EOF
       def on_start(result)
       end
 
-      def on_start_worker(worker)
+      def on_worker_start(worker)
       end
 
-      def on_start_suite(worker)
+      def on_suite_start(worker)
       end
 
-      def on_start_test(worker)
+      def on_test_start(worker)
       end
 
-      def on_pass_test(worker, result)
+      def on_test_pass(worker, result)
         synchronize do
           report_test_result_mark(".", result)
         end
       end
 
-      def on_fail_test(worker, result)
+      def on_test_fail(worker, result)
         synchronize do
           report_test_result_mark("F", result)
           puts
@@ -2123,13 +2123,13 @@ EOF
         end
       end
 
-      def on_leaked_test(worker, result)
+      def on_test_leaked(worker, result)
         synchronize do
           report_test_result_mark("L(#{result.n_leaked_objects})", result)
         end
       end
 
-      def on_omitted_test(worker, result)
+      def on_test_omitted(worker, result)
         synchronize do
           report_test_result_mark("O", result)
           puts
@@ -2138,7 +2138,7 @@ EOF
         end
       end
 
-      def on_not_checked_test(worker, result)
+      def on_test_not_checked(worker, result)
         synchronize do
           report_test_result_mark("N", result)
           puts
@@ -2147,13 +2147,13 @@ EOF
         end
       end
 
-      def on_finish_test(worker, result)
+      def on_test_finish(worker, result)
       end
 
-      def on_finish_suite(worker)
+      def on_suite_finish(worker)
       end
 
-      def on_finish_worker(worker_id)
+      def on_worker_finish(worker_id)
       end
 
       def on_finish(result)
@@ -2184,10 +2184,10 @@ EOF
       def on_start(result)
       end
 
-      def on_start_worker(worker)
+      def on_worker_start(worker)
       end
 
-      def on_start_suite(worker)
+      def on_suite_start(worker)
         if worker.suite_name.bytesize <= @term_width
           puts(worker.suite_name)
         else
@@ -2196,41 +2196,41 @@ EOF
         @output.flush
       end
 
-      def on_start_test(worker)
+      def on_test_start(worker)
         print("  #{worker.test_name}")
         @output.flush
       end
 
-      def on_pass_test(worker, result)
+      def on_test_pass(worker, result)
         report_test_result(result, worker.status)
       end
 
-      def on_fail_test(worker, result)
+      def on_test_fail(worker, result)
         report_test_result(result, worker.status)
         report_failure(result)
       end
 
-      def on_leaked_test(worker, result)
+      def on_test_leaked(worker, result)
         report_test_result(result, worker.status)
       end
 
-      def on_omitted_test(worker, result)
-        report_test_result(result, worker.status)
-        report_actual(result)
-      end
-
-      def on_not_checked_test(worker, result)
+      def on_test_omitted(worker, result)
         report_test_result(result, worker.status)
         report_actual(result)
       end
 
-      def on_finish_test(worker, result)
+      def on_test_not_checked(worker, result)
+        report_test_result(result, worker.status)
+        report_actual(result)
       end
 
-      def on_finish_suite(worker)
+      def on_test_finish(worker, result)
       end
 
-      def on_finish_worker(worker_id)
+      def on_suite_finish(worker)
+      end
+
+      def on_worker_finish(worker_id)
       end
 
       def on_finish(result)
@@ -2250,58 +2250,58 @@ EOF
         @test_suites_result = result
       end
 
-      def on_start_worker(worker)
+      def on_worker_start(worker)
       end
 
-      def on_start_suite(worker)
+      def on_suite_start(worker)
         redraw
       end
 
-      def on_start_test(worker)
+      def on_test_start(worker)
         redraw
       end
 
-      def on_pass_test(worker, result)
+      def on_test_pass(worker, result)
         redraw
       end
 
-      def on_fail_test(worker, result)
+      def on_test_fail(worker, result)
         redraw do
           report_test(worker, result)
           report_failure(result)
         end
       end
 
-      def on_leaked_test(worker, result)
+      def on_test_leaked(worker, result)
         redraw do
           report_test(worker, result)
           report_marker(result)
         end
       end
 
-      def on_omitted_test(worker, result)
+      def on_test_omitted(worker, result)
         redraw do
           report_test(worker, result)
           report_actual(result)
         end
       end
 
-      def on_not_checked_test(worker, result)
+      def on_test_not_checked(worker, result)
         redraw do
           report_test(worker, result)
           report_actual(result)
         end
       end
 
-      def on_finish_test(worker, result)
+      def on_test_finish(worker, result)
         redraw
       end
 
-      def on_finish_suite(worker)
+      def on_suite_finish(worker)
         redraw
       end
 
-      def on_finish_worker(worker)
+      def on_worker_finish(worker)
         redraw
       end
 
