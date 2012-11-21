@@ -427,7 +427,7 @@ module Grntest
         @n_tests += 1
       end
 
-      def on_test_passed
+      def on_test_success
         @n_passed_tests += 1
       end
 
@@ -512,7 +512,7 @@ module Grntest
 
       def on_test_success(result)
         @status = "passed"
-        @result.on_test_passed
+        @result.on_test_success
         @reporter.on_test_success(self, result)
       end
 
