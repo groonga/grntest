@@ -1774,29 +1774,30 @@ EOF
         puts(colorize(summary, result))
       end
 
-      def statistics_header
-        items = [
-          "tests/sec",
-          "tests",
-          "passes",
-          "failures",
-          "leaked",
-          "omitted",
-          "!checked",
+      def columns
+        [
+          # label,      format value
+          ["tests/sec", lambda {|result| "%9.2f" % throughput(result)}],
+          ["   tests",  lambda {|result| "%8d"   % result.n_tests}],
+          ["  passes",  lambda {|result| "%8d"   % result.n_passed_tests}],
+          ["failures",  lambda {|result| "%8d"   % result.n_failed_tests}],
+          ["  leaked",  lambda {|result| "%8d"   % result.n_leaked_tests}],
+          [" omitted",  lambda {|result| "%8d"   % result.n_omitted_tests}],
+          ["!checked",  lambda {|result| "%8d"   % result.n_not_checked_tests}],
         ]
-        "  " + ((["%-9s"] * items.size).join(" | ") % items) + " |"
+      end
+
+      def statistics_header
+        labels = columns.collect do |label, format_value|
+          label
+        end
+        "  " + labels.join(" | ") + " |"
       end
 
       def statistics(result)
-        items = [
-          "%9.2f" % throughput(result),
-          "%9d" % result.n_tests,
-          "%9d" % result.n_passed_tests,
-          "%9d" % result.n_failed_tests,
-          "%9d" % result.n_leaked_tests,
-          "%9d" % result.n_omitted_tests,
-          "%9d" % result.n_not_checked_tests,
-        ]
+        items = columns.collect do |label, format_value|
+          format_value.call(result)
+        end
         "  " + items.join(" | ") + " |"
       end
 
