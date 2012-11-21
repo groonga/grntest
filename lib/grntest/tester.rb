@@ -423,7 +423,7 @@ module Grntest
         @failed_tests.size
       end
 
-      def on_test_finished
+      def on_test_finish
         @n_tests += 1
       end
 
@@ -541,7 +541,7 @@ module Grntest
       end
 
       def on_test_finish(result)
-        @result.on_test_finished
+        @result.on_test_finish
         @reporter.on_test_finish(self, result)
         @test_script_path = nil
         @test_name = nil
