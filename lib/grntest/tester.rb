@@ -519,7 +519,7 @@ module Grntest
       def fail_test(result)
         @status = "failed"
         @result.test_failed(test_name)
-        @reporter.on_test_fail(self, result)
+        @reporter.on_test_failure(self, result)
       end
 
       def leaked_test(result)
@@ -2114,7 +2114,7 @@ EOF
         end
       end
 
-      def on_test_fail(worker, result)
+      def on_test_failure(worker, result)
         synchronize do
           report_test_result_mark("F", result)
           puts
@@ -2205,7 +2205,7 @@ EOF
         report_test_result(result, worker.status)
       end
 
-      def on_test_fail(worker, result)
+      def on_test_failure(worker, result)
         report_test_result(result, worker.status)
         report_failure(result)
       end
@@ -2265,7 +2265,7 @@ EOF
         redraw
       end
 
-      def on_test_fail(worker, result)
+      def on_test_failure(worker, result)
         redraw do
           report_test(worker, result)
           report_failure(result)
