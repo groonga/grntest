@@ -1954,6 +1954,8 @@ EOF
             :failure
           elsif result.n_leaked_tests > 0
             :leaked
+          elsif result.n_omitted_tests > 0
+            :omitted
           elsif result.n_not_checked_tests > 0
             :not_checked
           else
