@@ -516,7 +516,7 @@ module Grntest
         @reporter.on_test_success(self, result)
       end
 
-      def on_test_fail(result)
+      def on_test_failure(result)
         @status = "failed"
         @result.test_failed(test_name)
         @reporter.on_test_failure(self, result)
@@ -779,7 +779,7 @@ module Grntest
           @worker.on_test_success(result)
           remove_reject_file
         when :failure
-          @worker.on_test_fail(result)
+          @worker.on_test_failure(result)
           output_reject_file(result.actual)
           succeeded = false
         when :leaked
