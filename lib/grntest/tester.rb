@@ -423,27 +423,27 @@ module Grntest
         @failed_tests.size
       end
 
-      def test_finished
+      def on_test_finished
         @n_tests += 1
       end
 
-      def test_passed
+      def on_test_passed
         @n_passed_tests += 1
       end
 
-      def test_failed(name)
+      def on_test_failed(name)
         @failed_tests << name
       end
 
-      def test_leaked(name)
+      def on_test_leaked(name)
         @n_leaked_tests += 1
       end
 
-      def test_omitted
+      def on_test_omitted
         @n_omitted_tests += 1
       end
 
-      def test_not_checked
+      def on_test_not_checked
         @n_not_checked_tests += 1
       end
     end
@@ -512,36 +512,36 @@ module Grntest
 
       def on_test_success(result)
         @status = "passed"
-        @result.test_passed
+        @result.on_test_passed
         @reporter.on_test_success(self, result)
       end
 
       def on_test_failure(result)
         @status = "failed"
-        @result.test_failed(test_name)
+        @result.on_test_failed(test_name)
         @reporter.on_test_failure(self, result)
       end
 
       def on_test_leak(result)
         @status = "leaked(#{result.n_leaked_objects})"
-        @result.test_leaked(test_name)
+        @result.on_test_leaked(test_name)
         @reporter.on_test_leak(self, result)
       end
 
       def on_test_omission(result)
         @status = "omitted"
-        @result.test_omitted
+        @result.on_test_omitted
         @reporter.on_test_omission(self, result)
       end
 
       def on_test_no_check(result)
         @status = "not checked"
-        @result.test_not_checked
+        @result.on_test_not_checked
         @reporter.on_test_no_check(self, result)
       end
 
       def on_test_finish(result)
-        @result.test_finished
+        @result.on_test_finished
         @reporter.on_test_finish(self, result)
         @test_script_path = nil
         @test_name = nil
