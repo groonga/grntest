@@ -522,7 +522,7 @@ module Grntest
         @reporter.on_test_failure(self, result)
       end
 
-      def on_test_leaked(result)
+      def on_test_leak(result)
         @status = "leaked(#{result.n_leaked_objects})"
         @result.test_leaked(test_name)
         @reporter.on_test_leak(self, result)
@@ -783,7 +783,7 @@ module Grntest
           output_reject_file(result.actual)
           succeeded = false
         when :leaked
-          @worker.on_test_leaked(result)
+          @worker.on_test_leak(result)
           succeeded = false
         when :omitted
           @worker.on_test_omitted(result)
