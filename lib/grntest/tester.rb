@@ -1237,9 +1237,13 @@ EOF
         def error
           case @on_error
           when :omit
-            @omitted = true
-            throw @abort_tag
+            omit
           end
+        end
+
+        def omit
+          @omitted = true
+          throw @abort_tag
         end
       end
 
