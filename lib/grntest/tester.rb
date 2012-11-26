@@ -1683,15 +1683,14 @@ EOF
         load_values = ""
         @gqtp_command.each_line.with_index do |line, i|
           if i.zero?
-            command, *arguments = Shellwords.split(line)
+            command = Groonga::Command::Parser.parse(line)
           else
             load_values << line
           end
         end
-        arguments.concat(["--values", load_values]) unless load_values.empty?
-
-        named_arguments = convert_to_named_arguments(command, arguments)
-        build_url(command, named_arguments)
+        url = command.to_uri_format
+        url << "&values=#{CGI.escape(load_values)}" unless load_values.empty?
+        url
       end
 
       private

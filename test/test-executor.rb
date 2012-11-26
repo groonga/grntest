@@ -186,7 +186,11 @@ EOF
     def build_url(command, named_arguments)
       url = "/d/#{command}"
       query_parameters = []
-      named_arguments.each do |name, argument|
+
+      sorted_arguments = named_arguments.sort_by do |name, _|
+        name
+      end
+      sorted_arguments.each do |name, argument|
         query_parameters << "#{CGI.escape(name)}=#{CGI.escape(argument)}"
       end
       unless query_parameters.empty?
