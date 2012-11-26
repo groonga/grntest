@@ -23,6 +23,7 @@ require "tempfile"
 require "shellwords"
 require "open-uri"
 require "cgi/util"
+require "groonga/command"
 
 require "json"
 require "msgpack"
@@ -1478,29 +1479,26 @@ EOF
       end
 
       def extract_command_info(command_line)
-        @current_command, *@current_arguments = Shellwords.split(command_line)
+        command = Groonga::Command::Parser.parse(command_line)
+        @current_command = command.name
+        @current_arguments = command.arguments
         if @current_command == "dump"
           @output_type = "groonga-command"
         else
           @output_type = @context.output_type
-          @current_arguments.each_with_index do |word, i|
-            if /\A--output_type(?:=(.+))?\z/ =~ word
-              @output_type = $1 || words[i + 1]
-              break
-            end
+          if @current_arguments.has_key?(:output_type)
+            @output_type = @current_arguments[:output_type]
           end
         end
       end
 
       def have_output_type_argument?
-        @current_arguments.any? do |argument|
-          /\A--output_type(?:=.+)?\z/ =~ argument
-        end
+        @current_arguments.has_key?(:output_type)
       end
 
       def multiline_load_command?
         @current_command == "load" and
-          not @current_arguments.include?("--values")
+          not @current_arguments.has_key?(:values)
       end
 
       def execute_command(command)

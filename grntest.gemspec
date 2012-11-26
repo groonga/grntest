@@ -44,6 +44,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency("json")
   spec.add_dependency("msgpack")
+  spec.add_runtime_dependency("groonga-command")
 
   spec.add_development_dependency("bundler")
   spec.add_development_dependency("rake")
