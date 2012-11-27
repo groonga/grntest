@@ -1485,10 +1485,8 @@ EOF
         if @current_command == "dump"
           @output_type = "groonga-command"
         else
-          @output_type = @context.output_type
-          if @current_arguments.has_key?(:output_type)
-            @output_type = @current_arguments[:output_type]
-          end
+          @output_type = @current_arguments[:output_type]
+          @output_type ||= @context.output_type
         end
       end
 
