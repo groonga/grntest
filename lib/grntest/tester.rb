@@ -23,10 +23,11 @@ require "tempfile"
 require "shellwords"
 require "open-uri"
 require "cgi/util"
-require "groonga/command"
 
 require "json"
 require "msgpack"
+
+require "groonga/command"
 
 require "grntest/version"
 
