@@ -42,8 +42,8 @@ Gem::Specification.new do |spec|
     spec.executables = Dir.glob("*")
   end
 
-  spec.add_dependency("json")
-  spec.add_dependency("msgpack")
+  spec.add_runtime_dependency("json")
+  spec.add_runtime_dependency("msgpack")
   spec.add_runtime_dependency("groonga-command")
 
   spec.add_development_dependency("bundler")
