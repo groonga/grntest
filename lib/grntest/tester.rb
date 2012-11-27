@@ -1245,6 +1245,10 @@ EOF
 
         def omit
           @omitted = true
+          abort
+        end
+
+        def abort
           throw @abort_tag
         end
       end
@@ -1278,7 +1282,12 @@ EOF
               rescue Error, Groonga::Command::ParseError
                 line_info = "#{script_path}:#{script_file.lineno}:#{line.chomp}"
                 log_error("#{line_info}: #{$!.message}")
-                raise unless @context.top_level?
+                if $!.is_a?(Groonga::Command::ParseError)
+                  @context.abort
+                else
+                  log_error("#{line_info}: #{$!.message}")
+                  raise unless @context.top_level?
+                end
               end
             end
           end
