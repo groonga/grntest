@@ -1270,14 +1270,11 @@ EOF
 
         @context.execute do
           script_path.open("r:ascii-8bit") do |script_file|
+            parser = create_parser
             script_file.each_line do |line|
               begin
-                if @loading
-                  execute_line_on_loading(line)
-                else
-                  execute_line_with_continuation_line_support(line)
-                end
-              rescue Error
+                parser << line
+              rescue Error, Groonga::Command::ParseError
                 line_info = "#{script_path}:#{script_file.lineno}:#{line.chomp}"
                 log_error("#{line_info}: #{$!.message}")
                 raise unless @context.top_level?
@@ -1290,42 +1287,21 @@ EOF
       end
 
       private
-      def execute_line_on_loading(line)
-        log_input(line)
-        @pending_load_command << line
-        if line == "]\n"
-          execute_command(@pending_load_command)
-          @pending_load_command = nil
-          @loading = false
+      def create_parser
+        parser = Groonga::Command::Parser.new
+        parser.on_command do |command|
+          execute_command(command)
         end
-      end
-
-      def execute_line_with_continuation_line_support(line)
-        if /\\$/ =~ line
-          @pending_command << $PREMATCH
-        else
-          if @pending_command.empty?
-            execute_line(line)
-          else
-            @pending_command << line
-            execute_line(@pending_command)
-            @pending_command = ""
+        parser.on_load_complete do |command|
+          execute_command(command)
+        end
+        parser.on_comment do |comment|
+          if /\A@/ =~ comment
+            directive_content = $POSTMATCH
+            execute_directive("\##{comment}", directive_content)
           end
         end
-      end
-
-      def execute_line(line)
-        case line
-        when /\A\#@/
-          directive_content = $POSTMATCH
-          execute_directive(line, directive_content)
-        when /\A\s*\z/
-          # do nothing
-        when /\A\s*\#/
-          # ignore comment
-        else
-          execute_command_line(line)
-        end
+        parser
       end
 
       def resolve_path(path)
@@ -1467,39 +1443,18 @@ EOF
         executor.execute(resolve_path(script_path))
       end
 
-      def execute_command_line(command_line)
-        extract_command_info(command_line)
-        log_input(command_line)
-        if multiline_load_command?
-          @loading = true
-          @pending_load_command = command_line.dup
-        else
-          execute_command(command_line)
-        end
-      end
-
-      def extract_command_info(command_line)
-        command = Groonga::Command::Parser.parse(command_line)
-        @current_command = command.name
-        @current_arguments = command.arguments
-        if @current_command == "dump"
+      def extract_command_info(command)
+        @current_command = command
+        if @current_command.name == "dump"
           @output_type = "groonga-command"
         else
-          @output_type = @current_arguments[:output_type]
-          @output_type ||= @context.output_type
+          @output_type = @current_command[:output_type] || @context.output_type
         end
-      end
-
-      def have_output_type_argument?
-        @current_arguments.has_key?(:output_type)
-      end
-
-      def multiline_load_command?
-        @current_command == "load" and
-          not @current_arguments.has_key?(:values)
       end
 
       def execute_command(command)
+        extract_command_info(command)
+        log_input("#{command.original_source}\n")
         response = send_command(command)
         type = @output_type
         log_output(response)
@@ -1593,12 +1548,14 @@ EOF
         @output = output
       end
 
-      def send_command(command_line)
-        unless have_output_type_argument?
+      def send_command(command)
+        command_line = @current_command.original_source
+        unless @current_command.has_key?(:output_type)
           command_line = command_line.sub(/$/, " --output_type #{@output_type}")
         end
         begin
           @input.print(command_line)
+          @input.print("\n")
           @input.flush
         rescue SystemCallError
           message = "failed to write to groonga: <#{command_line}>: #{$!}"
