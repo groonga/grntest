@@ -28,7 +28,7 @@ class TestExecutor < Test::Unit::TestCase
 
   private
   def execute(command)
-    @script.print(command)
+    @script.puts(command)
     @script.close
     @executor.execute(Pathname(@script.path))
   end
