@@ -113,9 +113,13 @@ class TestExecutor < Test::Unit::TestCase
 EOF
       command = "#{load_command}\n#{load_values}"
       actual_url = convert(command)
+
+      load_values_without_columns =
+        '[["groonga","http://groonga.org/"],["razil","http://razil.jp/"]]'
       arguments = {
         "table" => "Sites",
-        "values" => load_values
+        "columns" => "_key,uri",
+        "values" => load_values_without_columns
       }
       expected_url = build_url("load", arguments)
 
@@ -134,7 +138,7 @@ EOF
 
       arguments = {
         "table" => "Sites",
-        "values" => load_values
+        "values" => '[{"_key":"ruby","uri":"http://ruby-lang.org/"}]'
       }
       expected_url = build_url("load", arguments)
 

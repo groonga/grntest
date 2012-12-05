@@ -22,7 +22,6 @@ require "fileutils"
 require "tempfile"
 require "shellwords"
 require "open-uri"
-require "cgi/util"
 
 require "json"
 require "msgpack"
@@ -1643,19 +1642,8 @@ EOF
       end
 
       def to_url
-        command = nil
-        arguments = nil
-        load_values = ""
-        @gqtp_command.each_line.with_index do |line, i|
-          if i.zero?
-            command = Groonga::Command::Parser.parse(line)
-          else
-            load_values << line
-          end
-        end
-        url = command.to_uri_format
-        url << "&values=#{CGI.escape(load_values)}" unless load_values.empty?
-        url
+        command = Groonga::Command::Parser.parse(@gqtp_command)
+        command.to_uri_format
       end
     end
 
