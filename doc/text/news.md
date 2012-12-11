@@ -1,5 +1,22 @@
 # News
 
+## 1.0.2: 2012-12-12
+
+This is the release that add some directive.
+
+### Improvements
+
+  * Used long timeout for `column_create` and `register`.
+  * Added `long-timeout` directive.
+  * Added `on-error` directive.
+  * Added "omit" status and `omit` directive.
+  * Aborted a test when a command in it can't be parsed by
+    Groonga::Command::Parser.
+
+### Fixes
+
+  * Used stty only when the standard input is tty.
+
 ## 1.0.1: 2012-10-15
 
 This has a backward incompatible change. It is directive syntax.
