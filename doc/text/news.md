@@ -1,6 +1,6 @@
 # News
 
-## 1.0.2: 2012-12-12
+## 1.0.2: 2012-12-11
 
 This is the release that add some directive.
 
