@@ -213,6 +213,8 @@ Here are available `NAME` s:
 * `include`
 * `copy-path`
 * `long-timeout`
+* `on-error`
+* `omit`
 
 `ARGUMENTS...` are depends on directive. A directive doesn't require
 any arguments but a directive requires arguments.
