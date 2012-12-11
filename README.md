@@ -248,7 +248,7 @@ select Users --query _key:User29
 
 See also: `enable-logging`
 
-### `enable-logging`
+#### `enable-logging`
 
 Usage:
 
@@ -260,7 +260,7 @@ It enables logging that is disabled by `disable-logging` directive.
 
 See also: `disable-logging`
 
-### `suggest-create-dataset`
+#### `suggest-create-dataset`
 
 Usage:
 
@@ -287,7 +287,7 @@ load --table event_rurema --each 'suggest_preparer(_id, type, item, sequence, ti
 
 See also: `--groonga-suggest-create-dataset` option
 
-### `include`
+#### `include`
 
 Usage:
 
@@ -342,7 +342,7 @@ select Users --query _key:Alice
 
 See also: `--base-directory` option
 
-### `copy-path`
+#### `copy-path`
 
 Usage:
 
@@ -360,7 +360,7 @@ Example:
 register "query_expanders/tsv"
 ```
 
-### `long-timeout`
+#### `long-timeout`
 
 Usage:
 
@@ -388,7 +388,7 @@ column_create Lexicon users_name COLUMN_INDEX Users name
 #@long-timeout default
 ```
 
-### `on-error`
+#### `on-error`
 
 Usage:
 
@@ -411,7 +411,7 @@ register tokenizers/kytea
 #@on-error default
 ```
 
-### `omit`
+#### `omit`
 
 Usage:
 

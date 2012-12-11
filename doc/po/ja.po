@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: grntest 0.9.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-20 22:17+0900\n"
-"PO-Revision-Date: 2012-12-11 16:22+0900\n"
+"PO-Revision-Date: 2012-12-11 17:20+0900\n"
 "Last-Translator: Kouhei Sutou <kou@clear-code.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -444,7 +444,7 @@ msgid "See also: `enable-logging`"
 msgstr "参考： `enable-logging`"
 
 #: README.md:251
-msgid "### `enable-logging`"
+msgid "#### `enable-logging`"
 msgstr ""
 
 #: README.md:255
@@ -463,7 +463,7 @@ msgid "See also: `disable-logging`"
 msgstr "参考： `disable-logging`"
 
 #: README.md:263
-msgid "### `suggest-create-dataset`"
+msgid "#### `suggest-create-dataset`"
 msgstr ""
 
 #: README.md:267
@@ -506,7 +506,7 @@ msgid "See also: `--groonga-suggest-create-dataset` option"
 msgstr "参考： `--groonga-suggest-create-dataset` オプション"
 
 #: README.md:290
-msgid "### `include`"
+msgid "#### `include`"
 msgstr ""
 
 #: README.md:294
@@ -603,7 +603,7 @@ msgid "See also: `--base-directory` option"
 msgstr "参考： `--base-directory` オプション"
 
 #: README.md:345
-msgid "### `copy-path`"
+msgid "#### `copy-path`"
 msgstr ""
 
 #: README.md:349
@@ -635,7 +635,7 @@ msgid ""
 msgstr ""
 
 #: README.md:363
-msgid "### `long-timeout`"
+msgid "#### `long-timeout`"
 msgstr ""
 
 #: README.md:367
@@ -691,7 +691,7 @@ msgstr ""
 "```"
 
 #: README.md:391
-msgid "### `on-error`"
+msgid "#### `on-error`"
 msgstr ""
 
 #: README.md:395
@@ -738,7 +738,7 @@ msgstr ""
 "```"
 
 #: README.md:414
-msgid "### `omit`"
+msgid "#### `omit`"
 msgstr ""
 
 #: README.md:418
