@@ -1104,8 +1104,17 @@ EOF
             normalized_output = JSON.pretty_generate(normalized_output_content)
           end
           normalize_raw_content(normalized_output)
+        when "xml"
+          normalized_xml = normalize_output_xml(content, options)
+          normalize_raw_content(normalized_xml)
         else
           normalize_raw_content(content)
+        end
+      end
+
+      def normalize_output_xml(content, options)
+        content.sub(/^<RESULT .+?>/) do |result|
+          result.gsub(/( (?:UP|ELAPSED))="\d+\.\d+"/, '\1="0.0"')
         end
       end
 
