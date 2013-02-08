@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -1114,7 +1114,7 @@ EOF
 
       def normalize_output_xml(content, options)
         content.sub(/^<RESULT .+?>/) do |result|
-          result.gsub(/( (?:UP|ELAPSED))="\d+\.\d+"/, '\1="0.0"')
+          result.gsub(/( (?:UP|ELAPSED))="\d+\.\d+(?:e[+-]?\d+)?"/, '\1="0.0"')
         end
       end
 
