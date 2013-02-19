@@ -1615,9 +1615,8 @@ EOF
         @port = port
       end
 
-      def send_command(command_line)
-        converter = CommandFormatConverter.new(command_line)
-        url = "http://#{@host}:#{@port}#{converter.to_url}"
+      def send_command(command)
+        url = "http://#{@host}:#{@port}#{command.to_uri_format}"
         begin
           open(url) do |response|
             "#{response.read}\n"
@@ -1642,17 +1641,6 @@ EOF
 
       def create_sub_executor(context)
         self.class.new(@host, @port, context)
-      end
-    end
-
-    class CommandFormatConverter
-      def initialize(gqtp_command)
-        @gqtp_command = gqtp_command
-      end
-
-      def to_url
-        command = Groonga::Command::Parser.parse(@gqtp_command)
-        command.to_uri_format
       end
     end
 
