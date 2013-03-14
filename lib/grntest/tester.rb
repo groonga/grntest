@@ -716,6 +716,10 @@ module Grntest
       def leaked?
         not @n_leaked_objects.zero?
       end
+
+      def checked?
+        not @expected.nil?
+      end
     end
 
     class ResponseParser
@@ -2038,6 +2042,11 @@ EOF
       def on_test_leak(worker, result)
         synchronize do
           report_test_result_mark("L(#{result.n_leaked_objects})", result)
+          unless result.checked?
+            puts
+            report_test(worker, result)
+            report_actual(result)
+          end
         end
       end
 
@@ -2124,6 +2133,7 @@ EOF
 
       def on_test_leak(worker, result)
         report_test_result(result, worker.status)
+        report_actual(result) unless result.checked?
       end
 
       def on_test_omission(worker, result)
@@ -2188,6 +2198,7 @@ EOF
         redraw do
           report_test(worker, result)
           report_marker(result)
+          report_actual(result) unless result.checked?
         end
       end
 
