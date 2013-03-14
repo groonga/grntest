@@ -692,25 +692,29 @@ module Grntest
 
         if @expected
           if @actual == @expected
-            if @n_leaked_objects.zero?
-              :success
-            else
+            if leaked?
               :leaked
+            else
+              :success
             end
           else
             :failure
           end
         else
-          if @n_leaked_objects.zero?
-            :not_checked
-          else
+          if leaked?
             :leaked
+          else
+            :not_checked
           end
         end
       end
 
       def omitted?
         @omitted
+      end
+
+      def leaked?
+        not @n_leaked_objects.zero?
       end
     end
 
