@@ -15,5 +15,5 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require "grntest/exectors/standard-io-executor"
-require "grntest/exectors/http-executor"
+require "grntest/executors/standard-io-executor"
+require "grntest/executors/http-executor"
