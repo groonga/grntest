@@ -30,6 +30,7 @@ require "groonga/command"
 
 require "grntest/version"
 require "grntest/reporters"
+require "grntest/execution-context"
 
 module Grntest
   class Tester
@@ -809,7 +810,7 @@ module Grntest
             FileUtils.mkdir_p(db_dir.to_s)
             db_path = db_dir + "db"
           end
-          context = Executor::Context.new
+          context = Execution::Context.new
           context.temporary_directory_path = directory_path
           context.db_path = db_path
           context.base_directory = @tester.base_directory.expand_path
@@ -1192,77 +1193,6 @@ EOF
     end
 
     class Executor
-      class Context
-        attr_writer :logging
-        attr_accessor :base_directory, :temporary_directory_path, :db_path
-        attr_accessor :groonga_suggest_create_dataset
-        attr_accessor :result
-        attr_accessor :output_type
-        attr_accessor :on_error
-        attr_accessor :abort_tag
-        def initialize
-          @logging = true
-          @base_directory = Pathname(".")
-          @temporary_directory_path = Pathname("tmp")
-          @db_path = Pathname("db")
-          @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
-          @n_nested = 0
-          @result = []
-          @output_type = "json"
-          @log = nil
-          @on_error = :default
-          @abort_tag = nil
-          @omitted = false
-        end
-
-        def logging?
-          @logging
-        end
-
-        def execute
-          @n_nested += 1
-          yield
-        ensure
-          @n_nested -= 1
-        end
-
-        def top_level?
-          @n_nested == 1
-        end
-
-        def log_path
-          @temporary_directory_path + "groonga.log"
-        end
-
-        def log
-          @log ||= File.open(log_path.to_s, "a+")
-        end
-
-        def relative_db_path
-          @db_path.relative_path_from(@temporary_directory_path)
-        end
-
-        def omitted?
-          @omitted
-        end
-
-        def error
-          case @on_error
-          when :omit
-            omit
-          end
-        end
-
-        def omit
-          @omitted = true
-          abort
-        end
-
-        def abort
-          throw @abort_tag
-        end
-      end
-
       module ReturnCode
         SUCCESS = 0
       end
@@ -1275,7 +1205,7 @@ EOF
         @current_command_name = nil
         @output_type = nil
         @long_timeout = default_long_timeout
-        @context = context || Context.new
+        @context = context || ExecutionContext.new
       end
 
       def execute(script_path)
