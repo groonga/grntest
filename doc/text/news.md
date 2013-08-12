@@ -1,5 +1,15 @@
 # News
 
+## 1.0.3: 2013-08-12
+
+This is a minor improvment release.
+
+### Improvements
+
+  * Supported XML output.
+  * Supported to show the actual result on leaked and not checked status.
+  * Supported warning message test.
+
 ## 1.0.2: 2012-12-11
 
 This is the release that add some directive.
