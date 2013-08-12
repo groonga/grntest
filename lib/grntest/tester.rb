@@ -24,6 +24,7 @@ require "grntest/error"
 require "grntest/reporters"
 require "grntest/executors"
 require "grntest/test-runner"
+require "grntest/base-result"
 
 module Grntest
   class Tester
@@ -366,21 +367,7 @@ module Grntest
       end
     end
 
-    class Result
-      attr_accessor :elapsed_time
-      def initialize
-        @elapsed_time = 0
-      end
-
-      def measure
-        start_time = Time.now
-        yield
-      ensure
-        @elapsed_time = Time.now - start_time
-      end
-    end
-
-    class WorkerResult < Result
+    class WorkerResult < BaseResult
       attr_reader :n_tests, :n_passed_tests, :n_leaked_tests
       attr_reader :n_omitted_tests, :n_not_checked_tests
       attr_reader :failed_tests
@@ -523,7 +510,7 @@ module Grntest
       end
     end
 
-    class TestSuitesResult < Result
+    class TestSuitesResult < BaseResult
       attr_accessor :workers
       attr_accessor :n_total_tests
       def initialize
@@ -640,7 +627,7 @@ module Grntest
       end
     end
 
-    class TestResult < Result
+    class TestResult < BaseResult
       attr_accessor :worker_id, :test_name
       attr_accessor :expected, :actual, :n_leaked_objects
       attr_writer :omitted
