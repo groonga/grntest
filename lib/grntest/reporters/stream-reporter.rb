@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require "grntest/reporters/base_reporter"
+require "grntest/reporters/base-reporter"
 
 module Grntest
   module Reporters
