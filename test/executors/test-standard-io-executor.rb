@@ -17,7 +17,7 @@ require "stringio"
 require "cgi/util"
 require "grntest/executors/standard-io-executor"
 
-class TestExecutor < Test::Unit::TestCase
+class TestStandardIOExecutor < Test::Unit::TestCase
   def setup
     input = StringIO.new
     output = StringIO.new
