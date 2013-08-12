@@ -29,32 +29,12 @@ require "msgpack"
 require "groonga/command"
 
 require "grntest/version"
+require "grntest/error"
 require "grntest/reporters"
 require "grntest/execution-context"
 
 module Grntest
   class Tester
-    class Error < StandardError
-    end
-
-    class NotExist < Error
-      attr_reader :path
-      def initialize(path)
-        @path = path
-        super("<#{path}> doesn't exist.")
-      end
-    end
-
-    class ParseError < Error
-      attr_reader :type, :content, :reason
-      def initialize(type, content, reason)
-        @type = type
-        @content = content
-        @reason = reason
-        super("failed to parse <#{@type}> content: #{reason}: <#{content}>")
-      end
-    end
-
     class << self
       def run(argv=nil)
         argv ||= ARGV.dup
