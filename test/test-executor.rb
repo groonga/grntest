@@ -1,4 +1,4 @@
-# Copyright (C) 2012  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,13 +15,13 @@
 
 require "stringio"
 require "cgi/util"
-require "grntest/tester"
+require "grntest/executors/standard-io-executor"
 
 class TestExecutor < Test::Unit::TestCase
   def setup
     input = StringIO.new
     output = StringIO.new
-    @executor = Grntest::Tester::StandardIOExecutor.new(input, output)
+    @executor = Grntest::Executors::StandardIOExecutor.new(input, output)
     @context = @executor.context
     @script = Tempfile.new("test-executor")
   end
