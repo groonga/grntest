@@ -22,16 +22,16 @@ require "grntest/reporters/inplace-reporter"
 module Grntest
   module Reporters
     class << self
-    def create_repoter(tester)
-      case tester.reporter
-      when :mark
-        Reporters::MarkReporter.new(tester)
-      when :stream
-        Reporters::StreamReporter.new(tester)
-      when :inplace
-        Reporters::InplaceReporter.new(tester)
+      def create_repoter(tester)
+        case tester.reporter
+        when :mark
+          Reporters::MarkReporter.new(tester)
+        when :stream
+          Reporters::StreamReporter.new(tester)
+        when :inplace
+          Reporters::InplaceReporter.new(tester)
+        end
       end
-    end
     end
   end
 end
