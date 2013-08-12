@@ -133,7 +133,7 @@ module Grntest
     end
 
     def create_reporter
-      Grntest::Reporters.create_repoter(@tester)
+      Reporters.create_repoter(@tester)
     end
   end
 end
