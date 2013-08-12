@@ -21,6 +21,7 @@ require "grntest/reporters/inplace-reporter"
 
 module Grntest
   module Reporters
+    class << self
     def create_repoter(tester)
       case tester.reporter
       when :mark
@@ -30,6 +31,7 @@ module Grntest
       when :inplace
         Reporters::InplaceReporter.new(tester)
       end
+    end
     end
   end
 end
