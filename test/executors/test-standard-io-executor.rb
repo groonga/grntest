@@ -15,6 +15,7 @@
 
 require "stringio"
 require "cgi/util"
+require "tempfile"
 require "grntest/executors/standard-io-executor"
 
 class TestStandardIOExecutor < Test::Unit::TestCase
