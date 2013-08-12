@@ -14,7 +14,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 require "stringio"
-require "cgi/util"
 require "tempfile"
 require "grntest/executors/standard-io-executor"
 
