@@ -12,7 +12,7 @@ This is a minor improvment release.
 
 ## 1.0.2: 2012-12-11
 
-This is the release that add some directive.
+This is the release that adds some directive.
 
 ### Improvements
 
