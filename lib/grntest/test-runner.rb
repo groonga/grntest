@@ -151,9 +151,9 @@ module Grntest
             context.relative_db_path.to_s,
           ]
           pid = Process.spawn(env, *command_line, spawn_options)
-          executor = StandardIOExecutor.new(groonga_input,
-                                            groonga_output,
-                                            context)
+          executor = Executors::StandardIOExecutor.new(groonga_input,
+                                                       groonga_output,
+                                                       context)
           executor.ensure_groonga_ready
           yield(executor)
         end
@@ -236,7 +236,7 @@ EOC
       begin
         pid = Process.spawn(env, *command_line, spawn_options)
         begin
-          executor = HTTPExecutor.new(host, port, context)
+          executor = Executors::HTTPExecutor.new(host, port, context)
           begin
             executor.ensure_groonga_ready
           rescue
