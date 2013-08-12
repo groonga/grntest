@@ -39,7 +39,7 @@ module Grntest
       succeeded = true
 
       @worker.on_test_start
-      result = TestResult.new(@worker)
+      result = Tester::TestResult.new(@worker)
       result.measure do
         execute_groonga_script(result)
       end
