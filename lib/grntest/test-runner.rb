@@ -77,7 +77,7 @@ module Grntest
           FileUtils.mkdir_p(db_dir.to_s)
           db_path = db_dir + "db"
         end
-        context = Execution::Context.new
+        context = ExecutionContext.new
         context.temporary_directory_path = directory_path
         context.db_path = db_path
         context.base_directory = @tester.base_directory.expand_path
