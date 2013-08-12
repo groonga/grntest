@@ -25,11 +25,11 @@ module Grntest
       def create_repoter(tester)
         case tester.reporter
         when :mark
-          Reporters::MarkReporter.new(tester)
+          MarkReporter.new(tester)
         when :stream
-          Reporters::StreamReporter.new(tester)
+          StreamReporter.new(tester)
         when :inplace
-          Reporters::InplaceReporter.new(tester)
+          InplaceReporter.new(tester)
         end
       end
     end
