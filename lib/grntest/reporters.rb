@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require "grntest/reporters/mark_reporter"
-require "grntest/reporters/stream_reporter"
-require "grntest/reporters/inplace_reporter"
+require "grntest/reporters/mark-reporter"
+require "grntest/reporters/stream-reporter"
+require "grntest/reporters/inplace-reporter"
 
 module Grntest
   module Reporters
