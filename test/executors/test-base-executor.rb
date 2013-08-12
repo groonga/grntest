@@ -25,18 +25,18 @@ class TestBaseExecutor < Test::Unit::TestCase
     data("emergency" => "E",
          "alert"     => "A",
          "critical"  => "C",
-         "error"     => "e")
-    def test_error_log_level(level)
-      assert_true(@executor.send(:error_log_level?, level))
+         "error"     => "e",
+         "warning"   => "w")
+    def test_important_log_level(level)
+      assert_true(@executor.send(:important_log_level?, level))
     end
 
-    data("warning" => "w",
-         "notice"  => "n",
+    data("notice"  => "n",
          "info"    => "i",
          "debug"   => "d",
          "dump"    => "-")
-    def test_not_error_log_level(level)
-      assert_false(@executor.send(:error_log_level?, level))
+    def test_not_important_log_level(level)
+      assert_false(@executor.send(:important_log_level?, level))
     end
   end
 end

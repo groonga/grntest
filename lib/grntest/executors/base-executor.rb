@@ -243,22 +243,25 @@ module Grntest
         response = send_command(command)
         type = @output_type
         log_output(response)
-        log_error(read_error_log)
+        log_error(extract_important_messages(read_all_log))
 
         @context.error if error_response?(response, type)
       end
 
-      def read_error_log
-        log = read_all_readable_content(context.log, :first_timeout => 0)
-        normalized_error_log = ""
+      def read_all_log
+        read_all_readable_content(context.log, :first_timeout => 0)
+      end
+
+      def extract_important_messages(log)
+        important_messages = ""
         log.each_line do |line|
           timestamp, log_level, message = line.split(/\|\s*/, 3)
           _ = timestamp # suppress warning
-          next unless error_log_level?(log_level)
+          next unless important_log_level?(log_level)
           next if backtrace_log_message?(message)
-          normalized_error_log << "\#|#{log_level}| #{message}"
+          important_messages << "\#|#{log_level}| #{message}"
         end
-        normalized_error_log.chomp
+        important_messages.chomp
       end
 
       def read_all_readable_content(output, options={})
@@ -275,8 +278,8 @@ module Grntest
         content
       end
 
-      def error_log_level?(log_level)
-        ["E", "A", "C", "e"].include?(log_level)
+      def important_log_level?(log_level)
+        ["E", "A", "C", "e", "w"].include?(log_level)
       end
 
       def backtrace_log_message?(message)
