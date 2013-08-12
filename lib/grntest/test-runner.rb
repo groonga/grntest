@@ -23,8 +23,58 @@ require "json"
 
 require "grntest/error"
 require "grntest/executors"
+require "grntest/base-result"
 
 module Grntest
+  class TestResult < BaseResult
+    attr_accessor :worker_id, :test_name
+    attr_accessor :expected, :actual, :n_leaked_objects
+    attr_writer :omitted
+    def initialize(worker)
+      super()
+      @worker_id = worker.id
+      @test_name = worker.test_name
+      @actual = nil
+      @expected = nil
+      @n_leaked_objects = 0
+      @omitted = false
+    end
+
+    def status
+      return :omitted if omitted?
+
+      if @expected
+        if @actual == @expected
+          if leaked?
+            :leaked
+          else
+            :success
+          end
+        else
+          :failure
+        end
+      else
+        if leaked?
+          :leaked
+        else
+          :not_checked
+        end
+      end
+    end
+
+    def omitted?
+      @omitted
+    end
+
+    def leaked?
+      not @n_leaked_objects.zero?
+    end
+
+    def checked?
+      not @expected.nil?
+    end
+  end
+
   class TestRunner
     MAX_N_COLUMNS = 79
 
@@ -39,7 +89,7 @@ module Grntest
       succeeded = true
 
       @worker.on_test_start
-      result = Tester::TestResult.new(@worker)
+      result = TestResult.new(@worker)
       result.measure do
         execute_groonga_script(result)
       end

@@ -626,54 +626,5 @@ module Grntest
         Grntest::Reporters.create_repoter(@tester)
       end
     end
-
-    class TestResult < BaseResult
-      attr_accessor :worker_id, :test_name
-      attr_accessor :expected, :actual, :n_leaked_objects
-      attr_writer :omitted
-      def initialize(worker)
-        super()
-        @worker_id = worker.id
-        @test_name = worker.test_name
-        @actual = nil
-        @expected = nil
-        @n_leaked_objects = 0
-        @omitted = false
-      end
-
-      def status
-        return :omitted if omitted?
-
-        if @expected
-          if @actual == @expected
-            if leaked?
-              :leaked
-            else
-              :success
-            end
-          else
-            :failure
-          end
-        else
-          if leaked?
-            :leaked
-          else
-            :not_checked
-          end
-        end
-      end
-
-      def omitted?
-        @omitted
-      end
-
-      def leaked?
-        not @n_leaked_objects.zero?
-      end
-
-      def checked?
-        not @expected.nil?
-      end
-    end
   end
 end
