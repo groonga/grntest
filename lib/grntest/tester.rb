@@ -18,15 +18,6 @@
 require "English"
 require "optparse"
 require "pathname"
-require "fileutils"
-require "tempfile"
-require "shellwords"
-require "open-uri"
-
-require "json"
-require "msgpack"
-
-require "groonga/command"
 
 require "grntest/version"
 require "grntest/error"
