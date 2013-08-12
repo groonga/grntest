@@ -23,6 +23,7 @@ require "groonga/command"
 
 require "grntest/error"
 require "grntest/execution-context"
+require "grntest/response-parser"
 
 module Grntest
   module Executors

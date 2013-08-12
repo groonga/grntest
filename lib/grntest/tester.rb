@@ -697,47 +697,6 @@ module Grntest
       end
     end
 
-    class ResponseParser
-      class << self
-        def parse(content, type)
-          parser = new(type)
-          parser.parse(content)
-        end
-      end
-
-      def initialize(type)
-        @type = type
-      end
-
-      def parse(content)
-        case @type
-        when "json", "msgpack"
-          parse_result(content.chomp)
-        else
-          content
-        end
-      end
-
-      def parse_result(result)
-        case @type
-        when "json"
-          begin
-            JSON.parse(result)
-          rescue JSON::ParserError
-            raise ParseError.new(@type, result, $!.message)
-          end
-        when "msgpack"
-          begin
-            MessagePack.unpack(result.chomp)
-          rescue MessagePack::UnpackError, NoMemoryError
-            raise ParseError.new(@type, result, $!.message)
-          end
-        else
-          raise ParseError.new(@type, result, "unknown type")
-        end
-      end
-    end
-
     class TestRunner
       MAX_N_COLUMNS = 79
 
