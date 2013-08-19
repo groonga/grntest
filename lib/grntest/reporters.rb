@@ -22,7 +22,7 @@ require "grntest/reporters/inplace-reporter"
 module Grntest
   module Reporters
     class << self
-      def create_repoter(tester)
+      def create_reporter(tester)
         case tester.reporter
         when :mark
           MarkReporter.new(tester)
