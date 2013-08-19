@@ -316,7 +316,7 @@ EOC
         break if finished_pid
         n_retries += 1
         break if n_retries > 10
-        Process.kill(pid, :TERM)
+        Process.kill(:TERM, pid)
         sleep(0.1)
       end
     end
