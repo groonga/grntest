@@ -43,7 +43,7 @@ module Grntest
       def ensure_groonga_ready
         n_retried = 0
         begin
-          send_command("status")
+          send_command(command("status"))
         rescue SystemCallError
           n_retried += 1
           sleep(0.1)
@@ -52,8 +52,17 @@ module Grntest
         end
       end
 
+      def shutdown
+        send_command(command("shutdown"))
+      end
+
       def create_sub_executor(context)
         self.class.new(@host, @port, context)
+      end
+
+      private
+      def command(command_line)
+        Groonga::Command::Parser.parse(command_line)
       end
     end
   end

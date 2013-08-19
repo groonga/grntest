@@ -299,7 +299,7 @@ EOC
           end
           yield(executor)
         ensure
-          executor.send_command("shutdown")
+          executor.shutdown
           wait_groonga_http_shutdown(pid_file_path)
         end
       ensure
