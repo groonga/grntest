@@ -303,7 +303,21 @@ EOC
           wait_groonga_http_shutdown(pid_file_path)
         end
       ensure
-        Process.waitpid(pid) if pid
+        ensure_process_finished(pid)
+      end
+    end
+
+    def ensure_process_finished(pid)
+      return if pid.nil?
+
+      n_retries = 0
+      loop do
+        finished_pid = Process.waitpid(pid, Process::WNOHANG)
+        break if finished_pid
+        n_retries += 1
+        break if n_retries > 10
+        Process.kill(pid, :TERM)
+        sleep(0.1)
       end
     end
 
