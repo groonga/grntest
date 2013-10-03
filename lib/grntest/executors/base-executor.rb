@@ -19,7 +19,7 @@ require "pathname"
 require "fileutils"
 require "shellwords"
 
-require "groonga/command"
+require "groonga/command/parser"
 
 require "grntest/error"
 require "grntest/execution-context"
