@@ -32,7 +32,9 @@ module Grntest
         url = "http://#{@host}:#{@port}#{command.to_uri_format}"
         begin
           open(url) do |response|
-            "#{response.read}\n"
+            response_data = response.read
+            response_data << "\n" unless response_data.empty?
+            response_data
           end
         rescue OpenURI::HTTPError
           $!.io.read
