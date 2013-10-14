@@ -54,10 +54,10 @@ module Grntest
             script_file.each_line do |line|
               begin
                 parser << line
-              rescue Error, Groonga::Command::ParseError
+              rescue Error, Parser::Error
                 line_info = "#{script_path}:#{script_file.lineno}:#{line.chomp}"
                 log_error("#{line_info}: #{$!.message}")
-                if $!.is_a?(Groonga::Command::ParseError)
+                if $!.is_a?(Parser::Error)
                   @context.abort
                 else
                   log_error("#{line_info}: #{$!.message}")
@@ -290,7 +290,7 @@ module Grntest
         status = nil
         begin
           status, = ResponseParser.parse(response, type)
-        rescue ParseError
+        rescue Parser::Error
           return false
         end
 
