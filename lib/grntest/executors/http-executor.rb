@@ -35,8 +35,7 @@ module Grntest
             "#{response.read}\n"
           end
         rescue OpenURI::HTTPError
-          message = "Failed to get response from groonga: #{$!}: <#{url}>"
-          raise Error.new(message)
+          $!.io.read
         end
       end
 
