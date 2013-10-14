@@ -77,7 +77,17 @@ module Grntest
         parser.on_command do |command|
           execute_command(command)
         end
+        parser.on_load_value do |command, value|
+          command.values ||= []
+          command.values << value
+        end
         parser.on_load_complete do |command|
+          if command.columns
+            command[:columns] = command.columns.join(", ")
+          end
+          if command.values
+            command[:values] = JSON.generate(command.values)
+          end
           execute_command(command)
         end
         parser.on_comment do |comment|
