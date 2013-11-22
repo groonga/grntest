@@ -29,15 +29,10 @@ module Grntest
       end
 
       def send_command(command)
-        url = "http://#{@host}:#{@port}#{command.to_uri_format}"
-        begin
-          open(url) do |response|
-            response_data = response.read
-            response_data << "\n" unless response_data.empty?
-            response_data
-          end
-        rescue OpenURI::HTTPError
-          $!.io.read
+        if command.name == "load"
+          send_load_command(command)
+        else
+          send_normal_command(command)
         end
       end
 
@@ -64,6 +59,41 @@ module Grntest
       private
       def command(command_line)
         Groonga::Command::Parser.parse(command_line)
+      end
+
+      MAX_URI_SIZE = 4096
+      def send_load_command(command)
+        if command.to_uri_format.size <= MAX_URI_SIZE
+          return send_normal_command(command)
+        end
+
+        values = command.arguments.delete(:values)
+        request = Net::HTTP::Post.new(command.to_uri_format)
+        request.content_type = "application/json; charset=UTF-8"
+        request.body = values
+        response = Net::HTTP.start(@host, @port) do |http|
+          http.request(request)
+        end
+        normalize_response_data(response.body)
+      end
+
+      def send_normal_command(command)
+        url = "http://#{@host}:#{@port}#{command.to_uri_format}"
+        begin
+          open(url) do |response|
+            normalize_response_data(response.read)
+          end
+        rescue OpenURI::HTTPError
+          $!.io.read
+        end
+      end
+
+      def normalize_response_data(raw_response_data)
+        if raw_response_data.empty?
+          raw_response_data
+        else
+          "#{raw_response_data}\n"
+        end
       end
     end
   end
