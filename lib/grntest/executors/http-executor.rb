@@ -26,6 +26,7 @@ module Grntest
         super(context)
         @host = host
         @port = port
+        @read_timeout = 3
       end
 
       def send_command(command)
@@ -72,6 +73,7 @@ module Grntest
         request.content_type = "application/json; charset=UTF-8"
         request.body = values
         response = Net::HTTP.start(@host, @port) do |http|
+          http.read_timeout = @read_timeout
           http.request(request)
         end
         normalize_response_data(response.body)
@@ -80,7 +82,7 @@ module Grntest
       def send_normal_command(command)
         url = "http://#{@host}:#{@port}#{command.to_uri_format}"
         begin
-          open(url) do |response|
+          open(url, :read_timeout => @read_timeout) do |response|
             normalize_response_data(response.read)
           end
         rescue OpenURI::HTTPError
