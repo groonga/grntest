@@ -250,12 +250,21 @@ module Grntest
       def execute_command(command)
         extract_command_info(command)
         log_input("#{command.original_source}\n")
-        response = send_command(command)
+        begin
+          response = send_command(command)
+        rescue => error
+          log_error("# error: #{error.class}: #{error.message}")
+          error.backtrace.each do |line|
+            log_error("# error: #{line}")
+          end
+          @context.error
+        else
         type = @output_type
         log_output(response)
         log_error(extract_important_messages(read_all_log))
 
         @context.error if error_response?(response, type)
+        end
       end
 
       def read_all_log
