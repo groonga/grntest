@@ -259,11 +259,11 @@ module Grntest
           end
           @context.error
         else
-        type = @output_type
-        log_output(response)
-        log_error(extract_important_messages(read_all_log))
+          type = @output_type
+          log_output(response)
+          log_error(extract_important_messages(read_all_log))
 
-        @context.error if error_response?(response, type)
+          @context.error if error_response?(response, type)
         end
       end
 
