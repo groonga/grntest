@@ -1,5 +1,11 @@
 # News
 
+## 1.0.4: 2013-12-16
+
+### Improvements
+
+  * Supported `groogna-command-parser` gem.
+
 ## 1.0.3: 2013-08-12
 
 This is a minor improvment release.
