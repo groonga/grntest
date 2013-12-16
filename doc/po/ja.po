@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: grntest 0.9.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-20 22:17+0900\n"
-"PO-Revision-Date: 2012-12-11 17:20+0900\n"
+"PO-Revision-Date: 2013-12-16 15:50+0900\n"
 "Last-Translator: Kouhei Sutou <kou@clear-code.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -2076,15 +2076,15 @@ msgstr "### 改良"
 
 #: ../../doc/text/news.md:7
 msgid "  * Supported `groogna-command-parser` gem."
-msgstr ""
+msgstr "  * `groogna-command-parser` gem対応。"
 
 #: ../../doc/text/news.md:9
 msgid "## 1.0.3: 2013-08-12"
 msgstr ""
 
 #: ../../doc/text/news.md:11
-msgid "This is a minor improvment release."
-msgstr ""
+msgid "This is a minor improvement release."
+msgstr "細かな改良をしたリリース。"
 
 #: ../../doc/text/news.md:15
 msgid ""
@@ -2092,15 +2092,17 @@ msgid ""
 "  * Supported to show the actual result on leaked and not checked status.\n"
 "  * Supported warning message test."
 msgstr ""
+"  * XML出力に対応。\n"
+"  * リークしていたり結果をチェックしていない時も実際の結果を表示するようにした。\n"
+"  * 警告メッセージもテストできるようにした。"
 
 #: ../../doc/text/news.md:19
 msgid "## 1.0.2: 2012-12-11"
 msgstr ""
 
 #: ../../doc/text/news.md:21
-#, fuzzy
 msgid "This is the release that adds some directive."
-msgstr "このリリースではいくつかのディレクティブが追加されました。"
+msgstr "このリリースではいくつかのディレクティブを追加しました。"
 
 #: ../../doc/text/news.md:25
 msgid ""
@@ -2959,7 +2961,3 @@ msgstr ""
 #: ../../lib/grntest/worker.rb:68
 msgid "Returns the value of attribute status"
 msgstr ""
-
-#: doc/text/news.md:5
-#~ msgid "This is the release that add some directive."
-#~ msgstr "このリリースではいくつかのディレクティブが追加されました。"

@@ -8,7 +8,7 @@
 
 ## 1.0.3: 2013-08-12
 
-This is a minor improvment release.
+This is a minor improvement release.
 
 ### Improvements
 
