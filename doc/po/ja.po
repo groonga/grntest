@@ -17,60 +17,56 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: README.md:1
+#: ../../README.md:1
 msgid "# README"
 msgstr "# はじめに"
 
-#: README.md:3
+#: ../../README.md:3
 msgid "## Name"
 msgstr "## 名前"
 
-#: README.md:5
+#: ../../README.md:5
 msgid "grntest"
 msgstr ""
 
-#: README.md:7
+#: ../../README.md:7
 msgid "## Description"
 msgstr "## 説明"
 
-#: README.md:9
+#: ../../README.md:9
 msgid ""
 "Grntest is a testing framework for groonga. You can write a test for\n"
 "groonga by writing groonga commands and expected result."
-msgstr ""
-"grntestはgroonga用のテスティングフレームワークです。groongaのコマンドと期待す"
-"る結果を用意すればgroonga用のテストを作成できます。"
+msgstr "grntestはgroonga用のテスティングフレームワークです。groongaのコマンドと期待する結果を用意すればgroonga用のテストを作成できます。"
 
-#: README.md:12
+#: ../../README.md:12
 msgid "## Install"
 msgstr "## インストール"
 
-#: README.md:14
+#: ../../README.md:14
 msgid ""
 "```\n"
 "% gem install grntest\n"
 "```"
 msgstr ""
 
-#: README.md:18
+#: ../../README.md:18
 msgid "## Basic usage"
 msgstr "## 基本的な使い方"
 
-#: README.md:20
+#: ../../README.md:20
 msgid ""
 "Write a test script that extension is `.test`. Here is a sample test\n"
 "script `select.test`:"
-msgstr ""
-"拡張子が `.test` のテストスクリプトを書きます。以下はサンプルテストスクリプ"
-"ト `select.test` です。"
+msgstr "拡張子が `.test` のテストスクリプトを書きます。以下はサンプルテストスクリプト `select.test` です。"
 
-#: README.md:23 README.md:88
+#: ../../README.md:23 ../../README.md:88
 msgid ""
 "```\n"
 "table_create Users TABLE_HASH_KEY ShortText"
 msgstr ""
 
-#: README.md:26 README.md:91
+#: ../../README.md:26 ../../README.md:91
 msgid ""
 "load --table Users\n"
 "[\n"
@@ -79,26 +75,28 @@ msgid ""
 "]"
 msgstr ""
 
-#: README.md:32
+#: ../../README.md:32
 msgid ""
 "select Users --query '_key:Alice'\n"
 "```"
 msgstr ""
 
-#: README.md:35
+#: ../../README.md:35
 msgid "Run `grntest` with `select.test` as command line argument:"
 msgstr "コマンドライン引数に `select.test` を指定して `grntest` を実行します。"
 
-#: README.md:37
+#: ../../README.md:37
 msgid ""
 "```\n"
 "% grntest select.test\n"
 "N\n"
-"================================================================================\n"
+"=============================================================================="
+"==\n"
 ".\n"
-"  select                                                   0.3866s [not "
-"checked]\n"
-"================================================================================\n"
+"  select                                                   0.3866s [not checke"
+"d]\n"
+"=============================================================================="
+"==\n"
 "table_create Users TABLE_HASH_KEY ShortText\n"
 "[[0,0.0,0.0],true]\n"
 "load --table Users\n"
@@ -108,12 +106,12 @@ msgid ""
 "]\n"
 "[[0,0.0,0.0],2]\n"
 "select Users --query '_key:Alice'\n"
-"[[0,0.0,0.0],[[[1],[[\"_id\",\"UInt32\"],[\"_key\",\"ShortText\"]],[1,\"Alice"
-"\"]]]]\n"
-"================================================================================"
+"[[0,0.0,0.0],[[[1],[[\"_id\",\"UInt32\"],[\"_key\",\"ShortText\"]],[1,\"Alice\"]]]]\n"
+"=============================================================================="
+"=="
 msgstr ""
 
-#: README.md:57
+#: ../../README.md:57
 msgid ""
 "  tests/sec | tests     | passes    | failures  | leaked    | !checked  |\n"
 "       2.57 |         1 |         0 |         0 |         0 |         1 |\n"
@@ -121,34 +119,33 @@ msgid ""
 "```"
 msgstr ""
 
-#: README.md:62
+#: ../../README.md:62
 msgid ""
 "It generates `select.actual` file that contains actual result. If it\n"
 "is expected result, rename it to `select.expected`:"
 msgstr ""
-"実行すると `select.actual` というファイルを生成します。このファイルには実際の"
-"実行結果が含まれています。もし、この結果が期待した結果だった場合は `select."
-"expected` に名前を変更します。"
+"実行すると `select.actual` というファイルを生成します。このファイルには実際の実行結果が含まれています。もし、この結果が期待した結果だった場"
+"合は `select.expected` に名前を変更します。"
 
-#: README.md:65
+#: ../../README.md:65
 msgid ""
 "```\n"
 "% mv select.actual select.expected\n"
 "```"
 msgstr ""
 
-#: README.md:69 README.md:100 README.md:139
+#: ../../README.md:69 ../../README.md:100 ../../README.md:139
 msgid "Run `grntest` again:"
 msgstr "もう一度 `grntest` を実行します。"
 
-#: README.md:71 README.md:141
+#: ../../README.md:71 ../../README.md:141
 msgid ""
 "```\n"
 "% grntest select.test\n"
 "."
 msgstr ""
 
-#: README.md:75
+#: ../../README.md:75
 msgid ""
 "  tests/sec | tests     | passes    | failures  | leaked    | !checked  |\n"
 "       5.76 |         1 |         1 |         0 |         0 |         0 |\n"
@@ -156,41 +153,40 @@ msgid ""
 "```"
 msgstr ""
 
-#: README.md:80
+#: ../../README.md:80
 msgid ""
 "It compares actual result and content of `select.expected` and\n"
 "reporots compared result. If they are the same contnet, `grntest`\n"
 "reports success. If they are not the same content, `grntest` reports\n"
 "failure and show diff of them."
 msgstr ""
-"実行すると、実際の実行結果と `select.expected` の中身を比較し、比較結果を報告"
-"します。もし、同じ内容なら成功したと報告します。もし、違う内容なら失敗したと"
-"報告し、差分を表示します。"
+"実行すると、実際の実行結果と `select.expected` の中身を比較し、比較結果を報告します。もし、同じ内容なら成功したと報告します。もし、違う内"
+"容なら失敗したと報告し、差分を表示します。"
 
-#: README.md:85
+#: ../../README.md:85
 msgid ""
 "Change `--query '_key:Alice'` to `--query '_key:Bob`' in\n"
 "`select.test`:"
-msgstr ""
-"`select.test` 内の `--query '_key:Alice'` を `--query '_key:Bob`' に変更しま"
-"す。"
+msgstr "`select.test` 内の `--query '_key:Alice'` を `--query '_key:Bob`' に変更します。"
 
-#: README.md:97
+#: ../../README.md:97
 msgid ""
 "select Users --query '_key:Bob'\n"
 "```"
 msgstr ""
 
-#: README.md:102
+#: ../../README.md:102
 msgid ""
 "```\n"
 "% grntest select.test\n"
 "F\n"
-"================================================================================\n"
+"=============================================================================="
+"==\n"
 ".\n"
-"  select                                                        0.1767s "
-"[failed]\n"
-"================================================================================\n"
+"  select                                                        0.1767s [faile"
+"d]\n"
+"=============================================================================="
+"==\n"
 "--- (expected)\n"
 "+++ (actual)\n"
 "@@ -6,5 +6,5 @@\n"
@@ -198,15 +194,14 @@ msgid ""
 " ]\n"
 " [[0,0.0,0.0],2]\n"
 "-select Users --query '_key:Alice'\n"
-"-[[0,0.0,0.0],[[[1],[[\"_id\",\"UInt32\"],[\"_key\",\"ShortText\"]],[1,"
-"\"Alice\"]]]]\n"
+"-[[0,0.0,0.0],[[[1],[[\"_id\",\"UInt32\"],[\"_key\",\"ShortText\"]],[1,\"Alice\"]]]]\n"
 "+select Users --query '_key:Bob'\n"
-"+[[0,0.0,0.0],[[[1],[[\"_id\",\"UInt32\"],[\"_key\",\"ShortText\"]],[2,\"Bob"
-"\"]]]]\n"
-"================================================================================"
+"+[[0,0.0,0.0],[[[1],[[\"_id\",\"UInt32\"],[\"_key\",\"ShortText\"]],[2,\"Bob\"]]]]\n"
+"=============================================================================="
+"=="
 msgstr ""
 
-#: README.md:122
+#: ../../README.md:122
 msgid ""
 "  tests/sec | tests     | passes    | failures  | leaked    | !checked  |\n"
 "       4.65 |         1 |         0 |         1 |         0 |         0 |\n"
@@ -214,34 +209,32 @@ msgid ""
 "```"
 msgstr ""
 
-#: README.md:127
+#: ../../README.md:127
 msgid ""
 "It says the expected result that is read from `select.expected` and\n"
 "the actual result are not same. And the difference of them is shown in\n"
 "unified diff format. It is helpful to debug the test."
 msgstr ""
-"`select.expected` から読み込んだ期待する結果が実際の値と異なっていると言って"
-"います。そして、違いをunified diff形式で表示しています。この差分表示はデバッ"
-"グに便利です。"
+"`select.expected` から読み込んだ期待する結果が実際の値と異なっていると言っています。そして、違いをunified diff形式で表示してい"
+"ます。この差分表示はデバッグに便利です。"
 
-#: README.md:131
+#: ../../README.md:131
 msgid ""
 "`select.reject` file is generated on failure. It contains the actual\n"
 "result. If the actual result is the expected result, rename it to\n"
 "`select.expected`."
 msgstr ""
-"失敗すると `select.reject` ファイルが生成されます。この中には実際の実行結果が"
-"書かれています。もしお、実際の結果が期待する結果だったらこのファイルの名前を "
-"`select.expected` に変えてください。"
+"失敗すると `select.reject` ファイルが生成されます。この中には実際の実行結果が書かれています。もしお、実際の結果が期待する結果だったらこのフ"
+"ァイルの名前を `select.expected` に変えてください。"
 
-#: README.md:135
+#: ../../README.md:135
 msgid ""
 "```\n"
 "% mv select.reject select.expected\n"
 "```"
 msgstr ""
 
-#: README.md:145
+#: ../../README.md:145
 msgid ""
 "  tests/sec | tests     | passes    | failures  | leaked    | !checked  |\n"
 "       6.20 |         1 |         1 |         0 |         0 |         0 |\n"
@@ -249,27 +242,25 @@ msgid ""
 "```"
 msgstr ""
 
-#: README.md:150
+#: ../../README.md:150
 msgid "The test is succeeded again."
 msgstr "再びテストが成功するようになりました。"
 
-#: README.md:152
+#: ../../README.md:152
 msgid "## Advanced usage"
 msgstr "## 高度な使い方"
 
-#: README.md:154
+#: ../../README.md:154
 msgid ""
 "There are more useful features. They are not needed for normal\n"
 "users but they are very useful for advanced users."
-msgstr ""
-"もっと便利な機能がたくさんあります。これらは普通の使い方では必要ないものです"
-"が、高度な使い方をする人にはとても便利です。"
+msgstr "もっと便利な機能がたくさんあります。これらは普通の使い方では必要ないものですが、高度な使い方をする人にはとても便利です。"
 
-#: README.md:157
+#: ../../README.md:157
 msgid "There are advanced features:"
 msgstr "高度な機能は以下の通りです。"
 
-#: README.md:159
+#: ../../README.md:159
 msgid ""
 "* Comment\n"
 "* Continuation line\n"
@@ -279,20 +270,21 @@ msgstr ""
 "* 継続行\n"
 "* ディレクティブ"
 
-#: README.md:163
+#: ../../README.md:163
 msgid "### Comment"
 msgstr "### コメント"
 
-#: README.md:165
+#: ../../README.md:165
 msgid "Groonga supports comment line by `#`."
 msgstr "groongaは `#` を使ったコメント行をサポートしています。"
 
-#: README.md:167 README.md:180 README.md:234 README.md:274 README.md:308
-#: README.md:356 README.md:381 README.md:404 README.md:424
+#: ../../README.md:167 ../../README.md:180 ../../README.md:234
+#: ../../README.md:274 ../../README.md:308 ../../README.md:356
+#: ../../README.md:381 ../../README.md:404 ../../README.md:424
 msgid "Example:"
 msgstr "例："
 
-#: README.md:169
+#: ../../README.md:169
 msgid ""
 "```\n"
 "# This line is comment line.\n"
@@ -304,21 +296,19 @@ msgstr ""
 "select Users\n"
 "```"
 
-#: README.md:174
+#: ../../README.md:174
 msgid "Grntest also supports the syntax. You can use `#` as comment mark."
-msgstr ""
-"grntestもこの構文をサポートしています。コメントであることを示すために `#` を"
-"使うことができます。"
+msgstr "grntestもこの構文をサポートしています。コメントであることを示すために `#` を使うことができます。"
 
-#: README.md:176
+#: ../../README.md:176
 msgid "### Continuation line"
 msgstr "### 継続行"
 
-#: README.md:178
+#: ../../README.md:178
 msgid "You can break a long line by escaping new line with `\\`."
 msgstr "`\\` で改行文字をエスケープすることで、長い行を分割できます。"
 
-#: README.md:182
+#: ../../README.md:182
 msgid ""
 "```\n"
 "select Users \\\n"
@@ -327,40 +317,38 @@ msgid ""
 "```"
 msgstr ""
 
-#: README.md:188
+#: ../../README.md:188
 msgid "The command is processed as the following command:"
 msgstr "このコマンドは以下のようなコマンドとして処理されます。"
 
-#: README.md:190
+#: ../../README.md:190
 msgid ""
 "```\n"
 "select Users  --match_columns name   --query Ken\n"
 "```"
 msgstr ""
 
-#: README.md:194
+#: ../../README.md:194
 msgid "You can make your test readable with this feature."
 msgstr "この機能を使って、テストを読みやすくできます。"
 
-#: README.md:196
+#: ../../README.md:196
 msgid "Groogna doesn't support this feature."
 msgstr "なお、groongaはこの機能をサポートしていません。"
 
-#: README.md:198
+#: ../../README.md:198
 msgid "### Directives"
 msgstr "### ディレクティブ"
 
-#: README.md:200
+#: ../../README.md:200
 msgid "Grntest supports directives that control grntest behavior."
-msgstr ""
-"grntestはディレクティブをサポートしています。ディレクティブはgrntestの挙動を"
-"コントロールするための機能です。"
+msgstr "grntestはディレクティブをサポートしています。ディレクティブはgrntestの挙動をコントロールするための機能です。"
 
-#: README.md:202
+#: ../../README.md:202
 msgid "Here is directive syntax:"
 msgstr "ディレクティブの構文は以下の通りです。"
 
-#: README.md:204
+#: ../../README.md:204
 msgid ""
 "```\n"
 "#@NAME [ARGUMENTS...]\n"
@@ -370,11 +358,11 @@ msgstr ""
 "#@名前 [引数...]\n"
 "```"
 
-#: README.md:208
+#: ../../README.md:208
 msgid "Here are available `NAME` s:"
 msgstr "利用可能な `名前` は以下の通りです。"
 
-#: README.md:210
+#: ../../README.md:210
 msgid ""
 "* `disable-logging`\n"
 "* `enable-logging`\n"
@@ -386,41 +374,40 @@ msgid ""
 "* `omit`"
 msgstr ""
 
-#: README.md:219
+#: ../../README.md:219
 msgid ""
 "`ARGUMENTS...` are depends on directive. A directive doesn't require\n"
 "any arguments but a directive requires arguments."
-msgstr ""
-"`引数...` はそれぞれのディレクティブ毎に違います。あるディレクティブは1つも引"
-"数をとりませんが、あるディレクティブは必須の引数があったりします。"
+msgstr "`引数...` はそれぞれのディレクティブ毎に違います。あるディレクティブは1つも引数をとりませんが、あるディレクティブは必須の引数があったりします。"
 
-#: README.md:222
+#: ../../README.md:222
 msgid "#### `disable-logging`"
 msgstr ""
 
-#: README.md:224 README.md:253 README.md:265 README.md:292 README.md:347
-#: README.md:365 README.md:393 README.md:416 README.md:442 README.md:525
+#: ../../README.md:224 ../../README.md:253 ../../README.md:265
+#: ../../README.md:292 ../../README.md:347 ../../README.md:365
+#: ../../README.md:393 ../../README.md:416 ../../README.md:442
+#: ../../README.md:525
 msgid "Usage:"
 msgstr "使い方："
 
-#: README.md:226
+#: ../../README.md:226
 msgid ""
 "```\n"
 "#@disable-logging\n"
 "```"
 msgstr ""
 
-#: README.md:230
+#: ../../README.md:230
 msgid ""
 "It disables logging executed command and executed result until\n"
 "`enable-logging` directive is used. It is useful for executing\n"
 "commands that isn't important for test."
 msgstr ""
-"実行したコマンドと実行結果をログに残さなくします。 `enable-logging` ディレク"
-"ティブを使うと再びログに残すようになります。これはテストの本質ではないコマン"
-"ドを実行する時に便利です。"
+"実行したコマンドと実行結果をログに残さなくします。 `enable-logging` ディレクティブを使うと再びログに残すようになります。これはテストの本質"
+"ではないコマンドを実行する時に便利です。"
 
-#: README.md:236
+#: ../../README.md:236
 msgid ""
 "```\n"
 "#@disable-logging\n"
@@ -433,40 +420,40 @@ msgid ""
 "#@enable-logging"
 msgstr ""
 
-#: README.md:246
+#: ../../README.md:246
 msgid ""
 "select Users --query _key:User29\n"
 "```"
 msgstr ""
 
-#: README.md:249
+#: ../../README.md:249
 msgid "See also: `enable-logging`"
 msgstr "参考： `enable-logging`"
 
-#: README.md:251
+#: ../../README.md:251
 msgid "#### `enable-logging`"
 msgstr ""
 
-#: README.md:255
+#: ../../README.md:255
 msgid ""
 "```\n"
 "#@enable-logging\n"
 "```"
 msgstr ""
 
-#: README.md:259
+#: ../../README.md:259
 msgid "It enables logging that is disabled by `disable-logging` directive."
 msgstr "`disable-logging` ディレクティブで無効にしたログを有効にします。"
 
-#: README.md:261
+#: ../../README.md:261
 msgid "See also: `disable-logging`"
 msgstr "参考： `disable-logging`"
 
-#: README.md:263
+#: ../../README.md:263
 msgid "#### `suggest-create-dataset`"
 msgstr ""
 
-#: README.md:267
+#: ../../README.md:267
 msgid ""
 "```\n"
 "#@suggest-create-dataset DATASET_NAME\n"
@@ -476,40 +463,37 @@ msgstr ""
 "#@suggest-create-dataset データセット名\n"
 "```"
 
-#: README.md:271
+#: ../../README.md:271
 msgid ""
 "It creates dataset `DATASET_NAME` for suggest feature. It is useful\n"
 "for testing suggest feature."
-msgstr ""
-"サジェスト機能用に `データセット名` のデータセットを作成します。サジェスト機"
-"能をテストする時に便利です。"
+msgstr "サジェスト機能用に `データセット名` のデータセットを作成します。サジェスト機能をテストする時に便利です。"
 
-#: README.md:276
+#: ../../README.md:276
 msgid ""
 "```\n"
 "#@suggest-create-dataset rurema\n"
-"load --table event_rurema --each 'suggest_preparer(_id, type, item, "
-"sequence, time, pair_rurema)'\n"
+"load --table event_rurema --each 'suggest_preparer(_id, type, item, sequence, "
+"time, pair_rurema)'\n"
 "[\n"
 "[\"sequence\", \"time\", \"item\", \"type\"],\n"
 "[\"21e80fd5e5bc2126469db1c927b7a48fb3353dd9\",1312134098.0,\"f\",null],\n"
 "[\"21e80fd5e5bc2126469db1c927b7a48fb3353dd9\",1312134105.0,\"er\",null],\n"
 "[\"21e80fd5e5bc2126469db1c927b7a48fb3353dd9\",1312134106.0,\"erb\",null],\n"
-"[\"21e80fd5e5bc2126469db1c927b7a48fb3353dd9\",1312134107.0,\"erb\",\"submit"
-"\"]\n"
+"[\"21e80fd5e5bc2126469db1c927b7a48fb3353dd9\",1312134107.0,\"erb\",\"submit\"]\n"
 "]\n"
 "```"
 msgstr ""
 
-#: README.md:288
+#: ../../README.md:288
 msgid "See also: `--groonga-suggest-create-dataset` option"
 msgstr "参考： `--groonga-suggest-create-dataset` オプション"
 
-#: README.md:290
+#: ../../README.md:290
 msgid "#### `include`"
 msgstr ""
 
-#: README.md:294
+#: ../../README.md:294
 msgid ""
 "```\n"
 "#@include SUB_TEST_FILE_PATH\n"
@@ -519,37 +503,34 @@ msgstr ""
 "#@include サブテストファイルのパス\n"
 "```"
 
-#: README.md:298
+#: ../../README.md:298
 msgid ""
 "It includes `SUB_TEST_FILE_PATH` content. It is useful for sharing\n"
 "commands by many tests."
-msgstr ""
-"`サブテストファイルのパス` にあるファイルの中身をここに取り込みます。たくさん"
-"のテストでコマンドを共有する時に便利です。"
+msgstr "`サブテストファイルのパス` にあるファイルの中身をここに取り込みます。たくさんのテストでコマンドを共有する時に便利です。"
 
-#: README.md:301
+#: ../../README.md:301
 msgid ""
 "You can use `include` in included file. It means that an included file\n"
 "is processed in the same way as a test file."
 msgstr ""
-"取り込んだファイルの中でさらに `include` を使うこともできます。これは、取り込"
-"んだファイルも通常のテストファイルと同じように処理されるということです。"
+"取り込んだファイルの中でさらに `include` を使うこともできます。これは、取り込んだファイルも通常のテストファイルと同じように処理されるということで"
+"す。"
 
-#: README.md:304
+#: ../../README.md:304
 msgid ""
 "If `SUB_TEST_FILE_PATH` is relative path, `SUB_TEST_FILE_PATH` is\n"
 "found from base directory. Base directory can be specified by\n"
 "`--base-directory` option."
 msgstr ""
-"もし、 `サブテストファイルのパス` が相対パスだった場合、 `サブテストファイル"
-"のパス` はベースディレクトリを基準に探します。ベースディレクトリは `--base-"
-"directory` で指定できます。"
+"もし、 `サブテストファイルのパス` が相対パスだった場合、 `サブテストファイルのパス` はベースディレクトリを基準に探します。ベースディレクトリは `-"
+"-base-directory` で指定できます。"
 
-#: README.md:310
+#: ../../README.md:310
 msgid "init.grn:"
 msgstr ""
 
-#: README.md:312
+#: ../../README.md:312
 msgid ""
 "```\n"
 "#@disable-logging\n"
@@ -559,22 +540,22 @@ msgid ""
 "```"
 msgstr ""
 
-#: README.md:319
+#: ../../README.md:319
 msgid "ddl.grn:"
 msgstr ""
 
-#: README.md:321
+#: ../../README.md:321
 msgid ""
 "```\n"
 "table_create Users TABLE_HASH_KEY ShortText\n"
 "```"
 msgstr ""
 
-#: README.md:325
+#: ../../README.md:325
 msgid "data.grn:"
 msgstr ""
 
-#: README.md:327
+#: ../../README.md:327
 msgid ""
 "```\n"
 "load --table Users\n"
@@ -586,11 +567,11 @@ msgid ""
 "```"
 msgstr ""
 
-#: README.md:336
+#: ../../README.md:336
 msgid "user.test:"
 msgstr ""
 
-#: README.md:338
+#: ../../README.md:338
 msgid ""
 "```\n"
 "#@include init.grn\n"
@@ -598,15 +579,15 @@ msgid ""
 "```"
 msgstr ""
 
-#: README.md:343
+#: ../../README.md:343
 msgid "See also: `--base-directory` option"
 msgstr "参考： `--base-directory` オプション"
 
-#: README.md:345
+#: ../../README.md:345
 msgid "#### `copy-path`"
 msgstr ""
 
-#: README.md:349
+#: ../../README.md:349
 msgid ""
 "```\n"
 "#@copy-path SOURCE DESTINATION\n"
@@ -616,29 +597,27 @@ msgstr ""
 "#@copy-path コピー元 コピー先\n"
 "```"
 
-#: README.md:353
+#: ../../README.md:353
 msgid ""
 "It copies a path from `SOURCE` to `DESTINATION`. You can use it for\n"
 "both file and directory. It is useful for using fixture data."
 msgstr ""
-"`コピー元` にあるパスを `コピー先` へコピーします。ファイルにもディレクトリに"
-"も使えます。\n"
+"`コピー元` にあるパスを `コピー先` へコピーします。ファイルにもディレクトリにも使えます。\n"
 "フィクスチャデータを使う時に便利です。"
 
-#: README.md:358
+#: ../../README.md:358
 msgid ""
 "```\n"
-"#@copy-path fixture/query_expander/tsv/japanese_synonyms.tsv tmp/synonyms."
-"tsv\n"
+"#@copy-path fixture/query_expander/tsv/japanese_synonyms.tsv tmp/synonyms.tsv\n"
 "register \"query_expanders/tsv\"\n"
 "```"
 msgstr ""
 
-#: README.md:363
+#: ../../README.md:363
 msgid "#### `long-timeout`"
 msgstr ""
 
-#: README.md:367
+#: ../../README.md:367
 msgid ""
 "```\n"
 "#@long-timeout TIMEOUT\n"
@@ -648,7 +627,7 @@ msgstr ""
 "#@long-timeout タイムアウト\n"
 "```"
 
-#: README.md:371
+#: ../../README.md:371
 msgid ""
 "It specifies a timeout for commands that may take long time.\n"
 "`TIMEOUT` must be a number or `default`. If you specify `default` as\n"
@@ -657,25 +636,24 @@ msgid ""
 msgstr ""
 "処理時間が長くなる可能性のあるコマンドのタイムアウト時間を指定します。\n"
 "`タイムアウト` は数値か `default` でなければいけません。\n"
-"`タイムアウト` に `default` を指定した場合は、デフォルトのタイムアウト時間が"
-"使われます。\n"
+"`タイムアウト` に `default` を指定した場合は、デフォルトのタイムアウト時間が使われます。\n"
 "デフォルトのタイムアウト時間な180秒です。"
 
-#: README.md:376
+#: ../../README.md:376
 msgid "Here are the commands that may take long time:"
 msgstr "処理時間が長くなる可能性のあるコマンドは以下の通りです:"
 
-#: README.md:378
+#: ../../README.md:378
 msgid ""
 "* `column_create`\n"
 "* `register`"
 msgstr ""
 
-#: README.md:383
+#: ../../README.md:383
 msgid ""
 "```\n"
-"# Wait 300 seconds until commands that may take long time output their "
-"results\n"
+"# Wait 300 seconds until commands that may take long time output their results"
+"\n"
 "#@long-timeout 300\n"
 "column_create Lexicon users_name COLUMN_INDEX Users name\n"
 "# Reset custom timeout for commands that may take long time.\n"
@@ -690,11 +668,11 @@ msgstr ""
 "#@long-timeout default\n"
 "```"
 
-#: README.md:391
+#: ../../README.md:391
 msgid "#### `on-error`"
 msgstr ""
 
-#: README.md:395
+#: ../../README.md:395
 msgid ""
 "```\n"
 "#@on-error ACTION\n"
@@ -704,27 +682,24 @@ msgstr ""
 "#@on-error アクション\n"
 "```"
 
-#: README.md:399
+#: ../../README.md:399
 msgid ""
 "It specifies a action on error. `ACTION` must be `default` or\n"
 "`omit`. If you specify `default` as `ACTION`, the running test is\n"
 "continued. If you specify `omit` as `ACTION`, the running test is\n"
 "aborted and the running test is marked as omitted."
 msgstr ""
-"エラーが起きた時のアクションを指定します。アクションには、 `default` か "
-"`omit` のどちらかを指定します。\n"
-"`default` を指定した場合、実行中のテストは継続されます。 `omit` を指定した場"
-"合、実行中のテストは中断され、実行中のテストはomit（省略）としてマークされま"
-"す。"
+"エラーが起きた時のアクションを指定します。アクションには、 `default` か `omit` のどちらかを指定します。\n"
+"`default` を指定した場合、実行中のテストは継続されます。 `omit` を指定した場合、実行中のテストは中断され、実行中のテストはomit（省略）"
+"としてマークされます。"
 
-#: README.md:406
+#: ../../README.md:406
 msgid ""
 "```\n"
 "# Omit this test if TokenKyTea tokenizer isn't available.\n"
 "#@on-error omit\n"
 "register tokenizers/kytea\n"
-"# Don't omit this test when any error is occurred in the following "
-"commands.\n"
+"# Don't omit this test when any error is occurred in the following commands.\n"
 "#@on-error default\n"
 "```"
 msgstr ""
@@ -732,16 +707,15 @@ msgstr ""
 "# TokenKyTeaトークナイザーが使用できない場合はこのテストは省略する。\n"
 "#@on-error omit\n"
 "register tokenizers/kytea\n"
-"# このあと続くコマンドでエラーが起きてもこのテストは省略しない（omitとして"
-"マークしない）。\n"
+"# このあと続くコマンドでエラーが起きてもこのテストは省略しない（omitとしてマークしない）。\n"
 "#@on-error default\n"
 "```"
 
-#: README.md:414
+#: ../../README.md:414
 msgid "#### `omit`"
 msgstr ""
 
-#: README.md:418
+#: ../../README.md:418
 msgid ""
 "```\n"
 "#@omit REASON\n"
@@ -751,11 +725,11 @@ msgstr ""
 "#@omit 理由\n"
 "```"
 
-#: README.md:422
+#: ../../README.md:422
 msgid "Omit the test with `REASON`."
 msgstr "指定した理由によりテストを省略します。"
 
-#: README.md:426
+#: ../../README.md:426
 msgid ""
 "```\n"
 "# Omit this test until the feature is implemented.\n"
@@ -769,32 +743,29 @@ msgstr ""
 "new_excelent_command\n"
 "```"
 
-#: README.md:432
+#: ../../README.md:432
 msgid "## Options"
 msgstr "## オプション"
 
-#: README.md:434
+#: ../../README.md:434
 msgid ""
 "Grntest has many options. You don't need to specify many of them\n"
 "because they use suitable default values."
-msgstr ""
-"grntestにはたくさんのオプションがあります。ただし、適切なデフォルト値を使うた"
-"め、ほとんどのオプションは指定する必要がありません。"
+msgstr "grntestにはたくさんのオプションがあります。ただし、適切なデフォルト値を使うため、ほとんどのオプションは指定する必要がありません。"
 
-#: README.md:437
+#: ../../README.md:437
 msgid ""
 "This section describes some important options. You can see all options\n"
 "by `grntest --help`. You will find many usuful features from it."
 msgstr ""
-"このセクションではいくつかの重要なオプションを説明します。 `grntest --help` "
-"ですべてのオプションを確認することができます。出力結果の中にたくさんの便利な"
-"機能を見つけることができるはずです。"
+"このセクションではいくつかの重要なオプションを説明します。 `grntest --help` ですべてのオプションを確認することができます。出力結果の中にた"
+"くさんの便利な機能を見つけることができるはずです。"
 
-#: README.md:440
+#: ../../README.md:440
 msgid "### `--test`"
 msgstr ""
 
-#: README.md:444
+#: ../../README.md:444
 msgid ""
 "```\n"
 "% grntest --test TEST_NAME ...\n"
@@ -810,145 +781,134 @@ msgstr ""
 "% grntest --test /テスト名の正規表現1/ --test /テスト名の正規表現2/ ...\n"
 "```"
 
-#: README.md:451
+#: ../../README.md:451
 msgid ""
 "`--test` option specifies tests that should be ran. It is useful when\n"
 "you are interested in only one test."
-msgstr ""
-"`--test` オプションは実行するテストを指定します。特定のテストだけを実行したい"
-"ときに便利です。"
+msgstr "`--test` オプションは実行するテストを指定します。特定のテストだけを実行したいときに便利です。"
 
-#: README.md:454
+#: ../../README.md:454
 msgid ""
 "For example, the following command line runs only `vector-geo-point`\n"
 "test."
-msgstr ""
-"例えば、以下のコマンドラインは `vector-geo-point` テストだけを実行します。"
+msgstr "例えば、以下のコマンドラインは `vector-geo-point` テストだけを実行します。"
 
-#: README.md:457
+#: ../../README.md:457
 msgid ""
 "```\n"
 "% grntest --test vector-geo-point ...\n"
 "```"
 msgstr ""
 
-#: README.md:461
+#: ../../README.md:461
 msgid ""
 "You can use `--test` option multiple times to run only multiple\n"
 "interested tests."
-msgstr ""
-"複数の指定したテストだけを実行したい場合は `--test` オプションを複数回指定し"
-"ます。"
+msgstr "複数の指定したテストだけを実行したい場合は `--test` オプションを複数回指定します。"
 
-#: README.md:464
+#: ../../README.md:464
 msgid ""
 "For example, the following command line runs only `vector-geo-point`\n"
 "and `hash` tests."
-msgstr ""
-"例えば、以下のコマンドは `vector-geo-point` テストと `hash` テストを実行しま"
-"す。"
+msgstr "例えば、以下のコマンドは `vector-geo-point` テストと `hash` テストを実行します。"
 
-#: README.md:467
+#: ../../README.md:467
 msgid ""
 "```\n"
 "% grntest --test vector-geo-point --test hash ...\n"
 "```"
 msgstr ""
 
-#: README.md:471
+#: ../../README.md:471
 msgid "You can use regular expression to select tests by `/.../` syntax."
 msgstr "`/.../` という構文を使えば、正規表現でテストを指定できます。"
 
-#: README.md:473
+#: ../../README.md:473
 msgid ""
 "For example, the following command line runs tests that have `geo` in\n"
 "its name."
-msgstr ""
-"例えば、以下のコマンドラインはテスト名に `geo` を含んでいるテストを選択しま"
-"す。"
+msgstr "例えば、以下のコマンドラインはテスト名に `geo` を含んでいるテストを選択します。"
 
-#: README.md:476
+#: ../../README.md:476
 msgid ""
 "```\n"
 "% grntest --test /geo/ ...\n"
 "```"
 msgstr ""
 
-#: README.md:480
+#: ../../README.md:480
 msgid "You can also use multiple --test options with regular expression."
 msgstr "正規表現を使った場合でも複数の --test オプションを指定できます。"
 
-#: README.md:482
+#: ../../README.md:482
 msgid "See also: `--exclude-test` option"
 msgstr "参考： `--exclude-test` オプション"
 
-#: README.md:484
+#: ../../README.md:484
 msgid "### `--exclude-test`"
 msgstr ""
 
-#: README.md:486
+#: ../../README.md:486
 msgid "### `--test-suite`"
 msgstr ""
 
-#: README.md:488
+#: ../../README.md:488
 msgid "### `--exclude-test-suite`"
 msgstr ""
 
-#: README.md:490
+#: ../../README.md:490
 msgid "### `--gdb`"
 msgstr ""
 
-#: README.md:492
+#: ../../README.md:492
 msgid "### `--keep-database`"
 msgstr ""
 
-#: README.md:494
+#: ../../README.md:494
 msgid "### `--n-workers`"
 msgstr ""
 
-#: README.md:496
+#: ../../README.md:496
 msgid ""
 "`--n-workers` option is very useful. You can run many test scripts at\n"
 "once. Tests are finished quickly. You should specify one or more\n"
 "directories that contain many test scripts. If you have only a test\n"
 "script, `--n-workers` is not effective."
 msgstr ""
-"`--n-workers` オプションはとても便利です。一度にたくさんのテストを実行するこ"
-"とができます。そうすると、テストは速く終わります。このオプションを使うときは"
-"たくさんのテストスクリプトが入ったディレクトリを指定してください。もし、テス"
-"トスクリプトだけを指定した場合は、 `--n-workers` オプションの効果はあまりあり"
-"ません。"
+"`--n-workers` オプションはとても便利です。一度にたくさんのテストを実行することができます。そうすると、テストは速く終わります。このオプションを"
+"使うときはたくさんのテストスクリプトが入ったディレクトリを指定してください。もし、テストスクリプトだけを指定した場合は、 `--n-workers` オプシ"
+"ョンの効果はあまりありません。"
 
-#: README.md:501
+#: ../../README.md:501
 msgid "Here is a sample command line to use `--n-workers`:"
 msgstr "`--n-workers` を使ったコマンドラインの例です。"
 
-#: README.md:503
+#: ../../README.md:503
 msgid ""
 "```\n"
 "% grntest --n-workers 4 test/function/suite/suggest\n"
 "  tests/sec | tests     | passes    | failures  | leaked    | !checked  |\n"
-"[0]                                                                   "
-"[finished]\n"
-"       9.95 |         5 |         5 |         0 |         0 |         0 "
-"|       \n"
-"[1]                                                                   "
-"[finished]\n"
-"       9.22 |         4 |         4 |         0 |         0 |         0 "
-"|       \n"
-"[2]                                                                   "
-"[finished]\n"
-"       9.11 |         4 |         4 |         0 |         0 |         0 "
-"|       \n"
-"[3]                                                                   "
-"[finished]\n"
-"      10.10 |         5 |         5 |         0 |         0 |         0 "
-"|       \n"
-"|-----------------------------------------------------------------------| "
-"[100%]"
+"[0]                                                                   [finishe"
+"d]\n"
+"       9.95 |         5 |         5 |         0 |         0 |         0 |     "
+"  \n"
+"[1]                                                                   [finishe"
+"d]\n"
+"       9.22 |         4 |         4 |         0 |         0 |         0 |     "
+"  \n"
+"[2]                                                                   [finishe"
+"d]\n"
+"       9.11 |         4 |         4 |         0 |         0 |         0 |     "
+"  \n"
+"[3]                                                                   [finishe"
+"d]\n"
+"      10.10 |         5 |         5 |         0 |         0 |         0 |     "
+"  \n"
+"|-----------------------------------------------------------------------| [100"
+"%]"
 msgstr ""
 
-#: README.md:516
+#: ../../README.md:516
 msgid ""
 "  tests/sec | tests     | passes    | failures  | leaked    | !checked  |\n"
 "      34.61 |        18 |        18 |         0 |         0 |         0 |\n"
@@ -956,15 +916,15 @@ msgid ""
 "```"
 msgstr ""
 
-#: README.md:521
+#: ../../README.md:521
 msgid "### `--base-directory`"
 msgstr ""
 
-#: README.md:523
+#: ../../README.md:523
 msgid "### `--database=PATH`"
 msgstr ""
 
-#: README.md:527
+#: ../../README.md:527
 msgid ""
 "```\n"
 "% grntest --database /PATH/TO/EXISTING/DATABASE ...\n"
@@ -974,7 +934,7 @@ msgstr ""
 "% grntest --database /既存の/データベースの/パス ...\n"
 "```"
 
-#: README.md:531
+#: ../../README.md:531
 msgid ""
 "`--database` option specifies an existing database that is used for\n"
 "test. Normally, grntest uses a new empty database for test."
@@ -982,138 +942,131 @@ msgstr ""
 "`--database` オプションはテストに使う既存のデータベースを指定します。\n"
 "通常、grntestはテスト用に空の新しいデータベースを使います。"
 
-#: README.md:534
+#: ../../README.md:534
 msgid ""
 "`--database` option is very useful for testing against existing\n"
 "database."
-msgstr ""
-"`--database` オプションは既存のデータベースに対してテストするのにとても便利で"
-"す。"
+msgstr "`--database` オプションは既存のデータベースに対してテストするのにとても便利です。"
 
-#: README.md:537
+#: ../../README.md:537
 msgid "### `--groonga`"
 msgstr ""
 
-#: README.md:539
+#: ../../README.md:539
 msgid "### `--groonga-httpd`"
 msgstr ""
 
-#: README.md:541
+#: ../../README.md:541
 msgid "### `--groonga-suggest-create-dataset`"
 msgstr ""
 
-#: README.md:543
+#: ../../README.md:543
 msgid "### `--interface`"
 msgstr ""
 
-#: README.md:545
+#: ../../README.md:545
 msgid "### `--output-type`"
 msgstr ""
 
-#: README.md:547
+#: ../../README.md:547
 msgid "### `--testee`"
 msgstr ""
 
-#: README.md:549
+#: ../../README.md:549
 msgid "## Examples"
 msgstr "## 例"
 
-#: README.md:551
+#: ../../README.md:551
 msgid ""
 "See [test/command/ directory in groonga's\n"
 "source](https://github.com/groonga/groonga/tree/master/test/command). It\n"
 "has many test scripts and uses many useful features. They will help you."
 msgstr ""
-"[groongaのソースの中にあるtest/command/ディレクトリ](https://github.com/"
-"groonga/groonga/tree/master/test/command) を見てください。ここにはたくさんの"
-"テストスクリプトがあり、多くの便利な機能を使っています。参考になるでしょう。"
+"[groongaのソースの中にあるtest/command/ディレクトリ](https://github.com/groonga/groonga/tree/"
+"master/test/command) を見てください。ここにはたくさんのテストスクリプトがあり、多くの便利な機能を使っています。参考になるでしょう。"
 
-#: README.md:555
+#: ../../README.md:555
 msgid "## Dependencies"
 msgstr "## 依存ソフトウェア"
 
-#: README.md:557
+#: ../../README.md:557
 msgid ""
 "* Ruby 1.9.3\n"
 "* msgpack gem"
 msgstr ""
 
-#: README.md:560
+#: ../../README.md:560
 msgid "## Mailing list"
 msgstr "## メーリングリスト"
 
-#: README.md:562
+#: ../../README.md:562
 msgid ""
-"* English: [groonga-talk@lists.sourceforge.net](https://lists.sourceforge."
-"net/lists/listinfo/groonga-talk)\n"
-"* Japanese: [groonga-dev@lists.sourceforge.jp](http://lists.sourceforge.jp/"
-"mailman/listinfo/groonga-dev)"
-msgstr ""
-"* 英語: [groonga-talk@lists.sourceforge.net](https://lists.sourceforge.net/"
+"* English: [groonga-talk@lists.sourceforge.net](https://lists.sourceforge.net/"
 "lists/listinfo/groonga-talk)\n"
-"* 日本語: [groonga-dev@lists.sourceforge.jp](http://lists.sourceforge.jp/"
-"mailman/listinfo/groonga-dev)"
+"* Japanese: [groonga-dev@lists.sourceforge.jp](http://lists.sourceforge.jp/mai"
+"lman/listinfo/groonga-dev)"
+msgstr ""
+"* 英語: [groonga-talk@lists.sourceforge.net](https://lists.sourceforge.net/lists"
+"/listinfo/groonga-talk)\n"
+"* 日本語: [groonga-dev@lists.sourceforge.jp](http://lists.sourceforge.jp/mailman/"
+"listinfo/groonga-dev)"
 
-#: README.md:565
+#: ../../README.md:565
 msgid "## Thanks"
 msgstr "## 感謝"
 
-#: README.md:567
+#: ../../README.md:567
 msgid "* ..."
 msgstr ""
 
-#: README.md:569
+#: ../../README.md:569
 msgid "## Authors"
 msgstr "## 作者"
 
-#: README.md:571
+#: ../../README.md:571
 msgid ""
 "* Kouhei Sutou \\<kou@clear-code.com\\>\n"
 "* Haruka Yoshihara \\<yoshihara@clear-code.com\\>"
 msgstr ""
 
-#: README.md:574
+#: ../../README.md:574
 msgid "## License"
 msgstr "## ライセンス"
 
-#: README.md:576
+#: ../../README.md:576
 msgid "GPLv3 or later. See doc/text/gpl-3.0.txt for details."
-msgstr ""
-"GPLv3またはそれ以降のバージョン。詳細は doc/text/gpl-3.0.txt を確認してくださ"
-"い。"
+msgstr "GPLv3またはそれ以降のバージョン。詳細は doc/text/gpl-3.0.txt を確認してください。"
 
-#: README.md:578
+#: ../../README.md:578
 msgid ""
 "(Kouhei Sutou has a right to change the license including contributed\n"
 "patches.)"
-msgstr ""
-"（提供してもらったパッチも含めてKouhei Sutouがライセンスを変更する権利を持ち"
-"ます。）"
+msgstr "（提供してもらったパッチも含めてKouhei Sutouがライセンスを変更する権利を持ちます。）"
 
-#: doc/text/gpl-3.0.txt:1
+#: ../../doc/text/gpl-3.0.txt:1
 msgid ""
 "                    GNU GENERAL PUBLIC LICENSE\n"
 "                       Version 3, 29 June 2007"
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:4
+#: ../../doc/text/gpl-3.0.txt:4
 msgid ""
 " Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>\n"
 " Everyone is permitted to copy and distribute verbatim copies\n"
 " of this license document, but changing it is not allowed."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:8
+#: ../../doc/text/gpl-3.0.txt:8
 msgid "                            Preamble"
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:10
+#: ../../doc/text/gpl-3.0.txt:10
 msgid ""
 "  The GNU General Public License is a free, copyleft license for\n"
 "software and other kinds of works."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:13
+#: ../../doc/text/gpl-3.0.txt:13
 msgid ""
 "  The licenses for most software and other practical works are designed\n"
 "to take away your freedom to share and change the works.  By contrast,\n"
@@ -1125,7 +1078,7 @@ msgid ""
 "your programs, too."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:22
+#: ../../doc/text/gpl-3.0.txt:22
 msgid ""
 "  When we speak of free software, we are referring to freedom, not\n"
 "price.  Our General Public Licenses are designed to make sure that you\n"
@@ -1135,7 +1088,7 @@ msgid ""
 "free programs, and that you know you can do these things."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:29
+#: ../../doc/text/gpl-3.0.txt:29
 msgid ""
 "  To protect your rights, we need to prevent others from denying you\n"
 "these rights or asking you to surrender the rights.  Therefore, you have\n"
@@ -1143,7 +1096,7 @@ msgid ""
 "you modify it: responsibilities to respect the freedom of others."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:34
+#: ../../doc/text/gpl-3.0.txt:34
 msgid ""
 "  For example, if you distribute copies of such a program, whether\n"
 "gratis or for a fee, you must pass on to the recipients the same\n"
@@ -1152,14 +1105,14 @@ msgid ""
 "know their rights."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:40
+#: ../../doc/text/gpl-3.0.txt:40
 msgid ""
 "  Developers that use the GNU GPL protect your rights with two steps:\n"
 "(1) assert copyright on the software, and (2) offer you this License\n"
 "giving you legal permission to copy, distribute and/or modify it."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:44
+#: ../../doc/text/gpl-3.0.txt:44
 msgid ""
 "  For the developers' and authors' protection, the GPL clearly explains\n"
 "that there is no warranty for this free software.  For both users' and\n"
@@ -1168,7 +1121,7 @@ msgid ""
 "authors of previous versions."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:50
+#: ../../doc/text/gpl-3.0.txt:50
 msgid ""
 "  Some devices are designed to deny users access to install or run\n"
 "modified versions of the software inside them, although the manufacturer\n"
@@ -1182,7 +1135,7 @@ msgid ""
 "of the GPL, as needed to protect the freedom of users."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:61
+#: ../../doc/text/gpl-3.0.txt:61
 msgid ""
 "  Finally, every program is threatened constantly by software patents.\n"
 "States should not allow patents to restrict development and use of\n"
@@ -1192,39 +1145,38 @@ msgid ""
 "patents cannot be used to render the program non-free."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:68
+#: ../../doc/text/gpl-3.0.txt:68
 msgid ""
 "  The precise terms and conditions for copying, distribution and\n"
 "modification follow."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:71
+#: ../../doc/text/gpl-3.0.txt:71
 msgid "                       TERMS AND CONDITIONS"
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:73
+#: ../../doc/text/gpl-3.0.txt:73
 msgid "  0. Definitions."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:75
-msgid ""
-"  \"This License\" refers to version 3 of the GNU General Public License."
+#: ../../doc/text/gpl-3.0.txt:75
+msgid "  \"This License\" refers to version 3 of the GNU General Public License."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:77
+#: ../../doc/text/gpl-3.0.txt:77
 msgid ""
 "  \"Copyright\" also means copyright-like laws that apply to other kinds of\n"
 "works, such as semiconductor masks."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:80
+#: ../../doc/text/gpl-3.0.txt:80
 msgid ""
 "  \"The Program\" refers to any copyrightable work licensed under this\n"
 "License.  Each licensee is addressed as \"you\".  \"Licensees\" and\n"
 "\"recipients\" may be individuals or organizations."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:84
+#: ../../doc/text/gpl-3.0.txt:84
 msgid ""
 "  To \"modify\" a work means to copy from or adapt all or part of the work\n"
 "in a fashion requiring copyright permission, other than the making of an\n"
@@ -1232,13 +1184,13 @@ msgid ""
 "earlier work or a work \"based on\" the earlier work."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:89
+#: ../../doc/text/gpl-3.0.txt:89
 msgid ""
 "  A \"covered work\" means either the unmodified Program or a work based\n"
 "on the Program."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:92
+#: ../../doc/text/gpl-3.0.txt:92
 msgid ""
 "  To \"propagate\" a work means to do anything with it that, without\n"
 "permission, would make you directly or secondarily liable for\n"
@@ -1248,14 +1200,14 @@ msgid ""
 "public, and in some countries other activities as well."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:99
+#: ../../doc/text/gpl-3.0.txt:99
 msgid ""
 "  To \"convey\" a work means any kind of propagation that enables other\n"
 "parties to make or receive copies.  Mere interaction with a user through\n"
 "a computer network, with no transfer of a copy, is not conveying."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:103
+#: ../../doc/text/gpl-3.0.txt:103
 msgid ""
 "  An interactive user interface displays \"Appropriate Legal Notices\"\n"
 "to the extent that it includes a convenient and prominently visible\n"
@@ -1267,18 +1219,18 @@ msgid ""
 "menu, a prominent item in the list meets this criterion."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:112
+#: ../../doc/text/gpl-3.0.txt:112
 msgid "  1. Source Code."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:114
+#: ../../doc/text/gpl-3.0.txt:114
 msgid ""
 "  The \"source code\" for a work means the preferred form of the work\n"
 "for making modifications to it.  \"Object code\" means any non-source\n"
 "form of a work."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:118
+#: ../../doc/text/gpl-3.0.txt:118
 msgid ""
 "  A \"Standard Interface\" means an interface that either is an official\n"
 "standard defined by a recognized standards body, or, in the case of\n"
@@ -1286,7 +1238,7 @@ msgid ""
 "is widely used among developers working in that language."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:123
+#: ../../doc/text/gpl-3.0.txt:123
 msgid ""
 "  The \"System Libraries\" of an executable work include anything, other\n"
 "than the work as a whole, that (a) is included in the normal form of\n"
@@ -1300,7 +1252,7 @@ msgid ""
 "produce the work, or an object code interpreter used to run it."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:134
+#: ../../doc/text/gpl-3.0.txt:134
 msgid ""
 "  The \"Corresponding Source\" for a work in object code form means all\n"
 "the source code needed to generate, install, and (for an executable\n"
@@ -1316,24 +1268,24 @@ msgid ""
 "subprograms and other parts of the work."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:147
+#: ../../doc/text/gpl-3.0.txt:147
 msgid ""
 "  The Corresponding Source need not include anything that users\n"
 "can regenerate automatically from other parts of the Corresponding\n"
 "Source."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:151
+#: ../../doc/text/gpl-3.0.txt:151
 msgid ""
 "  The Corresponding Source for a work in source code form is that\n"
 "same work."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:154
+#: ../../doc/text/gpl-3.0.txt:154
 msgid "  2. Basic Permissions."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:156
+#: ../../doc/text/gpl-3.0.txt:156
 msgid ""
 "  All rights granted under this License are granted for the term of\n"
 "copyright on the Program, and are irrevocable provided the stated\n"
@@ -1344,7 +1296,7 @@ msgid ""
 "rights of fair use or other equivalent, as provided by copyright law."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:164
+#: ../../doc/text/gpl-3.0.txt:164
 msgid ""
 "  You may make, run and propagate covered works that you do not\n"
 "convey, without conditions so long as your license otherwise remains\n"
@@ -1358,18 +1310,18 @@ msgid ""
 "your copyrighted material outside their relationship with you."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:175
+#: ../../doc/text/gpl-3.0.txt:175
 msgid ""
 "  Conveying under any other circumstances is permitted solely under\n"
 "the conditions stated below.  Sublicensing is not allowed; section 10\n"
 "makes it unnecessary."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:179
+#: ../../doc/text/gpl-3.0.txt:179
 msgid "  3. Protecting Users' Legal Rights From Anti-Circumvention Law."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:181
+#: ../../doc/text/gpl-3.0.txt:181
 msgid ""
 "  No covered work shall be deemed part of an effective technological\n"
 "measure under any applicable law fulfilling obligations under article\n"
@@ -1378,7 +1330,7 @@ msgid ""
 "measures."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:187
+#: ../../doc/text/gpl-3.0.txt:187
 msgid ""
 "  When you convey a covered work, you waive any legal power to forbid\n"
 "circumvention of technological measures to the extent such circumvention\n"
@@ -1389,11 +1341,11 @@ msgid ""
 "technological measures."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:195
+#: ../../doc/text/gpl-3.0.txt:195
 msgid "  4. Conveying Verbatim Copies."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:197
+#: ../../doc/text/gpl-3.0.txt:197
 msgid ""
 "  You may convey verbatim copies of the Program's source code as you\n"
 "receive it, in any medium, provided that you conspicuously and\n"
@@ -1404,30 +1356,30 @@ msgid ""
 "recipients a copy of this License along with the Program."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:205
+#: ../../doc/text/gpl-3.0.txt:205
 msgid ""
 "  You may charge any price or no price for each copy that you convey,\n"
 "and you may offer support or warranty protection for a fee."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:208
+#: ../../doc/text/gpl-3.0.txt:208
 msgid "  5. Conveying Modified Source Versions."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:210
+#: ../../doc/text/gpl-3.0.txt:210
 msgid ""
 "  You may convey a work based on the Program, or the modifications to\n"
 "produce it from the Program, in the form of source code under the\n"
 "terms of section 4, provided that you also meet all of these conditions:"
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:214
+#: ../../doc/text/gpl-3.0.txt:214
 msgid ""
 "    a) The work must carry prominent notices stating that you modified\n"
 "    it, and giving a relevant date."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:217
+#: ../../doc/text/gpl-3.0.txt:217
 msgid ""
 "    b) The work must carry prominent notices stating that it is\n"
 "    released under this License and any conditions added under section\n"
@@ -1435,7 +1387,7 @@ msgid ""
 "    \"keep intact all notices\"."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:222
+#: ../../doc/text/gpl-3.0.txt:222
 msgid ""
 "    c) You must license the entire work, as a whole, under this\n"
 "    License to anyone who comes into possession of a copy.  This\n"
@@ -1446,7 +1398,7 @@ msgid ""
 "    invalidate such permission if you have separately received it."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:230
+#: ../../doc/text/gpl-3.0.txt:230
 msgid ""
 "    d) If the work has interactive user interfaces, each must display\n"
 "    Appropriate Legal Notices; however, if the Program has interactive\n"
@@ -1454,7 +1406,7 @@ msgid ""
 "    work need not make them do so."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:235
+#: ../../doc/text/gpl-3.0.txt:235
 msgid ""
 "  A compilation of a covered work with other separate and independent\n"
 "works, which are not by their nature extensions of the covered work,\n"
@@ -1467,11 +1419,11 @@ msgid ""
 "parts of the aggregate."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:245
+#: ../../doc/text/gpl-3.0.txt:245
 msgid "  6. Conveying Non-Source Forms."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:247
+#: ../../doc/text/gpl-3.0.txt:247
 msgid ""
 "  You may convey a covered work in object code form under the terms\n"
 "of sections 4 and 5, provided that you also convey the\n"
@@ -1479,7 +1431,7 @@ msgid ""
 "in one of these ways:"
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:252
+#: ../../doc/text/gpl-3.0.txt:252
 msgid ""
 "    a) Convey the object code in, or embodied in, a physical product\n"
 "    (including a physical distribution medium), accompanied by the\n"
@@ -1487,7 +1439,7 @@ msgid ""
 "    customarily used for software interchange."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:257
+#: ../../doc/text/gpl-3.0.txt:257
 msgid ""
 "    b) Convey the object code in, or embodied in, a physical product\n"
 "    (including a physical distribution medium), accompanied by a\n"
@@ -1502,7 +1454,7 @@ msgid ""
 "    Corresponding Source from a network server at no charge."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:269
+#: ../../doc/text/gpl-3.0.txt:269
 msgid ""
 "    c) Convey individual copies of the object code with a copy of the\n"
 "    written offer to provide the Corresponding Source.  This\n"
@@ -1511,7 +1463,7 @@ msgid ""
 "    with subsection 6b."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:275
+#: ../../doc/text/gpl-3.0.txt:275
 msgid ""
 "    d) Convey the object code by offering access from a designated\n"
 "    place (gratis or for a charge), and offer equivalent access to the\n"
@@ -1527,7 +1479,7 @@ msgid ""
 "    available for as long as needed to satisfy these requirements."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:288
+#: ../../doc/text/gpl-3.0.txt:288
 msgid ""
 "    e) Convey the object code using peer-to-peer transmission, provided\n"
 "    you inform other peers where the object code and Corresponding\n"
@@ -1535,14 +1487,14 @@ msgid ""
 "    charge under subsection 6d."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:293
+#: ../../doc/text/gpl-3.0.txt:293
 msgid ""
 "  A separable portion of the object code, whose source code is excluded\n"
 "from the Corresponding Source as a System Library, need not be\n"
 "included in conveying the object code work."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:297
+#: ../../doc/text/gpl-3.0.txt:297
 msgid ""
 "  A \"User Product\" is either (1) a \"consumer product\", which means any\n"
 "tangible personal property which is normally used for personal, family,\n"
@@ -1558,7 +1510,7 @@ msgid ""
 "the only significant mode of use of the product."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:310
+#: ../../doc/text/gpl-3.0.txt:310
 msgid ""
 "  \"Installation Information\" for a User Product means any methods,\n"
 "procedures, authorization keys, or other information required to install\n"
@@ -1569,7 +1521,7 @@ msgid ""
 "modification has been made."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:318
+#: ../../doc/text/gpl-3.0.txt:318
 msgid ""
 "  If you convey an object code work under this section in, or with, or\n"
 "specifically for use in, a User Product, and the conveying occurs as\n"
@@ -1583,7 +1535,7 @@ msgid ""
 "been installed in ROM)."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:329
+#: ../../doc/text/gpl-3.0.txt:329
 msgid ""
 "  The requirement to provide Installation Information does not include a\n"
 "requirement to continue to provide support service, warranty, or updates\n"
@@ -1594,7 +1546,7 @@ msgid ""
 "protocols for communication across the network."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:337
+#: ../../doc/text/gpl-3.0.txt:337
 msgid ""
 "  Corresponding Source conveyed, and Installation Information provided,\n"
 "in accord with this section must be in a format that is publicly\n"
@@ -1603,11 +1555,11 @@ msgid ""
 "unpacking, reading or copying."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:343
+#: ../../doc/text/gpl-3.0.txt:343
 msgid "  7. Additional Terms."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:345
+#: ../../doc/text/gpl-3.0.txt:345
 msgid ""
 "  \"Additional permissions\" are terms that supplement the terms of this\n"
 "License by making exceptions from one or more of its conditions.\n"
@@ -1619,7 +1571,7 @@ msgid ""
 "this License without regard to the additional permissions."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:354
+#: ../../doc/text/gpl-3.0.txt:354
 msgid ""
 "  When you convey a copy of a covered work, you may at your option\n"
 "remove any additional permissions from that copy, or from any part of\n"
@@ -1629,46 +1581,46 @@ msgid ""
 "for which you have or can give appropriate copyright permission."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:361
+#: ../../doc/text/gpl-3.0.txt:361
 msgid ""
 "  Notwithstanding any other provision of this License, for material you\n"
 "add to a covered work, you may (if authorized by the copyright holders of\n"
 "that material) supplement the terms of this License with terms:"
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:365
+#: ../../doc/text/gpl-3.0.txt:365
 msgid ""
 "    a) Disclaiming warranty or limiting liability differently from the\n"
 "    terms of sections 15 and 16 of this License; or"
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:368
+#: ../../doc/text/gpl-3.0.txt:368
 msgid ""
 "    b) Requiring preservation of specified reasonable legal notices or\n"
 "    author attributions in that material or in the Appropriate Legal\n"
 "    Notices displayed by works containing it; or"
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:372
+#: ../../doc/text/gpl-3.0.txt:372
 msgid ""
 "    c) Prohibiting misrepresentation of the origin of that material, or\n"
 "    requiring that modified versions of such material be marked in\n"
 "    reasonable ways as different from the original version; or"
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:376
+#: ../../doc/text/gpl-3.0.txt:376
 msgid ""
 "    d) Limiting the use for publicity purposes of names of licensors or\n"
 "    authors of the material; or"
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:379
+#: ../../doc/text/gpl-3.0.txt:379
 msgid ""
 "    e) Declining to grant rights under trademark law for use of some\n"
 "    trade names, trademarks, or service marks; or"
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:382
+#: ../../doc/text/gpl-3.0.txt:382
 msgid ""
 "    f) Requiring indemnification of licensors and authors of that\n"
 "    material by anyone who conveys the material (or modified versions of\n"
@@ -1677,7 +1629,7 @@ msgid ""
 "    those licensors and authors."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:388
+#: ../../doc/text/gpl-3.0.txt:388
 msgid ""
 "  All other non-permissive additional terms are considered \"further\n"
 "restrictions\" within the meaning of section 10.  If the Program as you\n"
@@ -1690,7 +1642,7 @@ msgid ""
 "not survive such relicensing or conveying."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:398
+#: ../../doc/text/gpl-3.0.txt:398
 msgid ""
 "  If you add terms to a covered work in accord with this section, you\n"
 "must place, in the relevant source files, a statement of the\n"
@@ -1698,18 +1650,18 @@ msgid ""
 "where to find the applicable terms."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:403
+#: ../../doc/text/gpl-3.0.txt:403
 msgid ""
 "  Additional terms, permissive or non-permissive, may be stated in the\n"
 "form of a separately written license, or stated as exceptions;\n"
 "the above requirements apply either way."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:407
+#: ../../doc/text/gpl-3.0.txt:407
 msgid "  8. Termination."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:409
+#: ../../doc/text/gpl-3.0.txt:409
 msgid ""
 "  You may not propagate or modify a covered work except as expressly\n"
 "provided under this License.  Any attempt otherwise to propagate or\n"
@@ -1718,7 +1670,7 @@ msgid ""
 "paragraph of section 11)."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:415
+#: ../../doc/text/gpl-3.0.txt:415
 msgid ""
 "  However, if you cease all violation of this License, then your\n"
 "license from a particular copyright holder is reinstated (a)\n"
@@ -1728,7 +1680,7 @@ msgid ""
 "prior to 60 days after the cessation."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:422
+#: ../../doc/text/gpl-3.0.txt:422
 msgid ""
 "  Moreover, your license from a particular copyright holder is\n"
 "reinstated permanently if the copyright holder notifies you of the\n"
@@ -1738,7 +1690,7 @@ msgid ""
 "your receipt of the notice."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:429
+#: ../../doc/text/gpl-3.0.txt:429
 msgid ""
 "  Termination of your rights under this section does not terminate the\n"
 "licenses of parties who have received copies or rights from you under\n"
@@ -1747,11 +1699,11 @@ msgid ""
 "material under section 10."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:435
+#: ../../doc/text/gpl-3.0.txt:435
 msgid "  9. Acceptance Not Required for Having Copies."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:437
+#: ../../doc/text/gpl-3.0.txt:437
 msgid ""
 "  You are not required to accept this License in order to receive or\n"
 "run a copy of the Program.  Ancillary propagation of a covered work\n"
@@ -1763,11 +1715,11 @@ msgid ""
 "covered work, you indicate your acceptance of this License to do so."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:446
+#: ../../doc/text/gpl-3.0.txt:446
 msgid "  10. Automatic Licensing of Downstream Recipients."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:448
+#: ../../doc/text/gpl-3.0.txt:448
 msgid ""
 "  Each time you convey a covered work, the recipient automatically\n"
 "receives a license from the original licensors, to run, modify and\n"
@@ -1775,7 +1727,7 @@ msgid ""
 "for enforcing compliance by third parties with this License."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:453
+#: ../../doc/text/gpl-3.0.txt:453
 msgid ""
 "  An \"entity transaction\" is a transaction transferring control of an\n"
 "organization, or substantially all assets of one, or subdividing an\n"
@@ -1788,7 +1740,7 @@ msgid ""
 "the predecessor has it or can get it with reasonable efforts."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:463
+#: ../../doc/text/gpl-3.0.txt:463
 msgid ""
 "  You may not impose any further restrictions on the exercise of the\n"
 "rights granted or affirmed under this License.  For example, you may\n"
@@ -1799,18 +1751,18 @@ msgid ""
 "sale, or importing the Program or any portion of it."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:471
+#: ../../doc/text/gpl-3.0.txt:471
 msgid "  11. Patents."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:473
+#: ../../doc/text/gpl-3.0.txt:473
 msgid ""
 "  A \"contributor\" is a copyright holder who authorizes use under this\n"
 "License of the Program or a work on which the Program is based.  The\n"
 "work thus licensed is called the contributor's \"contributor version\"."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:477
+#: ../../doc/text/gpl-3.0.txt:477
 msgid ""
 "  A contributor's \"essential patent claims\" are all patent claims\n"
 "owned or controlled by the contributor, whether already acquired or\n"
@@ -1823,7 +1775,7 @@ msgid ""
 "this License."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:487
+#: ../../doc/text/gpl-3.0.txt:487
 msgid ""
 "  Each contributor grants you a non-exclusive, worldwide, royalty-free\n"
 "patent license under the contributor's essential patent claims, to\n"
@@ -1831,7 +1783,7 @@ msgid ""
 "propagate the contents of its contributor version."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:492
+#: ../../doc/text/gpl-3.0.txt:492
 msgid ""
 "  In the following three paragraphs, a \"patent license\" is any express\n"
 "agreement or commitment, however denominated, not to enforce a patent\n"
@@ -1841,7 +1793,7 @@ msgid ""
 "patent against the party."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:499
+#: ../../doc/text/gpl-3.0.txt:499
 msgid ""
 "  If you convey a covered work, knowingly relying on a patent license,\n"
 "and the Corresponding Source of the work is not available for anyone\n"
@@ -1858,7 +1810,7 @@ msgid ""
 "country that you have reason to believe are valid."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:513
+#: ../../doc/text/gpl-3.0.txt:513
 msgid ""
 "  If, pursuant to or in connection with a single transaction or\n"
 "arrangement, you convey, or propagate by procuring conveyance of, a\n"
@@ -1869,7 +1821,7 @@ msgid ""
 "work and works based on it."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:521
+#: ../../doc/text/gpl-3.0.txt:521
 msgid ""
 "  A patent license is \"discriminatory\" if it does not include within\n"
 "the scope of its coverage, prohibits the exercise of, or is\n"
@@ -1887,18 +1839,18 @@ msgid ""
 "or that patent license was granted, prior to 28 March 2007."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:536
+#: ../../doc/text/gpl-3.0.txt:536
 msgid ""
 "  Nothing in this License shall be construed as excluding or limiting\n"
 "any implied license or other defenses to infringement that may\n"
 "otherwise be available to you under applicable patent law."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:540
+#: ../../doc/text/gpl-3.0.txt:540
 msgid "  12. No Surrender of Others' Freedom."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:542
+#: ../../doc/text/gpl-3.0.txt:542
 msgid ""
 "  If conditions are imposed on you (whether by court order, agreement or\n"
 "otherwise) that contradict the conditions of this License, they do not\n"
@@ -1911,11 +1863,11 @@ msgid ""
 "License would be to refrain entirely from conveying the Program."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:552
+#: ../../doc/text/gpl-3.0.txt:552
 msgid "  13. Use with the GNU Affero General Public License."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:554
+#: ../../doc/text/gpl-3.0.txt:554
 msgid ""
 "  Notwithstanding any other provision of this License, you have\n"
 "permission to link or combine any covered work with a work licensed\n"
@@ -1927,11 +1879,11 @@ msgid ""
 "combination as such."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:563
+#: ../../doc/text/gpl-3.0.txt:563
 msgid "  14. Revised Versions of this License."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:565
+#: ../../doc/text/gpl-3.0.txt:565
 msgid ""
 "  The Free Software Foundation may publish revised and/or new versions of\n"
 "the GNU General Public License from time to time.  Such new versions will\n"
@@ -1939,7 +1891,7 @@ msgid ""
 "address new problems or concerns."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:570
+#: ../../doc/text/gpl-3.0.txt:570
 msgid ""
 "  Each version is given a distinguishing version number.  If the\n"
 "Program specifies that a certain numbered version of the GNU General\n"
@@ -1951,7 +1903,7 @@ msgid ""
 "by the Free Software Foundation."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:579
+#: ../../doc/text/gpl-3.0.txt:579
 msgid ""
 "  If the Program specifies that a proxy can decide which future\n"
 "versions of the GNU General Public License can be used, that proxy's\n"
@@ -1959,7 +1911,7 @@ msgid ""
 "to choose that version for the Program."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:584
+#: ../../doc/text/gpl-3.0.txt:584
 msgid ""
 "  Later license versions may give you additional or different\n"
 "permissions.  However, no additional obligations are imposed on any\n"
@@ -1967,11 +1919,11 @@ msgid ""
 "later version."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:589
+#: ../../doc/text/gpl-3.0.txt:589
 msgid "  15. Disclaimer of Warranty."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:591
+#: ../../doc/text/gpl-3.0.txt:591
 msgid ""
 "  THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY\n"
 "APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT\n"
@@ -1983,11 +1935,11 @@ msgid ""
 "ALL NECESSARY SERVICING, REPAIR OR CORRECTION."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:600
+#: ../../doc/text/gpl-3.0.txt:600
 msgid "  16. Limitation of Liability."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:602
+#: ../../doc/text/gpl-3.0.txt:602
 msgid ""
 "  IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING\n"
 "WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS\n"
@@ -2000,11 +1952,11 @@ msgid ""
 "SUCH DAMAGES."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:612
+#: ../../doc/text/gpl-3.0.txt:612
 msgid "  17. Interpretation of Sections 15 and 16."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:614
+#: ../../doc/text/gpl-3.0.txt:614
 msgid ""
 "  If the disclaimer of warranty and limitation of liability provided\n"
 "above cannot be given local legal effect according to their terms,\n"
@@ -2014,22 +1966,22 @@ msgid ""
 "copy of the Program in return for a fee."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:621
+#: ../../doc/text/gpl-3.0.txt:621
 msgid "                     END OF TERMS AND CONDITIONS"
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:623
+#: ../../doc/text/gpl-3.0.txt:623
 msgid "            How to Apply These Terms to Your New Programs"
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:625
+#: ../../doc/text/gpl-3.0.txt:625
 msgid ""
 "  If you develop a new program, and you want it to be of the greatest\n"
 "possible use to the public, the best way to achieve this is to make it\n"
 "free software which everyone can redistribute and change under these terms."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:629
+#: ../../doc/text/gpl-3.0.txt:629
 msgid ""
 "  To do so, attach the following notices to the program.  It is safest\n"
 "to attach them to the start of each source file to most effectively\n"
@@ -2037,13 +1989,13 @@ msgid ""
 "the \"copyright\" line and a pointer to where the full notice is found."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:634
+#: ../../doc/text/gpl-3.0.txt:634
 msgid ""
 "    <one line to give the program's name and a brief idea of what it does.>\n"
 "    Copyright (C) <year>  <name of author>"
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:637
+#: ../../doc/text/gpl-3.0.txt:637
 msgid ""
 "    This program is free software: you can redistribute it and/or modify\n"
 "    it under the terms of the GNU General Public License as published by\n"
@@ -2051,7 +2003,7 @@ msgid ""
 "    (at your option) any later version."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:642
+#: ../../doc/text/gpl-3.0.txt:642
 msgid ""
 "    This program is distributed in the hope that it will be useful,\n"
 "    but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
@@ -2059,49 +2011,47 @@ msgid ""
 "    GNU General Public License for more details."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:647
+#: ../../doc/text/gpl-3.0.txt:647
 msgid ""
 "    You should have received a copy of the GNU General Public License\n"
 "    along with this program.  If not, see <http://www.gnu.org/licenses/>."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:650
-msgid ""
-"Also add information on how to contact you by electronic and paper mail."
+#: ../../doc/text/gpl-3.0.txt:650
+msgid "Also add information on how to contact you by electronic and paper mail."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:652
+#: ../../doc/text/gpl-3.0.txt:652
 msgid ""
 "  If the program does terminal interaction, make it output a short\n"
 "notice like this when it starts in an interactive mode:"
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:655
+#: ../../doc/text/gpl-3.0.txt:655
 msgid ""
 "    <program>  Copyright (C) <year>  <name of author>\n"
-"    This program comes with ABSOLUTELY NO WARRANTY; for details type `show "
-"w'.\n"
+"    This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'."
+"\n"
 "    This is free software, and you are welcome to redistribute it\n"
 "    under certain conditions; type `show c' for details."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:660
+#: ../../doc/text/gpl-3.0.txt:660
 msgid ""
 "The hypothetical commands `show w' and `show c' should show the appropriate\n"
 "parts of the General Public License.  Of course, your program's commands\n"
 "might be different; for a GUI interface, you would use an \"about box\"."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:664
+#: ../../doc/text/gpl-3.0.txt:664
 msgid ""
-"  You should also get your employer (if you work as a programmer) or "
-"school,\n"
+"  You should also get your employer (if you work as a programmer) or school,\n"
 "if any, to sign a \"copyright disclaimer\" for the program, if necessary.\n"
 "For more information on this, and how to apply and follow the GNU GPL, see\n"
 "<http://www.gnu.org/licenses/>."
 msgstr ""
 
-#: doc/text/gpl-3.0.txt:669
+#: ../../doc/text/gpl-3.0.txt:669
 msgid ""
 "  The GNU General Public License does not permit incorporating your program\n"
 "into proprietary programs.  If your program is a subroutine library, you\n"
@@ -2111,23 +2061,48 @@ msgid ""
 "<http://www.gnu.org/philosophy/why-not-lgpl.html>."
 msgstr ""
 
-#: doc/text/news.md:1
+#: ../../doc/text/news.md:1
 msgid "# News"
 msgstr "# お知らせ"
 
-#: doc/text/news.md:3
-msgid "## 1.0.2: 2012-12-12"
+#: ../../doc/text/news.md:3
+msgid "## 1.0.4: 2013-12-16"
 msgstr ""
 
-#: doc/text/news.md:5
-msgid "This is the release that add some directive."
-msgstr "このリリースではいくつかのディレクティブが追加されました。"
-
-#: doc/text/news.md:7 doc/text/news.md:39
+#: ../../doc/text/news.md:5 ../../doc/text/news.md:13 ../../doc/text/news.md:23
+#: ../../doc/text/news.md:55
 msgid "### Improvements"
 msgstr "### 改良"
 
-#: doc/text/news.md:9
+#: ../../doc/text/news.md:7
+msgid "  * Supported `groogna-command-parser` gem."
+msgstr ""
+
+#: ../../doc/text/news.md:9
+msgid "## 1.0.3: 2013-08-12"
+msgstr ""
+
+#: ../../doc/text/news.md:11
+msgid "This is a minor improvment release."
+msgstr ""
+
+#: ../../doc/text/news.md:15
+msgid ""
+"  * Supported XML output.\n"
+"  * Supported to show the actual result on leaked and not checked status.\n"
+"  * Supported warning message test."
+msgstr ""
+
+#: ../../doc/text/news.md:19
+msgid "## 1.0.2: 2012-12-11"
+msgstr ""
+
+#: ../../doc/text/news.md:21
+#, fuzzy
+msgid "This is the release that adds some directive."
+msgstr "このリリースではいくつかのディレクティブが追加されました。"
+
+#: ../../doc/text/news.md:25
 msgid ""
 "  * Used long timeout for `column_create` and `register`.\n"
 "  * Added `long-timeout` directive.\n"
@@ -2140,42 +2115,41 @@ msgstr ""
 "  * `long-timeout` ディレクティブを追加。\n"
 "  * `on-error` ディレクティブを追加。\n"
 "  * \"omit\"（省略）ステータスと `omit` ディレクティブを追加。\n"
-"  * Groonga::Command::Parserによりテスト内のコマンドがパースできなかった時に"
-"はテストを中断するようにした。"
+"  * Groonga::Command::Parserによりテスト内のコマンドがパースできなかった時にはテストを中断するようにした。"
 
-#: doc/text/news.md:16 doc/text/news.md:49
+#: ../../doc/text/news.md:32 ../../doc/text/news.md:65
 msgid "### Fixes"
 msgstr "### 修正"
 
-#: doc/text/news.md:18
+#: ../../doc/text/news.md:34
 msgid "  * Used stty only when the standard input is tty."
 msgstr "  * 標準入力がttyのときのみsttyを使うようにした。"
 
-#: doc/text/news.md:20
+#: ../../doc/text/news.md:36
 msgid "## 1.0.1: 2012-10-15"
 msgstr ""
 
-#: doc/text/news.md:22
+#: ../../doc/text/news.md:38
 msgid "This has a backward incompatible change. It is directive syntax."
 msgstr "ディレクティブの構文に後方互換性のない変更があります。"
 
-#: doc/text/news.md:24
+#: ../../doc/text/news.md:40
 msgid "Old:"
 msgstr "古い構文:"
 
-#: doc/text/news.md:26
+#: ../../doc/text/news.md:42
 msgid "    # NAME ARGUMENT"
 msgstr "    # 名前 引数"
 
-#: doc/text/news.md:28
+#: ../../doc/text/news.md:44
 msgid "New:"
 msgstr "新しい構文:"
 
-#: doc/text/news.md:30
+#: ../../doc/text/news.md:46
 msgid "    #@NAME ARGUMENT"
 msgstr "    #@名前 [引数...]"
 
-#: doc/text/news.md:32
+#: ../../doc/text/news.md:48
 msgid ""
 "This change is for easy to debug. Consider about we have a typo in\n"
 "`NAME`. It is just ignored in old syntax because it is also a comment\n"
@@ -2187,13 +2161,11 @@ msgstr ""
 "この変更はデバッグしやすくするためです。\n"
 "`名前` に誤字があったときのことを考えてみてください。\n"
 "古い構文ではディレクティブはコメント行でもあったので、単純に無視されます。\n"
-"新しい構文では必ずディレクティブとして扱われるため、エラーとして報告されま"
-"す。\n"
+"新しい構文では必ずディレクティブとして扱われるため、エラーとして報告されます。\n"
 "grntestはユーザーがディレクティブを使いたいということがわかります。\n"
-"これがわかると、未知のディレクティブ名に対してエラーを報告することができま"
-"す。\n"
+"これがわかると、未知のディレクティブ名に対してエラーを報告することができます。\n"
 
-#: doc/text/news.md:41
+#: ../../doc/text/news.md:57
 msgid ""
 "* Inverted expected and actual in diff.\n"
 "* Added memory leak check.\n"
@@ -2208,29 +2180,52 @@ msgstr ""
 "* 多くの機能のドキュメントを追加。\n"
 "* ディレクティブの構文を変更。\n"
 "* `copy-path` ディレクティブを追加。\n"
-"* `--test` オプションと `--test-suite` オプションを何回も指定できるようにし"
-"た。\n"
+"* `--test` オプションと `--test-suite` オプションを何回も指定できるようにした。\n"
 "* `--database` オプションを追加した。"
 
-#: doc/text/news.md:51
+#: ../../doc/text/news.md:67
 msgid "* Fixed a problem that test report can't be shown for no tests."
 msgstr "* テストが1つもない時にテスト結果を報告できない問題を修正。"
 
-#: doc/text/news.md:53
+#: ../../doc/text/news.md:69
 msgid "## 1.0.0: 2012-08-29"
 msgstr ""
 
-#: doc/text/news.md:55
+#: ../../doc/text/news.md:71
 msgid "The first release!!!"
 msgstr "最初のリリース！！！"
 
 # Grntest
-#: lib/grntest/tester.rb:2 lib/grntest/version.rb:2
-msgid "Copyright (C) 2012  Kouhei Sutou <kou@clear-code.com>"
+#: ../../lib/grntest/base-result.rb:3 ../../lib/grntest/error.rb:3
+#: ../../lib/grntest/execution-context.rb:3
+#: ../../lib/grntest/executors/base-executor.rb:3
+#: ../../lib/grntest/executors/http-executor.rb:3
+#: ../../lib/grntest/executors/standard-io-executor.rb:3
+#: ../../lib/grntest/reporters.rb:3
+#: ../../lib/grntest/reporters/base-reporter.rb:3
+#: ../../lib/grntest/reporters/inplace-reporter.rb:3
+#: ../../lib/grntest/reporters/mark-reporter.rb:3
+#: ../../lib/grntest/reporters/stream-reporter.rb:3
+#: ../../lib/grntest/response-parser.rb:3 ../../lib/grntest/test-runner.rb:3
+#: ../../lib/grntest/test-suites-runner.rb:3 ../../lib/grntest/tester.rb:3
+#: ../../lib/grntest/version.rb:3 ../../lib/grntest/worker.rb:3
+msgid "Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>"
 msgstr ""
 
 # Grntest
-#: lib/grntest/tester.rb:4 lib/grntest/version.rb:4
+#: ../../lib/grntest/base-result.rb:5 ../../lib/grntest/error.rb:5
+#: ../../lib/grntest/execution-context.rb:5
+#: ../../lib/grntest/executors/base-executor.rb:5
+#: ../../lib/grntest/executors/http-executor.rb:5
+#: ../../lib/grntest/executors/standard-io-executor.rb:5
+#: ../../lib/grntest/reporters.rb:5
+#: ../../lib/grntest/reporters/base-reporter.rb:5
+#: ../../lib/grntest/reporters/inplace-reporter.rb:5
+#: ../../lib/grntest/reporters/mark-reporter.rb:5
+#: ../../lib/grntest/reporters/stream-reporter.rb:5
+#: ../../lib/grntest/response-parser.rb:5 ../../lib/grntest/test-runner.rb:5
+#: ../../lib/grntest/test-suites-runner.rb:5 ../../lib/grntest/tester.rb:5
+#: ../../lib/grntest/version.rb:5 ../../lib/grntest/worker.rb:5
 msgid ""
 "This program is free software: you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -2239,7 +2234,19 @@ msgid ""
 msgstr ""
 
 # Grntest
-#: lib/grntest/tester.rb:9 lib/grntest/version.rb:9
+#: ../../lib/grntest/base-result.rb:10 ../../lib/grntest/error.rb:10
+#: ../../lib/grntest/execution-context.rb:10
+#: ../../lib/grntest/executors/base-executor.rb:10
+#: ../../lib/grntest/executors/http-executor.rb:10
+#: ../../lib/grntest/executors/standard-io-executor.rb:10
+#: ../../lib/grntest/reporters.rb:10
+#: ../../lib/grntest/reporters/base-reporter.rb:10
+#: ../../lib/grntest/reporters/inplace-reporter.rb:10
+#: ../../lib/grntest/reporters/mark-reporter.rb:10
+#: ../../lib/grntest/reporters/stream-reporter.rb:10
+#: ../../lib/grntest/response-parser.rb:10 ../../lib/grntest/test-runner.rb:10
+#: ../../lib/grntest/test-suites-runner.rb:10 ../../lib/grntest/tester.rb:10
+#: ../../lib/grntest/version.rb:10 ../../lib/grntest/worker.rb:10
 msgid ""
 "This program is distributed in the hope that it will be useful,\n"
 "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
@@ -2248,695 +2255,711 @@ msgid ""
 msgstr ""
 
 # Grntest
-#: lib/grntest/tester.rb:14 lib/grntest/version.rb:14
+#: ../../lib/grntest/base-result.rb:15 ../../lib/grntest/error.rb:15
+#: ../../lib/grntest/execution-context.rb:15
+#: ../../lib/grntest/executors/base-executor.rb:15
+#: ../../lib/grntest/executors/http-executor.rb:15
+#: ../../lib/grntest/executors/standard-io-executor.rb:15
+#: ../../lib/grntest/reporters.rb:15
+#: ../../lib/grntest/reporters/base-reporter.rb:15
+#: ../../lib/grntest/reporters/inplace-reporter.rb:15
+#: ../../lib/grntest/reporters/mark-reporter.rb:15
+#: ../../lib/grntest/reporters/stream-reporter.rb:15
+#: ../../lib/grntest/response-parser.rb:15 ../../lib/grntest/test-runner.rb:15
+#: ../../lib/grntest/test-suites-runner.rb:15 ../../lib/grntest/tester.rb:15
+#: ../../lib/grntest/version.rb:15 ../../lib/grntest/worker.rb:15
 msgid ""
 "You should have received a copy of the GNU General Public License\n"
 "along with this program.  If not, see <http://www.gnu.org/licenses/>."
 msgstr ""
 
-# @return [NotExist]
-#: lib/grntest/tester.rb:40
-msgid "a new instance of NotExist"
-msgstr ""
-
-# Grntest::Tester::NotExist#path
-#: lib/grntest/tester.rb:40
-msgid "Returns the value of attribute path"
-msgstr ""
-
-# @return [ParseError]
-#: lib/grntest/tester.rb:48
-msgid "a new instance of ParseError"
-msgstr ""
-
-# Grntest::Tester::ParseError#type
-#: lib/grntest/tester.rb:48
-msgid "Returns the value of attribute type"
-msgstr ""
-
-# Grntest::Tester::ParseError#content
-#: lib/grntest/tester.rb:48
-msgid "Returns the value of attribute content"
-msgstr ""
-
-# Grntest::Tester::ParseError#reason
-#: lib/grntest/tester.rb:48
-msgid "Returns the value of attribute reason"
-msgstr ""
-
 # @param value
-#: lib/grntest/tester.rb:233
-msgid "the value to set the attribute groonga to."
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:233 lib/grntest/tester.rb:1187
-msgid "the value to set the attribute groonga_suggest_create_dataset to."
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:233
-msgid "the value to set the attribute groonga_httpd to."
+#: ../../lib/grntest/base-result.rb:20
+msgid "the value to set the attribute elapsed_time to."
 msgstr ""
 
 # @param
-#: lib/grntest/tester.rb:233 lib/grntest/tester.rb:234
-#: lib/grntest/tester.rb:235 lib/grntest/tester.rb:236
-#: lib/grntest/tester.rb:237 lib/grntest/tester.rb:238
-#: lib/grntest/tester.rb:239 lib/grntest/tester.rb:396
-#: lib/grntest/tester.rb:553 lib/grntest/tester.rb:554
-#: lib/grntest/tester.rb:677 lib/grntest/tester.rb:678
-#: lib/grntest/tester.rb:679 lib/grntest/tester.rb:1185
-#: lib/grntest/tester.rb:1186 lib/grntest/tester.rb:1187
-#: lib/grntest/tester.rb:1188 lib/grntest/tester.rb:1189
-#: lib/grntest/tester.rb:1190 lib/grntest/tester.rb:1191
+#: ../../lib/grntest/base-result.rb:20
+#: ../../lib/grntest/execution-context.rb:20
+#: ../../lib/grntest/execution-context.rb:21
+#: ../../lib/grntest/execution-context.rb:22
+#: ../../lib/grntest/execution-context.rb:23
+#: ../../lib/grntest/execution-context.rb:24
+#: ../../lib/grntest/execution-context.rb:25
+#: ../../lib/grntest/execution-context.rb:26
+#: ../../lib/grntest/test-runner.rb:30 ../../lib/grntest/test-runner.rb:31
+#: ../../lib/grntest/test-runner.rb:32
+#: ../../lib/grntest/test-suites-runner.rb:26
+#: ../../lib/grntest/test-suites-runner.rb:27 ../../lib/grntest/tester.rb:203
+#: ../../lib/grntest/tester.rb:204 ../../lib/grntest/tester.rb:205
+#: ../../lib/grntest/tester.rb:206 ../../lib/grntest/tester.rb:207
+#: ../../lib/grntest/tester.rb:208 ../../lib/grntest/tester.rb:209
 msgid "tag|param|value"
 msgstr ""
 
-# Grntest::Tester#groonga_suggest_create_dataset=
-# Grntest::Tester::Executor::Context#groonga_suggest_create_dataset=
-#: lib/grntest/tester.rb:234 lib/grntest/tester.rb:1188
-msgid "Sets the attribute groonga_suggest_create_dataset"
+# Grntest::Tester::Result#elapsed_time=
+#: ../../lib/grntest/base-result.rb:21
+msgid "Sets the attribute elapsed_time"
 msgstr ""
 
-# Grntest::Tester#groonga_httpd
-#: lib/grntest/tester.rb:234
-msgid "Returns the value of attribute groonga_httpd"
+# @return [BaseResult]
+#: ../../lib/grntest/base-result.rb:21
+msgid "a new instance of BaseResult"
 msgstr ""
 
-# Grntest::Tester#groonga_httpd=
-#: lib/grntest/tester.rb:234
-msgid "Sets the attribute groonga_httpd"
+# Grntest::Tester::Result#elapsed_time
+#: ../../lib/grntest/base-result.rb:21
+msgid "Returns the value of attribute elapsed_time"
 msgstr ""
 
-# Grntest::Tester#groonga=
-#: lib/grntest/tester.rb:234
-msgid "Sets the attribute groonga"
+# Grntest::Tester::NotExist#path
+#: ../../lib/grntest/error.rb:24
+msgid "Returns the value of attribute path"
+msgstr ""
+
+# @return [NotExist]
+#: ../../lib/grntest/error.rb:24
+msgid "a new instance of NotExist"
+msgstr ""
+
+# Grntest::Tester::ParseError#type
+#: ../../lib/grntest/error.rb:32
+msgid "Returns the value of attribute type"
+msgstr ""
+
+# Grntest::Tester::ParseError#reason
+#: ../../lib/grntest/error.rb:32
+msgid "Returns the value of attribute reason"
+msgstr ""
+
+# Grntest::Tester::ParseError#content
+#: ../../lib/grntest/error.rb:32
+msgid "Returns the value of attribute content"
+msgstr ""
+
+# @return [ParseError]
+#: ../../lib/grntest/error.rb:32
+msgid "a new instance of ParseError"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/execution-context.rb:20
+msgid "the value to set the attribute logging to."
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/execution-context.rb:21 ../../lib/grntest/tester.rb:205
+msgid "the value to set the attribute base_directory to."
+msgstr ""
+
+# Grntest::Tester::Executor::Context#logging=
+#: ../../lib/grntest/execution-context.rb:21
+msgid "Sets the attribute logging"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/execution-context.rb:21
+msgid "the value to set the attribute db_path to."
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/execution-context.rb:21
+msgid "the value to set the attribute temporary_directory_path to."
+msgstr ""
+
+# Grntest::Tester::Executor::Context#db_path
+#: ../../lib/grntest/execution-context.rb:22
+msgid "Returns the value of attribute db_path"
+msgstr ""
+
+# Grntest::Tester::Executor::Context#temporary_directory_path=
+#: ../../lib/grntest/execution-context.rb:22
+msgid "Sets the attribute temporary_directory_path"
+msgstr ""
+
+# Grntest::Tester::Executor::Context#temporary_directory_path
+#: ../../lib/grntest/execution-context.rb:22
+msgid "Returns the value of attribute temporary_directory_path"
+msgstr ""
+
+# Grntest::Tester::Executor::Context#db_path=
+#: ../../lib/grntest/execution-context.rb:22
+msgid "Sets the attribute db_path"
+msgstr ""
+
+# Grntest::Tester#base_directory
+# Grntest::Tester::Executor::Context#base_directory
+#: ../../lib/grntest/execution-context.rb:22 ../../lib/grntest/tester.rb:206
+msgid "Returns the value of attribute base_directory"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/execution-context.rb:22 ../../lib/grntest/tester.rb:203
+msgid "the value to set the attribute groonga_suggest_create_dataset to."
+msgstr ""
+
+# Grntest::Tester#base_directory=
+# Grntest::Tester::Executor::Context#base_directory=
+#: ../../lib/grntest/execution-context.rb:22 ../../lib/grntest/tester.rb:206
+msgid "Sets the attribute base_directory"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/execution-context.rb:23
+msgid "the value to set the attribute result to."
 msgstr ""
 
 # Grntest::Tester#groonga_suggest_create_dataset
 # Grntest::Tester::Executor::Context#groonga_suggest_create_dataset
-#: lib/grntest/tester.rb:234 lib/grntest/tester.rb:1188
+#: ../../lib/grntest/execution-context.rb:23 ../../lib/grntest/tester.rb:204
 msgid "Returns the value of attribute groonga_suggest_create_dataset"
 msgstr ""
 
-# @param value
-#: lib/grntest/tester.rb:234
-msgid "the value to set the attribute testee to."
+# Grntest::Tester#groonga_suggest_create_dataset=
+# Grntest::Tester::Executor::Context#groonga_suggest_create_dataset=
+#: ../../lib/grntest/execution-context.rb:23 ../../lib/grntest/tester.rb:204
+msgid "Sets the attribute groonga_suggest_create_dataset"
 msgstr ""
 
-# Grntest::Tester#groonga
-#: lib/grntest/tester.rb:234
-msgid "Returns the value of attribute groonga"
+# Grntest::Tester::Executor::Context#result=
+#: ../../lib/grntest/execution-context.rb:24
+msgid "Sets the attribute result"
+msgstr ""
+
+# Grntest::Tester::Executor::Context#result
+# Grntest::Tester::Worker#result
+#: ../../lib/grntest/execution-context.rb:24 ../../lib/grntest/worker.rb:68
+msgid "Returns the value of attribute result"
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:234 lib/grntest/tester.rb:1189
+#: ../../lib/grntest/execution-context.rb:24 ../../lib/grntest/tester.rb:204
 msgid "the value to set the attribute output_type to."
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:234
-msgid "the value to set the attribute interface to."
 msgstr ""
 
 # Grntest::Tester#output_type=
 # Grntest::Tester::Executor::Context#output_type=
-#: lib/grntest/tester.rb:235 lib/grntest/tester.rb:1190
+#: ../../lib/grntest/execution-context.rb:25 ../../lib/grntest/tester.rb:205
 msgid "Sets the attribute output_type"
 msgstr ""
 
 # Grntest::Tester#output_type
 # Grntest::Tester::Executor::Context#output_type
-#: lib/grntest/tester.rb:235 lib/grntest/tester.rb:1190
+#: ../../lib/grntest/execution-context.rb:25 ../../lib/grntest/tester.rb:205
 msgid "Returns the value of attribute output_type"
 msgstr ""
 
 # @param value
-#: lib/grntest/tester.rb:235
-msgid "the value to set the attribute diff_options to."
-msgstr ""
-
-# Grntest::Tester#interface
-#: lib/grntest/tester.rb:235
-msgid "Returns the value of attribute interface"
-msgstr ""
-
-# Grntest::Tester#testee
-#: lib/grntest/tester.rb:235
-msgid "Returns the value of attribute testee"
-msgstr ""
-
-# Grntest::Tester#testee=
-#: lib/grntest/tester.rb:235
-msgid "Sets the attribute testee"
-msgstr ""
-
-# Grntest::Tester#interface=
-#: lib/grntest/tester.rb:235
-msgid "Sets the attribute interface"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:235
-msgid "the value to set the attribute diff to."
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:235
-msgid "the value to set the attribute database_path to."
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:235 lib/grntest/tester.rb:1186
-msgid "the value to set the attribute base_directory to."
-msgstr ""
-
-# Grntest::Tester#base_directory
-# Grntest::Tester::Executor::Context#base_directory
-#: lib/grntest/tester.rb:236 lib/grntest/tester.rb:1187
-msgid "Returns the value of attribute base_directory"
-msgstr ""
-
-# Grntest::Tester#database_path=
-#: lib/grntest/tester.rb:236
-msgid "Sets the attribute database_path"
-msgstr ""
-
-# Grntest::Tester#base_directory=
-# Grntest::Tester::Executor::Context#base_directory=
-#: lib/grntest/tester.rb:236 lib/grntest/tester.rb:1187
-msgid "Sets the attribute base_directory"
-msgstr ""
-
-# Grntest::Tester#diff
-#: lib/grntest/tester.rb:236
-msgid "Returns the value of attribute diff"
-msgstr ""
-
-# Grntest::Tester#diff=
-#: lib/grntest/tester.rb:236
-msgid "Sets the attribute diff"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:236
-msgid "the value to set the attribute n_workers to."
-msgstr ""
-
-# Grntest::Tester#database_path
-#: lib/grntest/tester.rb:236
-msgid "Returns the value of attribute database_path"
-msgstr ""
-
-# Grntest::Tester#diff_options=
-#: lib/grntest/tester.rb:236
-msgid "Sets the attribute diff_options"
-msgstr ""
-
-# Grntest::Tester#diff_options
-#: lib/grntest/tester.rb:236
-msgid "Returns the value of attribute diff_options"
-msgstr ""
-
-# Grntest::Tester#n_workers
-#: lib/grntest/tester.rb:237
-msgid "Returns the value of attribute n_workers"
-msgstr ""
-
-# Grntest::Tester#n_workers=
-#: lib/grntest/tester.rb:237
-msgid "Sets the attribute n_workers"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:237
-msgid "the value to set the attribute output to."
-msgstr ""
-
-# Grntest::Tester#output
-#: lib/grntest/tester.rb:238
-msgid "Returns the value of attribute output"
-msgstr ""
-
-# Grntest::Tester#output=
-#: lib/grntest/tester.rb:238
-msgid "Sets the attribute output"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:238
-msgid "the value to set the attribute default_gdb to."
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:238
-msgid "the value to set the attribute gdb to."
-msgstr ""
-
-# Grntest::Tester#gdb=
-#: lib/grntest/tester.rb:239
-msgid "Sets the attribute gdb"
-msgstr ""
-
-# Grntest::Tester#gdb
-#: lib/grntest/tester.rb:239
-msgid "Returns the value of attribute gdb"
-msgstr ""
-
-# Grntest::Tester#default_gdb
-#: lib/grntest/tester.rb:239
-msgid "Returns the value of attribute default_gdb"
-msgstr ""
-
-# Grntest::Tester#default_gdb=
-#: lib/grntest/tester.rb:239
-msgid "Sets the attribute default_gdb"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:239
-msgid "the value to set the attribute reporter to."
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:239
-msgid "the value to set the attribute keep_database to."
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:239
-msgid "the value to set the attribute use_color to."
-msgstr ""
-
-# Grntest::Tester#keep_database=
-#: lib/grntest/tester.rb:240
-msgid "Sets the attribute keep_database"
-msgstr ""
-
-# Grntest::Tester#use_color=
-#: lib/grntest/tester.rb:240
-msgid "Sets the attribute use_color"
-msgstr ""
-
-# Grntest::Tester#reporter=
-#: lib/grntest/tester.rb:240
-msgid "Sets the attribute reporter"
-msgstr ""
-
-# Grntest::Tester#test_patterns
-#: lib/grntest/tester.rb:241
-msgid "Returns the value of attribute test_patterns"
-msgstr ""
-
-# Grntest::Tester#test_suite_patterns
-#: lib/grntest/tester.rb:241
-msgid "Returns the value of attribute test_suite_patterns"
-msgstr ""
-
-# Grntest::Tester#exclude_test_patterns
-#: lib/grntest/tester.rb:242
-msgid "Returns the value of attribute exclude_test_patterns"
-msgstr ""
-
-# @return [Tester]
-#: lib/grntest/tester.rb:242
-msgid "a new instance of Tester"
-msgstr ""
-
-# Grntest::Tester#exclude_test_suite_patterns
-#: lib/grntest/tester.rb:242
-msgid "Returns the value of attribute exclude_test_suite_patterns"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:396
-msgid "the value to set the attribute elapsed_time to."
-msgstr ""
-
-# Grntest::Tester::Result#elapsed_time=
-#: lib/grntest/tester.rb:397
-msgid "Sets the attribute elapsed_time"
-msgstr ""
-
-# @return [Result]
-#: lib/grntest/tester.rb:397
-msgid "a new instance of Result"
-msgstr ""
-
-# Grntest::Tester::Result#elapsed_time
-#: lib/grntest/tester.rb:397
-msgid "Returns the value of attribute elapsed_time"
-msgstr ""
-
-# Grntest::Tester::WorkerResult#n_tests
-#: lib/grntest/tester.rb:411
-msgid "Returns the value of attribute n_tests"
-msgstr ""
-
-# Grntest::Tester::WorkerResult#n_leaked_tests
-#: lib/grntest/tester.rb:411
-msgid "Returns the value of attribute n_leaked_tests"
-msgstr ""
-
-# Grntest::Tester::WorkerResult#n_passed_tests
-#: lib/grntest/tester.rb:411
-msgid "Returns the value of attribute n_passed_tests"
-msgstr ""
-
-# Grntest::Tester::WorkerResult#n_not_checked_tests
-#: lib/grntest/tester.rb:412
-msgid "Returns the value of attribute n_not_checked_tests"
-msgstr ""
-
-# Grntest::Tester::WorkerResult#n_omitted_tests
-#: lib/grntest/tester.rb:412
-msgid "Returns the value of attribute n_omitted_tests"
-msgstr ""
-
-# @return [WorkerResult]
-#: lib/grntest/tester.rb:413
-msgid "a new instance of WorkerResult"
-msgstr ""
-
-# Grntest::Tester::WorkerResult#failed_tests
-#: lib/grntest/tester.rb:413
-msgid "Returns the value of attribute failed_tests"
-msgstr ""
-
-# Grntest::Tester::Worker#id
-#: lib/grntest/tester.rb:454
-msgid "Returns the value of attribute id"
-msgstr ""
-
-# Grntest::Tester::Worker#test_suites_rusult
-#: lib/grntest/tester.rb:454
-msgid "Returns the value of attribute test_suites_rusult"
-msgstr ""
-
-# Grntest::Tester::Worker#tester
-#: lib/grntest/tester.rb:454
-msgid "Returns the value of attribute tester"
-msgstr ""
-
-# Grntest::Tester::Worker#reporter
-#: lib/grntest/tester.rb:454
-msgid "Returns the value of attribute reporter"
-msgstr ""
-
-# Grntest::Tester::Worker#test_script_path
-#: lib/grntest/tester.rb:455
-msgid "Returns the value of attribute test_script_path"
-msgstr ""
-
-# Grntest::Tester::Worker#status
-#: lib/grntest/tester.rb:455
-msgid "Returns the value of attribute status"
-msgstr ""
-
-# Grntest::Tester::Executor::Context#result
-# Grntest::Tester::Worker#result
-#: lib/grntest/tester.rb:455 lib/grntest/tester.rb:1189
-msgid "Returns the value of attribute result"
-msgstr ""
-
-# @return [Worker]
-#: lib/grntest/tester.rb:455
-msgid "a new instance of Worker"
-msgstr ""
-
-# Grntest::Tester::Worker#suite_name
-#: lib/grntest/tester.rb:455
-msgid "Returns the value of attribute suite_name"
-msgstr ""
-
-# Grntest::Tester::TestResult#test_name
-# Grntest::Tester::Worker#test_name
-#: lib/grntest/tester.rb:455 lib/grntest/tester.rb:678
-msgid "Returns the value of attribute test_name"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:553
-msgid "the value to set the attribute workers to."
-msgstr ""
-
-# Grntest::Tester::TestSuitesResult#workers
-#: lib/grntest/tester.rb:554
-msgid "Returns the value of attribute workers"
-msgstr ""
-
-# Grntest::Tester::TestSuitesResult#workers=
-#: lib/grntest/tester.rb:554
-msgid "Sets the attribute workers"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:554
-msgid "the value to set the attribute n_total_tests to."
-msgstr ""
-
-# Grntest::Tester::TestSuitesResult#n_total_tests
-#: lib/grntest/tester.rb:555
-msgid "Returns the value of attribute n_total_tests"
-msgstr ""
-
-# @return [TestSuitesResult]
-#: lib/grntest/tester.rb:555
-msgid "a new instance of TestSuitesResult"
-msgstr ""
-
-# Grntest::Tester::TestSuitesResult#n_total_tests=
-#: lib/grntest/tester.rb:555
-msgid "Sets the attribute n_total_tests"
-msgstr ""
-
-# @return [TestSuitesRunner]
-#: lib/grntest/tester.rb:604
-msgid "a new instance of TestSuitesRunner"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:677
-msgid "the value to set the attribute test_name to."
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:677
-msgid "the value to set the attribute worker_id to."
-msgstr ""
-
-# Grntest::Tester::TestResult#test_name=
-#: lib/grntest/tester.rb:678
-msgid "Sets the attribute test_name"
-msgstr ""
-
-# Grntest::Tester::TestResult#worker_id
-#: lib/grntest/tester.rb:678
-msgid "Returns the value of attribute worker_id"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:678
-msgid "the value to set the attribute n_leaked_objects to."
-msgstr ""
-
-# Grntest::Tester::TestResult#worker_id=
-#: lib/grntest/tester.rb:678
-msgid "Sets the attribute worker_id"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:678
-msgid "the value to set the attribute actual to."
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:678
-msgid "the value to set the attribute expected to."
-msgstr ""
-
-# Grntest::Tester::TestResult#n_leaked_objects=
-#: lib/grntest/tester.rb:679
-msgid "Sets the attribute n_leaked_objects"
-msgstr ""
-
-# Grntest::Tester::TestResult#actual
-#: lib/grntest/tester.rb:679
-msgid "Returns the value of attribute actual"
-msgstr ""
-
-# Grntest::Tester::TestResult#actual=
-#: lib/grntest/tester.rb:679
-msgid "Sets the attribute actual"
-msgstr ""
-
-# Grntest::Tester::TestResult#expected
-#: lib/grntest/tester.rb:679
-msgid "Returns the value of attribute expected"
-msgstr ""
-
-# Grntest::Tester::TestResult#n_leaked_objects
-#: lib/grntest/tester.rb:679
-msgid "Returns the value of attribute n_leaked_objects"
-msgstr ""
-
-# Grntest::Tester::TestResult#expected=
-#: lib/grntest/tester.rb:679
-msgid "Sets the attribute expected"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:679
-msgid "the value to set the attribute omitted to."
-msgstr ""
-
-# Grntest::Tester::TestResult#omitted=
-#: lib/grntest/tester.rb:680
-msgid "Sets the attribute omitted"
-msgstr ""
-
-# @return [TestResult]
-#: lib/grntest/tester.rb:680
-msgid "a new instance of TestResult"
-msgstr ""
-
-# @return [ResponseParser]
-#: lib/grntest/tester.rb:725
-msgid "a new instance of ResponseParser"
-msgstr ""
-
-# @return [TestRunner]
-#: lib/grntest/tester.rb:761
-msgid "a new instance of TestRunner"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:1185
-msgid "the value to set the attribute logging to."
-msgstr ""
-
-# Grntest::Tester::Executor::Context#logging=
-#: lib/grntest/tester.rb:1186
-msgid "Sets the attribute logging"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:1186
-msgid "the value to set the attribute db_path to."
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:1186
-msgid "the value to set the attribute temporary_directory_path to."
-msgstr ""
-
-# Grntest::Tester::Executor::Context#temporary_directory_path
-#: lib/grntest/tester.rb:1187
-msgid "Returns the value of attribute temporary_directory_path"
-msgstr ""
-
-# Grntest::Tester::Executor::Context#temporary_directory_path=
-#: lib/grntest/tester.rb:1187
-msgid "Sets the attribute temporary_directory_path"
-msgstr ""
-
-# Grntest::Tester::Executor::Context#db_path=
-#: lib/grntest/tester.rb:1187
-msgid "Sets the attribute db_path"
-msgstr ""
-
-# Grntest::Tester::Executor::Context#db_path
-#: lib/grntest/tester.rb:1187
-msgid "Returns the value of attribute db_path"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:1188
-msgid "the value to set the attribute result to."
-msgstr ""
-
-# Grntest::Tester::Executor::Context#result=
-#: lib/grntest/tester.rb:1189
-msgid "Sets the attribute result"
-msgstr ""
-
-# @param value
-#: lib/grntest/tester.rb:1190
+#: ../../lib/grntest/execution-context.rb:25
 msgid "the value to set the attribute on_error to."
 msgstr ""
 
+# @param value
+#: ../../lib/grntest/execution-context.rb:26
+msgid "the value to set the attribute abort_tag to."
+msgstr ""
+
 # Grntest::Tester::Executor::Context#on_error
-#: lib/grntest/tester.rb:1191
+#: ../../lib/grntest/execution-context.rb:26
 msgid "Returns the value of attribute on_error"
 msgstr ""
 
 # Grntest::Tester::Executor::Context#on_error=
-#: lib/grntest/tester.rb:1191
+#: ../../lib/grntest/execution-context.rb:26
 msgid "Sets the attribute on_error"
 msgstr ""
 
-# @param value
-#: lib/grntest/tester.rb:1191
-msgid "the value to set the attribute abort_tag to."
-msgstr ""
-
-# Grntest::Tester::Executor::Context#abort_tag
-#: lib/grntest/tester.rb:1192
-msgid "Returns the value of attribute abort_tag"
-msgstr ""
-
-# @return [Context]
-#: lib/grntest/tester.rb:1192
-msgid "a new instance of Context"
-msgstr ""
-
 # Grntest::Tester::Executor::Context#abort_tag=
-#: lib/grntest/tester.rb:1192
+#: ../../lib/grntest/execution-context.rb:27
 msgid "Sets the attribute abort_tag"
 msgstr ""
 
+# Grntest::Tester::Executor::Context#abort_tag
+#: ../../lib/grntest/execution-context.rb:27
+msgid "Returns the value of attribute abort_tag"
+msgstr ""
+
+# @return [ExecutionContext]
+#: ../../lib/grntest/execution-context.rb:27
+msgid "a new instance of ExecutionContext"
+msgstr ""
+
 # Grntest::Tester::Executor#context
-#: lib/grntest/tester.rb:1260
+#: ../../lib/grntest/executors/base-executor.rb:36
 msgid "Returns the value of attribute context"
 msgstr ""
 
-# @return [Executor]
-#: lib/grntest/tester.rb:1260
-msgid "a new instance of Executor"
-msgstr ""
-
-# @return [StandardIOExecutor]
-#: lib/grntest/tester.rb:1554
-msgid "a new instance of StandardIOExecutor"
+# @return [BaseExecutor]
+#: ../../lib/grntest/executors/base-executor.rb:36
+msgid "a new instance of BaseExecutor"
 msgstr ""
 
 # @return [HTTPExecutor]
-#: lib/grntest/tester.rb:1603
+#: ../../lib/grntest/executors/http-executor.rb:25
 msgid "a new instance of HTTPExecutor"
 msgstr ""
 
-# @return [CommandFormatConverter]
-#: lib/grntest/tester.rb:1640
-msgid "a new instance of CommandFormatConverter"
+# @return [StandardIOExecutor]
+#: ../../lib/grntest/executors/standard-io-executor.rb:23
+msgid "a new instance of StandardIOExecutor"
 msgstr ""
 
 # @return [BaseReporter]
-#: lib/grntest/tester.rb:1651
+#: ../../lib/grntest/reporters/base-reporter.rb:21
 msgid "a new instance of BaseReporter"
 msgstr ""
 
+# @return [InplaceReporter]
+#: ../../lib/grntest/reporters/inplace-reporter.rb:23
+msgid "a new instance of InplaceReporter"
+msgstr ""
+
 # @return [MarkReporter]
-#: lib/grntest/tester.rb:2006
+#: ../../lib/grntest/reporters/mark-reporter.rb:23
 msgid "a new instance of MarkReporter"
 msgstr ""
 
 # @return [StreamReporter]
-#: lib/grntest/tester.rb:2091
+#: ../../lib/grntest/reporters/stream-reporter.rb:23
 msgid "a new instance of StreamReporter"
 msgstr ""
 
-# @return [InplaceReporter]
-#: lib/grntest/tester.rb:2154
-msgid "a new instance of InplaceReporter"
+# @return [ResponseParser]
+#: ../../lib/grntest/response-parser.rb:32
+msgid "a new instance of ResponseParser"
 msgstr ""
+
+# @param value
+#: ../../lib/grntest/test-runner.rb:30
+msgid "the value to set the attribute test_name to."
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/test-runner.rb:30
+msgid "the value to set the attribute worker_id to."
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/test-runner.rb:31
+msgid "the value to set the attribute actual to."
+msgstr ""
+
+# Grntest::Tester::TestResult#worker_id=
+#: ../../lib/grntest/test-runner.rb:31
+msgid "Sets the attribute worker_id"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/test-runner.rb:31
+msgid "the value to set the attribute expected to."
+msgstr ""
+
+# Grntest::Tester::TestResult#test_name=
+#: ../../lib/grntest/test-runner.rb:31
+msgid "Sets the attribute test_name"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/test-runner.rb:31
+msgid "the value to set the attribute n_leaked_objects to."
+msgstr ""
+
+# Grntest::Tester::TestResult#test_name
+# Grntest::Tester::Worker#test_name
+#: ../../lib/grntest/test-runner.rb:31 ../../lib/grntest/worker.rb:68
+msgid "Returns the value of attribute test_name"
+msgstr ""
+
+# Grntest::Tester::TestResult#worker_id
+#: ../../lib/grntest/test-runner.rb:31
+msgid "Returns the value of attribute worker_id"
+msgstr ""
+
+# Grntest::Tester::TestResult#n_leaked_objects
+#: ../../lib/grntest/test-runner.rb:32
+msgid "Returns the value of attribute n_leaked_objects"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/test-runner.rb:32
+msgid "the value to set the attribute omitted to."
+msgstr ""
+
+# Grntest::Tester::TestResult#n_leaked_objects=
+#: ../../lib/grntest/test-runner.rb:32
+msgid "Sets the attribute n_leaked_objects"
+msgstr ""
+
+# Grntest::Tester::TestResult#actual=
+#: ../../lib/grntest/test-runner.rb:32
+msgid "Sets the attribute actual"
+msgstr ""
+
+# Grntest::Tester::TestResult#expected
+#: ../../lib/grntest/test-runner.rb:32
+msgid "Returns the value of attribute expected"
+msgstr ""
+
+# Grntest::Tester::TestResult#expected=
+#: ../../lib/grntest/test-runner.rb:32
+msgid "Sets the attribute expected"
+msgstr ""
+
+# Grntest::Tester::TestResult#actual
+#: ../../lib/grntest/test-runner.rb:32
+msgid "Returns the value of attribute actual"
+msgstr ""
+
+# Grntest::Tester::TestResult#omitted=
+#: ../../lib/grntest/test-runner.rb:33
+msgid "Sets the attribute omitted"
+msgstr ""
+
+# @return [TestResult]
+#: ../../lib/grntest/test-runner.rb:33
+msgid "a new instance of TestResult"
+msgstr ""
+
+# @return [TestRunner]
+#: ../../lib/grntest/test-runner.rb:81
+msgid "a new instance of TestRunner"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/test-suites-runner.rb:26
+msgid "the value to set the attribute workers to."
+msgstr ""
+
+# Grntest::Tester::TestSuitesResult#workers
+#: ../../lib/grntest/test-suites-runner.rb:27
+msgid "Returns the value of attribute workers"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/test-suites-runner.rb:27
+msgid "the value to set the attribute n_total_tests to."
+msgstr ""
+
+# Grntest::Tester::TestSuitesResult#workers=
+#: ../../lib/grntest/test-suites-runner.rb:27
+msgid "Sets the attribute workers"
+msgstr ""
+
+# Grntest::Tester::TestSuitesResult#n_total_tests=
+#: ../../lib/grntest/test-suites-runner.rb:28
+msgid "Sets the attribute n_total_tests"
+msgstr ""
+
+# Grntest::Tester::TestSuitesResult#n_total_tests
+#: ../../lib/grntest/test-suites-runner.rb:28
+msgid "Returns the value of attribute n_total_tests"
+msgstr ""
+
+# @return [TestSuitesResult]
+#: ../../lib/grntest/test-suites-runner.rb:28
+msgid "a new instance of TestSuitesResult"
+msgstr ""
+
+# @return [TestSuitesRunner]
+#: ../../lib/grntest/test-suites-runner.rb:77
+msgid "a new instance of TestSuitesRunner"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/tester.rb:203
+msgid "the value to set the attribute groonga to."
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/tester.rb:203
+msgid "the value to set the attribute groonga_httpd to."
+msgstr ""
+
+# Grntest::Tester#groonga=
+#: ../../lib/grntest/tester.rb:204
+msgid "Sets the attribute groonga"
+msgstr ""
+
+# Grntest::Tester#groonga
+#: ../../lib/grntest/tester.rb:204
+msgid "Returns the value of attribute groonga"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/tester.rb:204
+msgid "the value to set the attribute interface to."
+msgstr ""
+
+# Grntest::Tester#groonga_httpd
+#: ../../lib/grntest/tester.rb:204
+msgid "Returns the value of attribute groonga_httpd"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/tester.rb:204
+msgid "the value to set the attribute testee to."
+msgstr ""
+
+# Grntest::Tester#groonga_httpd=
+#: ../../lib/grntest/tester.rb:204
+msgid "Sets the attribute groonga_httpd"
+msgstr ""
+
+# Grntest::Tester#testee=
+#: ../../lib/grntest/tester.rb:205
+msgid "Sets the attribute testee"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/tester.rb:205
+msgid "the value to set the attribute diff_options to."
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/tester.rb:205
+msgid "the value to set the attribute database_path to."
+msgstr ""
+
+# Grntest::Tester#interface=
+#: ../../lib/grntest/tester.rb:205
+msgid "Sets the attribute interface"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/tester.rb:205
+msgid "the value to set the attribute diff to."
+msgstr ""
+
+# Grntest::Tester#interface
+#: ../../lib/grntest/tester.rb:205
+msgid "Returns the value of attribute interface"
+msgstr ""
+
+# Grntest::Tester#testee
+#: ../../lib/grntest/tester.rb:205
+msgid "Returns the value of attribute testee"
+msgstr ""
+
+# Grntest::Tester#diff
+#: ../../lib/grntest/tester.rb:206
+msgid "Returns the value of attribute diff"
+msgstr ""
+
+# Grntest::Tester#database_path=
+#: ../../lib/grntest/tester.rb:206
+msgid "Sets the attribute database_path"
+msgstr ""
+
+# Grntest::Tester#database_path
+#: ../../lib/grntest/tester.rb:206
+msgid "Returns the value of attribute database_path"
+msgstr ""
+
+# Grntest::Tester#diff=
+#: ../../lib/grntest/tester.rb:206
+msgid "Sets the attribute diff"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/tester.rb:206
+msgid "the value to set the attribute n_workers to."
+msgstr ""
+
+# Grntest::Tester#diff_options=
+#: ../../lib/grntest/tester.rb:206
+msgid "Sets the attribute diff_options"
+msgstr ""
+
+# Grntest::Tester#diff_options
+#: ../../lib/grntest/tester.rb:206
+msgid "Returns the value of attribute diff_options"
+msgstr ""
+
+# Grntest::Tester#n_workers=
+#: ../../lib/grntest/tester.rb:207
+msgid "Sets the attribute n_workers"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/tester.rb:207
+msgid "the value to set the attribute output to."
+msgstr ""
+
+# Grntest::Tester#n_workers
+#: ../../lib/grntest/tester.rb:207
+msgid "Returns the value of attribute n_workers"
+msgstr ""
+
+# Grntest::Tester#output
+#: ../../lib/grntest/tester.rb:208
+msgid "Returns the value of attribute output"
+msgstr ""
+
+# Grntest::Tester#output=
+#: ../../lib/grntest/tester.rb:208
+msgid "Sets the attribute output"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/tester.rb:208
+msgid "the value to set the attribute gdb to."
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/tester.rb:208
+msgid "the value to set the attribute default_gdb to."
+msgstr ""
+
+# Grntest::Tester#default_gdb=
+#: ../../lib/grntest/tester.rb:209
+msgid "Sets the attribute default_gdb"
+msgstr ""
+
+# Grntest::Tester#default_gdb
+#: ../../lib/grntest/tester.rb:209
+msgid "Returns the value of attribute default_gdb"
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/tester.rb:209
+msgid "the value to set the attribute reporter to."
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/tester.rb:209
+msgid "the value to set the attribute keep_database to."
+msgstr ""
+
+# @param value
+#: ../../lib/grntest/tester.rb:209
+msgid "the value to set the attribute use_color to."
+msgstr ""
+
+# Grntest::Tester#gdb
+#: ../../lib/grntest/tester.rb:209
+msgid "Returns the value of attribute gdb"
+msgstr ""
+
+# Grntest::Tester#gdb=
+#: ../../lib/grntest/tester.rb:209
+msgid "Sets the attribute gdb"
+msgstr ""
+
+# Grntest::Tester#reporter=
+#: ../../lib/grntest/tester.rb:210
+msgid "Sets the attribute reporter"
+msgstr ""
+
+# Grntest::Tester#use_color=
+#: ../../lib/grntest/tester.rb:210
+msgid "Sets the attribute use_color"
+msgstr ""
+
+# Grntest::Tester#keep_database=
+#: ../../lib/grntest/tester.rb:210
+msgid "Sets the attribute keep_database"
+msgstr ""
+
+# Grntest::Tester#test_suite_patterns
+#: ../../lib/grntest/tester.rb:211
+msgid "Returns the value of attribute test_suite_patterns"
+msgstr ""
+
+# Grntest::Tester#test_patterns
+#: ../../lib/grntest/tester.rb:211
+msgid "Returns the value of attribute test_patterns"
+msgstr ""
+
+# @return [Tester]
+#: ../../lib/grntest/tester.rb:212
+msgid "a new instance of Tester"
+msgstr ""
+
+# Grntest::Tester#exclude_test_suite_patterns
+#: ../../lib/grntest/tester.rb:212
+msgid "Returns the value of attribute exclude_test_suite_patterns"
+msgstr ""
+
+# Grntest::Tester#exclude_test_patterns
+#: ../../lib/grntest/tester.rb:212
+msgid "Returns the value of attribute exclude_test_patterns"
+msgstr ""
+
+# Grntest::Tester::WorkerResult#n_passed_tests
+#: ../../lib/grntest/worker.rb:24
+msgid "Returns the value of attribute n_passed_tests"
+msgstr ""
+
+# Grntest::Tester::WorkerResult#n_leaked_tests
+#: ../../lib/grntest/worker.rb:24
+msgid "Returns the value of attribute n_leaked_tests"
+msgstr ""
+
+# Grntest::Tester::WorkerResult#n_tests
+#: ../../lib/grntest/worker.rb:24
+msgid "Returns the value of attribute n_tests"
+msgstr ""
+
+# Grntest::Tester::WorkerResult#n_not_checked_tests
+#: ../../lib/grntest/worker.rb:25
+msgid "Returns the value of attribute n_not_checked_tests"
+msgstr ""
+
+# Grntest::Tester::WorkerResult#n_omitted_tests
+#: ../../lib/grntest/worker.rb:25
+msgid "Returns the value of attribute n_omitted_tests"
+msgstr ""
+
+# Grntest::Tester::WorkerResult#failed_tests
+#: ../../lib/grntest/worker.rb:26
+msgid "Returns the value of attribute failed_tests"
+msgstr ""
+
+# @return [WorkerResult]
+#: ../../lib/grntest/worker.rb:26
+msgid "a new instance of WorkerResult"
+msgstr ""
+
+# Grntest::Tester::Worker#reporter
+#: ../../lib/grntest/worker.rb:67
+msgid "Returns the value of attribute reporter"
+msgstr ""
+
+# Grntest::Tester::Worker#id
+#: ../../lib/grntest/worker.rb:67
+msgid "Returns the value of attribute id"
+msgstr ""
+
+# Grntest::Tester::Worker#tester
+#: ../../lib/grntest/worker.rb:67
+msgid "Returns the value of attribute tester"
+msgstr ""
+
+# Grntest::Tester::Worker#test_suites_rusult
+#: ../../lib/grntest/worker.rb:67
+msgid "Returns the value of attribute test_suites_rusult"
+msgstr ""
+
+# @return [Worker]
+#: ../../lib/grntest/worker.rb:68
+msgid "a new instance of Worker"
+msgstr ""
+
+# Grntest::Tester::Worker#suite_name
+#: ../../lib/grntest/worker.rb:68
+msgid "Returns the value of attribute suite_name"
+msgstr ""
+
+# Grntest::Tester::Worker#test_script_path
+#: ../../lib/grntest/worker.rb:68
+msgid "Returns the value of attribute test_script_path"
+msgstr ""
+
+# Grntest::Tester::Worker#status
+#: ../../lib/grntest/worker.rb:68
+msgid "Returns the value of attribute status"
+msgstr ""
+
+#: doc/text/news.md:5
+#~ msgid "This is the release that add some directive."
+#~ msgstr "このリリースではいくつかのディレクティブが追加されました。"
