@@ -395,7 +395,10 @@ EOF
         "-n", db_path,
         "shutdown"
       ]
-      system(*create_database_command)
+      options = {
+        output_fd.to_i => output_fd.to_i
+      }
+      system(*create_database_command, options)
       output_fd.close(true)
     end
 
