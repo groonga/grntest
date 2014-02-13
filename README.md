@@ -6,8 +6,8 @@ grntest
 
 ## Description
 
-Grntest is a testing framework for groonga. You can write a test for
-groonga by writing groonga commands and expected result.
+Grntest is a testing framework for Groonga. You can write a test for
+Groonga by writing Groonga commands and expected result.
 
 ## Install
 
@@ -548,7 +548,7 @@ database.
 
 ## Examples
 
-See [test/command/ directory in groonga's
+See [test/command/ directory in Groonga's
 source](https://github.com/groonga/groonga/tree/master/test/command). It
 has many test scripts and uses many useful features. They will help you.
 
