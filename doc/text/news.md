@@ -1,5 +1,11 @@
 # News
 
+## 1.0.5: 2014-02-13
+
+### Improvements
+
+  * Supported Ruby 2.0.0 or later.
+
 ## 1.0.4: 2013-12-16
 
 ### Improvements
