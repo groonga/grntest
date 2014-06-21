@@ -411,7 +411,7 @@ EOF
         when :output
           normalized_result << normalize_output(content, options)
         when :error
-          normalized_result << normalize_raw_content(content)
+          normalized_result << normalize_error(content)
         when :n_leaked_objects
           result.n_leaked_objects = content
         end
@@ -435,7 +435,8 @@ EOF
           return $!.message
         end
         normalized_status = normalize_status(status)
-        normalized_output_content = [normalized_status, *values]
+        normalized_values = normalize_values(values)
+        normalized_output_content = [normalized_status, *normalized_values]
         normalized_output = JSON.generate(normalized_output_content)
         if normalized_output.bytesize > @max_n_columns
           normalized_output = JSON.pretty_generate(normalized_output_content)
@@ -463,7 +464,40 @@ EOF
       else
         message, backtrace = rest
         _ = backtrace # for suppress warnings
+        message = normalize_path_in_error_message(message)
         [[return_code, 0.0, 0.0], message]
+      end
+    end
+
+    def normalize_values(values)
+      values.collect do |value|
+        if value.is_a?(Hash) and value["exception"]
+          exception = Marshal.load(Marshal.dump(value["exception"]))
+          message = exception["message"]
+          exception["message"] = normalize_path_in_error_message(message)
+          value.merge("exception" => exception)
+        else
+          value
+        end
+      end
+    end
+
+    def normalize_error(content)
+      content = normalize_path_in_error_message(content)
+      normalize_raw_content(content)
+    end
+
+    def normalize_path_in_error_message(content)
+      case content
+      when /\A(.*'fopen: failed to open mruby script file: )<(.+?)>'(.*)\z/
+        pre = $1
+        path = $2
+        post = $3
+        normalized_path = File.basename(path)
+        post = "" unless post.end_with?(")")
+        "#{pre}<#{normalized_path}>'#{post}"
+      else
+        content
       end
     end
 
