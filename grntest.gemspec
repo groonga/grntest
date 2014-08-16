@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   entries = readme.split(/^\#\#\s(.*)$/)
   description = clean_white_space.call(entries[entries.index("Description") + 1])
   spec.summary, spec.description, = description.split(/\n\n+/, 3)
-  spec.license = "GPLv3 or later"
+  spec.license = "GPL-3.0+"
   spec.files = ["README.md", "Rakefile", "Gemfile", "#{spec.name}.gemspec"]
   spec.files += [".yardopts"]
   spec.files += Dir.glob("lib/**/*.rb")
