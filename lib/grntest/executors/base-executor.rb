@@ -302,7 +302,14 @@ module Grntest
       end
 
       def backtrace_log_message?(message)
-        message.start_with?("/")
+        case message
+        when /\A\//
+          true
+        when /\Agroonga\(\) \[0x[\da-f]+\]\z/
+          true
+        else
+          false
+        end
       end
 
       def error_response?(response, type)
