@@ -1,5 +1,16 @@
 # News
 
+## 1.0.7: 2014-08-16
+
+### Fixes
+
+  * Fix new line handling in bactrace log.
+    [groonga-dev,02663] [Reported by Naoya Murakami]
+
+### Thanks
+
+  * Naoya Murakami
+
 ## 1.0.6: 2014-08-16
 
 ### Improvements
