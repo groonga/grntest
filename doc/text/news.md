@@ -1,5 +1,17 @@
 # News
 
+## 1.0.6: 2014-08-16
+
+### Improvements
+
+  * Supported normalizing path in error message.
+  * Improved backtrace log detection.
+    [groonga-dev,02650] [Reported by Naoya Murakami]
+
+### Thanks
+
+  * Naoya Murakami
+
 ## 1.0.5: 2014-02-13
 
 ### Improvements
