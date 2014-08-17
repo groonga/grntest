@@ -1,5 +1,12 @@
 # News
 
+## 1.0.8: 2014-08-17
+
+### Fixes
+
+  * Add missing new line in log message. It was a bug that is
+    introduced in 1.0.7.
+
 ## 1.0.7: 2014-08-16
 
 ### Fixes
