@@ -272,7 +272,7 @@ module Grntest
       end
 
       def extract_important_messages(log)
-        important_messages = ""
+        important_messages = []
         log.each_line do |line|
           timestamp, log_level, message = line.split(/\|\s*/, 3)
           _ = timestamp # suppress warning
@@ -281,7 +281,7 @@ module Grntest
           next if backtrace_log_message?(message)
           important_messages << "\#|#{log_level}| #{message}"
         end
-        important_messages
+        important_messages.join("\n")
       end
 
       def read_all_readable_content(output, options={})
