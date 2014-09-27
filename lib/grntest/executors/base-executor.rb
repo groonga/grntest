@@ -276,7 +276,7 @@ module Grntest
         log.each_line do |line|
           timestamp, log_level, message = line.split(/\|\s*/, 3)
           _ = timestamp # suppress warning
-          message = message.chomp
+          message = message.to_s.chomp
           next unless important_log_level?(log_level)
           next if backtrace_log_message?(message)
           important_messages << "\#|#{log_level}| #{message}"
