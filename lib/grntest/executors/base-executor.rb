@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2014  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,6 +20,7 @@ require "shellwords"
 require "groonga/command/parser"
 
 require "grntest/error"
+require "grntest/log-parser"
 require "grntest/execution-context"
 require "grntest/response-parser"
 
@@ -273,13 +272,11 @@ module Grntest
 
       def extract_important_messages(log)
         important_messages = []
-        log.each_line do |line|
-          timestamp, log_level, message = line.split(/\|\s*/, 3)
-          _ = timestamp # suppress warning
-          message = message.chomp
-          next unless important_log_level?(log_level)
-          next if backtrace_log_message?(message)
-          important_messages << "\#|#{log_level}| #{message}"
+        parser = LogParser.new
+        parser.parse(log) do |entry|
+          next unless important_log_level?(entry.log_level)
+          next if backtrace_log_message?(entry.message)
+          important_messages << "\#|#{entry.log_level}| #{entry.message}"
         end
         important_messages.join("\n")
       end

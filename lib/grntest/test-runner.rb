@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2014  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,6 +20,7 @@ require "tempfile"
 require "json"
 
 require "grntest/error"
+require "grntest/log-parser"
 require "grntest/executors"
 require "grntest/base-result"
 
@@ -549,10 +548,9 @@ EOF
     end
 
     def check_memory_leak(context)
-      context.log.each_line do |line|
-        timestamp, log_level, message = line.split(/\|\s*/, 3)
-        _ = timestamp # suppress warning
-        next unless /^grn_fin \((\d+)\)$/ =~ message
+      parser = LogParser.new
+      parser.parse(context.log) do |entry|
+        next unless /^grn_fin \((\d+)\)$/ =~ entry.message
         n_leaked_objects = $1.to_i
         next if n_leaked_objects.zero?
         context.result << [:n_leaked_objects, n_leaked_objects, {}]
