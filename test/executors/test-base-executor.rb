@@ -28,7 +28,9 @@ class TestBaseExecutor < Test::Unit::TestCase
          "error"     => "e",
          "warning"   => "w")
     def test_important_log_level(level)
-      assert_true(@executor.send(:important_log_level?, level))
+      assert do
+        @executor.send(:important_log_level?, level)
+      end
     end
 
     data("notice"  => "n",
@@ -36,7 +38,9 @@ class TestBaseExecutor < Test::Unit::TestCase
          "debug"   => "d",
          "dump"    => "-")
     def test_not_important_log_level(level)
-      assert_false(@executor.send(:important_log_level?, level))
+      assert do
+        not @executor.send(:important_log_level?, level)
+      end
     end
   end
 end
