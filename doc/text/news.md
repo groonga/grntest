@@ -1,5 +1,16 @@
 # News
 
+## 1.0.9: 2014-09-28
+
+### Improvements
+
+  * Support multi-line log.
+    [GitHub#2] [Reported by Naoya Murakami]
+
+### Thanks
+
+  * Naoya Murakami
+
 ## 1.0.8: 2014-08-17
 
 ### Fixes
