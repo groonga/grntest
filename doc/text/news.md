@@ -1,5 +1,15 @@
 # News
 
+## 1.1.0: 2014-10-25
+
+### Improvements
+
+  * Add "load" command to "may slow command" list.
+
+### Fixes
+
+  * Fix a bug that "may slow command" check is broken.
+
 ## 1.0.9: 2014-09-28
 
 ### Improvements
