@@ -56,7 +56,11 @@ module Grntest
           report_test_result_mark("L(#{result.n_leaked_objects})", result)
           puts
           report_test(worker, result)
-          report_actual(result) unless result.checked?
+          if result.checked?
+            report_actual(result)
+          else
+            report_marker(result)
+          end
         end
       end
 
