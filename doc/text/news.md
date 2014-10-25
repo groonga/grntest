@@ -1,5 +1,11 @@
 # News
 
+## 1.1.1: 2014-10-25
+
+### Improvements
+
+  * mark reporter: Show test name on detecting memory leak.
+
 ## 1.1.0: 2014-10-25
 
 ### Improvements
