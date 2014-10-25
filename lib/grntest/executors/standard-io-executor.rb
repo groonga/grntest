@@ -62,6 +62,7 @@ module Grntest
       MAY_SLOW_COMMANDS = [
         "column_create",
         "register",
+        "load",
       ]
       def may_slow_command?
         MAY_SLOW_COMMANDS.include?(@current_command.name)
