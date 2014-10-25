@@ -64,7 +64,7 @@ module Grntest
         "register",
       ]
       def may_slow_command?
-        MAY_SLOW_COMMANDS.include?(@current_command)
+        MAY_SLOW_COMMANDS.include?(@current_command.name)
       end
     end
   end
