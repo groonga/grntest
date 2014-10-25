@@ -54,11 +54,9 @@ module Grntest
       def on_test_leak(worker, result)
         synchronize do
           report_test_result_mark("L(#{result.n_leaked_objects})", result)
-          unless result.checked?
-            puts
-            report_test(worker, result)
-            report_actual(result)
-          end
+          puts
+          report_test(worker, result)
+          report_actual(result) unless result.checked?
         end
       end
 
