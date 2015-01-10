@@ -493,7 +493,8 @@ EOF
         path = $2
         post = $3
         normalized_path = File.basename(path)
-        post = "" unless post.end_with?(")")
+        post = post.gsub(/\[\d+\]\z/, "[?]")
+        post = "" unless /[\)\]]\z/ =~ post
         "#{pre}<#{normalized_path}>'#{post}"
       else
         content
