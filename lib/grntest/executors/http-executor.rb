@@ -62,16 +62,16 @@ module Grntest
         Groonga::Command::Parser.parse(command_line)
       end
 
-      MAX_URI_SIZE = 4096
       def send_load_command(command)
-        if command.to_uri_format.size <= MAX_URI_SIZE
-          return send_normal_command(command)
-        end
-
         values = command.arguments.delete(:values)
         request = Net::HTTP::Post.new(command.to_uri_format)
         request.content_type = "application/json; charset=UTF-8"
-        request.body = values
+        lines = command.original_source.lines
+        if lines[1].start_with?("[")
+          request.body = lines[1..-1].join
+        else
+          request.body = values
+        end
         response = Net::HTTP.start(@host, @port) do |http|
           http.read_timeout = @read_timeout
           http.request(request)
