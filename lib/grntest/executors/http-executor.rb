@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2015  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -94,7 +94,7 @@ module Grntest
         if raw_response_data.empty?
           raw_response_data
         else
-          "#{raw_response_data}\n"
+          "#{raw_response_data.chomp}\n"
         end
       end
     end
