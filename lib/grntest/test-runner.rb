@@ -359,7 +359,7 @@ EOC
       config_file_path =
         context.temporary_directory_path + "groonga-httpd.conf"
       config_file_path.open("w") do |config_file|
-          config_file.puts(<<EOF)
+        config_file.puts(<<-GLOBAL)
 daemon off;
 master_process off;
 worker_processes 1;
@@ -369,7 +369,16 @@ pid #{pid_file_path};
 events {
      worker_connections 1024;
 }
+        GLOBAL
 
+        ENV.each do |key, value|
+          next unless key.start_with?("GRN_")
+          config_file.puts(<<-ENV)
+env #{key};
+          ENV
+        end
+
+        config_file.puts(<<-HTTP)
 http {
      server {
              access_log groonga-httpd-access.log;
@@ -382,7 +391,7 @@ http {
             }
      }
 }
-EOF
+        HTTP
       end
       config_file_path
     end
