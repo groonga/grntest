@@ -41,7 +41,7 @@ module Grntest
         n_retried = 0
         begin
           send_command(command("status"))
-        rescue SystemCallError
+        rescue Error
           n_retried += 1
           sleep(0.1)
           retry if n_retried < 10
@@ -93,6 +93,9 @@ module Grntest
           open(url, :read_timeout => @read_timeout) do |response|
             normalize_response_data(command, response.read)
           end
+        rescue SystemCallError
+          message = "failed to read response from Groonga: <#{url}>: #{$!}"
+          raise Error.new(message)
         rescue OpenURI::HTTPError
           $!.io.read
         end
