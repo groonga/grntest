@@ -44,7 +44,7 @@ module Grntest
         rescue Error
           n_retried += 1
           sleep(0.1)
-          retry if n_retried < 10
+          retry if n_retried < 50
           raise
         end
       end
