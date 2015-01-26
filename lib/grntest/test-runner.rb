@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2014  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2015  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -377,6 +377,7 @@ http {
              server_name #{host};
              location /d/ {
                      groonga_database #{context.relative_db_path};
+                     groonga_log_path #{context.log_path};
                      groonga on;
             }
      }
