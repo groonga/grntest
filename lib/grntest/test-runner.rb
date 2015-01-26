@@ -377,6 +377,10 @@ events {
 env #{key};
           ENV
         end
+        config_file.puts(<<-ENV)
+env LD_LIBRARY_PATH;
+env DYLD_LIBRARY_PATH;
+        ENV
 
         config_file.puts(<<-HTTP)
 http {
