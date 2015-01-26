@@ -364,7 +364,7 @@ daemon off;
 master_process off;
 worker_processes 1;
 working_directory #{context.temporary_directory_path};
-error_log groonga-httpd-access.log;
+error_log groonga-httpd-error-error.log;
 pid #{pid_file_path};
 events {
      worker_connections 1024;
