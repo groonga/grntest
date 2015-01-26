@@ -84,25 +84,25 @@ module Grntest
           http.read_timeout = @read_timeout
           http.request(request)
         end
-        normalize_response_data(response.body)
+        normalize_response_data(command, response.body)
       end
 
       def send_normal_command(command)
         url = "http://#{@host}:#{@port}#{command.to_uri_format}"
         begin
           open(url, :read_timeout => @read_timeout) do |response|
-            normalize_response_data(response.read)
+            normalize_response_data(command, response.read)
           end
         rescue OpenURI::HTTPError
           $!.io.read
         end
       end
 
-      def normalize_response_data(raw_response_data)
-        if raw_response_data.empty?
+      def normalize_response_data(command, raw_response_data)
+        if raw_response_data.empty? or command.output_type == :none
           raw_response_data
         else
-          "#{raw_response_data.chomp}\n"
+          "#{raw_response_data}\n"
         end
       end
     end
