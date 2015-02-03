@@ -1,10 +1,13 @@
 # News
 
-## 1.1.1: 2014-10-25
+## 1.1.1: 2015-02-03
 
 ### Improvements
 
   * mark reporter: Show test name on detecting memory leak.
+  * Support errno value in system call error message.
+  * Support groonga-httpd.
+  * Support groonga HTTP server.
 
 ## 1.1.0: 2014-10-25
 
