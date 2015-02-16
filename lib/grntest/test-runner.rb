@@ -298,8 +298,10 @@ EOC
           end
           yield(executor)
         ensure
-          Process.kill(:TERM, pid)
-          wait_groonga_http_shutdown(pid_file_path)
+          if pid
+            Process.kill(:TERM, pid)
+            wait_groonga_http_shutdown(pid_file_path)
+          end
         end
       ensure
         ensure_process_finished(pid)
