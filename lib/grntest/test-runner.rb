@@ -316,7 +316,7 @@ EOC
         finished_pid = Process.waitpid(pid, Process::WNOHANG)
         break if finished_pid
         n_retries += 1
-        break if n_retries > 10
+        break if n_retries > 100
         Process.kill(:TERM, pid)
         sleep(0.1)
       end
