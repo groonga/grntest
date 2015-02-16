@@ -232,7 +232,7 @@ module Grntest
           gdb_command.puts(<<-EOC)
 break main
 run
-print chdir("#{context.temporary_directory_path}")
+call chdir("#{context.temporary_directory_path}")
 EOC
         end
         command_line << "--command=#{gdb_command_path}"
