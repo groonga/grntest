@@ -282,6 +282,7 @@ EOC
       command_line = groonga_http_command(host, port, pid_file_path, context,
                                           spawn_options)
       pid = nil
+      shutdown_wait_timeout = 5
       begin
         pid = Process.spawn(env, *command_line, spawn_options)
         begin
@@ -297,10 +298,14 @@ EOC
             retry
           end
           yield(executor)
+          executor.shutdown
+          if wait_groonga_http_shutdown(pid_file_path, shutdown_wait_timeout)
+            pid = nil if wait_pid(pid, shutdown_wait_timeout)
+          end
         ensure
           if pid
             Process.kill(:TERM, pid)
-            wait_groonga_http_shutdown(pid_file_path)
+            wait_groonga_http_shutdown(pid_file_path, shutdown_wait_timeout)
           end
         end
       ensure
@@ -322,14 +327,28 @@ EOC
       end
     end
 
-    def wait_groonga_http_shutdown(pid_file_path)
+    def wait_pid(pid, timeout)
+      total_sleep_time = 0
+      sleep_time = 0.1
+      loop do
+        return true if Process.waitpid(pid, Process::WNOHANG)
+        sleep(sleep_time)
+        total_sleep_time += sleep_time
+        return false if total_sleep_time > timeout
+      end
+    end
+
+    def wait_groonga_http_shutdown(pid_file_path, timeout)
+      return false unless pid_file_path.exist?
+
       total_sleep_time = 0
       sleep_time = 0.1
       while pid_file_path.exist?
         sleep(sleep_time)
         total_sleep_time += sleep_time
-        break if total_sleep_time > 1.0
+        break if total_sleep_time > timeout
       end
+      true
     end
 
     def groonga_http_command(host, port, pid_file_path, context, spawn_options)
