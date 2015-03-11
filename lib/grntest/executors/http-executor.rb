@@ -50,7 +50,10 @@ module Grntest
       end
 
       def shutdown
-        send_command(command("shutdown"))
+        begin
+          send_command(command("shutdown"))
+        rescue Error
+        end
       end
 
       def create_sub_executor(context)
