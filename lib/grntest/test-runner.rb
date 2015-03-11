@@ -298,17 +298,16 @@ EOC
             retry
           end
           yield(executor)
+        ensure
           executor.shutdown
           if wait_groonga_http_shutdown(pid_file_path, shutdown_wait_timeout)
             pid = nil if wait_pid(pid, shutdown_wait_timeout)
           end
-        ensure
-          if pid
-            Process.kill(:TERM, pid)
-            wait_groonga_http_shutdown(pid_file_path, shutdown_wait_timeout)
-          end
         end
       ensure
+        return if pid.nil?
+        Process.kill(:TERM, pid)
+        wait_groonga_http_shutdown(pid_file_path, shutdown_wait_timeout)
         ensure_process_finished(pid)
       end
     end
