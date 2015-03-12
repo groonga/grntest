@@ -238,6 +238,16 @@ EOC
         command_line << "--command=#{gdb_command_path}"
         command_line << "--quiet"
         command_line << "--args"
+      elsif @tester.valgrind
+        if libtool_wrapper?(command)
+          command_line << find_libtool(command)
+          command_line << "--mode=execute"
+        end
+        command_line << @tester.valgrind
+        command_line << "--leak-check=full"
+        command_line << "--show-reachable=yes"
+        command_line << "--trace-origin=yes"
+        command_line << "--verbose"
       else
         spawn_options[:chdir] = context.temporary_directory_path.to_s
       end

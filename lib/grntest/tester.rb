@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2015  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -164,6 +164,12 @@ module Grntest
           tester.gdb = command || tester.default_gdb
         end
 
+        parser.on("--valgrind[=COMMAND]",
+                  "Run groonga on valgrind and use COMMAND as valgrind",
+                  "(#{tester.default_valgrind})") do |command|
+          tester.valgrind = command || tester.default_valgrind
+        end
+
         parser.on("--[no-]keep-database",
                   "Keep used database for debug after test is finished",
                   "(#{tester.keep_database?})") do |boolean|
@@ -206,6 +212,7 @@ module Grntest
     attr_accessor :n_workers
     attr_accessor :output
     attr_accessor :gdb, :default_gdb
+    attr_accessor :valgrind, :default_valgrind
     attr_writer :reporter, :keep_database, :use_color
     attr_reader :test_patterns, :test_suite_patterns
     attr_reader :exclude_test_patterns, :exclude_test_suite_patterns
@@ -229,6 +236,7 @@ module Grntest
       @exclude_test_suite_patterns = []
       detect_suitable_diff
       initialize_debuggers
+      initialize_memory_checkers
     end
 
     def run(*targets)
@@ -341,6 +349,11 @@ module Grntest
     def initialize_debuggers
       @gdb = nil
       @default_gdb = "gdb"
+    end
+
+    def initialize_memory_checkers
+      @vagrind = nil
+      @default_valgrind = "valgrind"
     end
 
     def command_exist?(name)
