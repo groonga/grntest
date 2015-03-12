@@ -229,11 +229,11 @@ module Grntest
         command_line << @tester.gdb
         gdb_command_path = context.temporary_directory_path + "groonga.gdb"
         gdb_command_path.open("w") do |gdb_command|
-          gdb_command.puts(<<-EOC)
+          gdb_command.puts(<<-COMMANDS)
 break main
 run
 call chdir("#{context.temporary_directory_path}")
-EOC
+          COMMANDS
         end
         command_line << "--command=#{gdb_command_path}"
         command_line << "--quiet"
