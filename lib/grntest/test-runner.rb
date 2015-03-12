@@ -269,6 +269,9 @@ EOC
           SUPPRESSIONS
         end
         command_line << "--suppressions=#{valgrind_suppressions_file_path}"
+        if @tester.valgrind_gen_suppressions?
+          command_line << "--gen-suppressions=all"
+        end
         command_line << "--verbose"
       else
         spawn_options[:chdir] = context.temporary_directory_path.to_s

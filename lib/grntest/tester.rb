@@ -170,6 +170,12 @@ module Grntest
           tester.valgrind = command || tester.default_valgrind
         end
 
+        parser.on("--[no-]valgrind-gen-suppressions",
+                  "Generate suppressions for Valgrind",
+                  "(#{tester.valgrind_gen_suppressions?})") do |boolean|
+          tester.valgrind_gen_suppressions = boolean
+        end
+
         parser.on("--[no-]keep-database",
                   "Keep used database for debug after test is finished",
                   "(#{tester.keep_database?})") do |boolean|
@@ -213,6 +219,7 @@ module Grntest
     attr_accessor :output
     attr_accessor :gdb, :default_gdb
     attr_accessor :valgrind, :default_valgrind
+    attr_writer :valgrind_gen_suppressions
     attr_writer :reporter, :keep_database, :use_color
     attr_reader :test_patterns, :test_suite_patterns
     attr_reader :exclude_test_patterns, :exclude_test_suite_patterns
@@ -268,6 +275,10 @@ module Grntest
         @use_color = guess_color_availability
       end
       @use_color
+    end
+
+    def valgrind_gen_suppressions?
+      @valgrind_gen_suppressions
     end
 
     def target_test?(test_name)
@@ -354,6 +365,7 @@ module Grntest
     def initialize_memory_checkers
       @vagrind = nil
       @default_valgrind = "valgrind"
+      @vagrind_gen_suppressions = false
     end
 
     def command_exist?(name)
