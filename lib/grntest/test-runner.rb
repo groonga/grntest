@@ -247,6 +247,28 @@ EOC
         command_line << "--leak-check=full"
         command_line << "--show-reachable=yes"
         command_line << "--track-origins=yes"
+        valgrind_suppressions_file_path =
+          context.temporary_directory_path + "groonga.supp"
+        valgrind_suppressions_file_path.open("w") do |suppressions|
+          suppressions.puts(<<-SUPPRESSIONS)
+{
+  dlopen
+  Memcheck:Leak
+  match-leak-kinds: reachable
+  ...
+  fun:dlopen*
+  ...
+}
+{
+  _dl_catch_error
+  Memcheck:Leak
+  match-leak-kinds: reachable
+  ...
+  fun:_dl_catch_error
+}
+          SUPPRESSIONS
+        end
+        command_line << "--suppressions=#{valgrind_suppressions_file_path}"
         command_line << "--verbose"
       else
         spawn_options[:chdir] = context.temporary_directory_path.to_s
