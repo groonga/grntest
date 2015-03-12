@@ -20,7 +20,7 @@ require "grntest/executors/base-executor"
 module Grntest
   module Executors
     class StandardIOExecutor < BaseExecutor
-      def initialize(input, output, context=nil)
+      def initialize(input, output, context)
         super(context)
         @input = input
         @output = output

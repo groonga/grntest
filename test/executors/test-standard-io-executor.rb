@@ -21,8 +21,9 @@ class TestStandardIOExecutor < Test::Unit::TestCase
   def setup
     input = StringIO.new
     output = StringIO.new
-    @executor = Grntest::Executors::StandardIOExecutor.new(input, output)
-    @context = @executor.context
+    @context = Grntest::ExecutionContext.new
+    @executor = Grntest::Executors::StandardIOExecutor.new(input, output,
+                                                           @context)
     @script = Tempfile.new("test-executor")
   end
 

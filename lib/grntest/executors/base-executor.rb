@@ -32,14 +32,14 @@ module Grntest
       end
 
       attr_reader :context
-      def initialize(context=nil)
+      def initialize(context)
         @loading = false
         @pending_command = ""
         @pending_load_command = nil
         @current_command_name = nil
         @output_type = nil
         @long_timeout = default_long_timeout
-        @context = context || ExecutionContext.new
+        @context = context
       end
 
       def execute(script_path)

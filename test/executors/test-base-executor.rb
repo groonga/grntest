@@ -17,8 +17,8 @@ require "grntest/executors/base-executor"
 
 class TestBaseExecutor < Test::Unit::TestCase
   def setup
-    @executor = Grntest::Executors::BaseExecutor.new
-    @context = @executor.context
+    @context = Grntest::ExecutionContext.new
+    @executor = Grntest::Executors::BaseExecutor.new(@context)
   end
 
   class TestErrorLogLevel < self

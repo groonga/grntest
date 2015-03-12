@@ -22,7 +22,7 @@ require "grntest/executors/base-executor"
 module Grntest
   module Executors
     class HTTPExecutor < BaseExecutor
-      def initialize(host, port, context=nil)
+      def initialize(host, port, context)
         super(context)
         @host = host
         @port = port
