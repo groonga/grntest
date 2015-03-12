@@ -246,7 +246,7 @@ EOC
         command_line << @tester.valgrind
         command_line << "--leak-check=full"
         command_line << "--show-reachable=yes"
-        command_line << "--trace-origin=yes"
+        command_line << "--track-origins=yes"
         command_line << "--verbose"
       else
         spawn_options[:chdir] = context.temporary_directory_path.to_s
