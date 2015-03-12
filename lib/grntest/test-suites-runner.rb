@@ -128,7 +128,6 @@ module Grntest
         worker_threads << Thread.new do
           succeeded = false unless worker.run(queue)
         end
-        sleep(0.2)
       end
 
       begin
