@@ -22,11 +22,11 @@ require "grntest/executors/base-executor"
 module Grntest
   module Executors
     class HTTPExecutor < BaseExecutor
-      def initialize(host, port, context)
+      def initialize(host, port, context, options={})
         super(context)
         @host = host
         @port = port
-        @read_timeout = 3
+        @read_timeout = options[:read_timeout] || 3
       end
 
       def send_command(command)

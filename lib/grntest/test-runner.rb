@@ -318,10 +318,14 @@ call chdir("#{context.temporary_directory_path}")
                                           spawn_options)
       pid = nil
       shutdown_wait_timeout = 5
+      options = {}
+      if @tester.gdb
+        options[:read_timeout] = 60 * 10
+      end
       begin
         pid = Process.spawn(env, *command_line, spawn_options)
         begin
-          executor = Executors::HTTPExecutor.new(host, port, context)
+          executor = Executors::HTTPExecutor.new(host, port, context, options)
           begin
             executor.ensure_groonga_ready
           rescue
