@@ -182,6 +182,12 @@ module Grntest
           tester.keep_database = boolean
         end
 
+        parser.on("--[no-]stop-on-failure",
+                  "Stop immediately on the first non success test",
+                  "(#{tester.stop_on_failure?})") do |boolean|
+          tester.stop_on_failure = boolean
+        end
+
         parser.on("--output=OUTPUT",
                   "Output to OUTPUT",
                   "(stdout)") do |output|
@@ -221,6 +227,7 @@ module Grntest
     attr_accessor :valgrind, :default_valgrind
     attr_writer :valgrind_gen_suppressions
     attr_writer :reporter, :keep_database, :use_color
+    attr_writer :stop_on_failure
     attr_reader :test_patterns, :test_suite_patterns
     attr_reader :exclude_test_patterns, :exclude_test_suite_patterns
     def initialize
@@ -237,6 +244,7 @@ module Grntest
       @output = $stdout
       @keep_database = false
       @use_color = nil
+      @stop_on_failure = false
       @test_patterns = []
       @test_suite_patterns = []
       @exclude_test_patterns = []
@@ -275,6 +283,10 @@ module Grntest
         @use_color = guess_color_availability
       end
       @use_color
+    end
+
+    def stop_on_failure?
+      @stop_on_failure
     end
 
     def valgrind_gen_suppressions?

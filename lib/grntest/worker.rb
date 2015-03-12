@@ -107,6 +107,9 @@ module Grntest
             succeeded = false unless runner.run
 
             break if interruptted?
+            if @tester.stop_on_failure? and @test_suites_result.have_failure?
+              break
+            end
           end
           @status = "finished"
           @reporter.on_suite_finish(@suite_name) if @suite_name

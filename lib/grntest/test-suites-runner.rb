@@ -64,6 +64,13 @@ module Grntest
       collect_count(:n_not_checked_tests)
     end
 
+    def have_failure?
+      @workers.any? do |worker|
+        worker.result.n_failed_tests > 0 or
+          worker.result.n_leaked_tests > 0
+      end
+    end
+
     private
     def collect_count(item)
       counts = @workers.collect do |worker|
