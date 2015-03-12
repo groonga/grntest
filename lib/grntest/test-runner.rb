@@ -228,7 +228,7 @@ module Grntest
         end
         command_line << @tester.gdb
         gdb_command_path = context.temporary_directory_path + "groonga.gdb"
-        File.open(gdb_command_path, "w") do |gdb_command|
+        gdb_command_path.open("w") do |gdb_command|
           gdb_command.puts(<<-EOC)
 break main
 run
