@@ -63,7 +63,7 @@ module Grntest
   end
 
   class Worker
-    attr_reader :id, :tester, :test_suites_rusult, :reporter
+    attr_reader :id, :tester, :reporter
     attr_reader :suite_name, :test_script_path, :test_name, :status, :result
     def initialize(id, tester, test_suites_result, reporter)
       @id = id
