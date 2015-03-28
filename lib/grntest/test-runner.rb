@@ -501,8 +501,17 @@ http {
       when "json", "msgpack"
         status = nil
         values = nil
+        content = content.chomp
+        if type == "json" and /\A([^(]+\()(.+)(\);)\z/ =~ content
+          jsonp = true
+          jsonp_start = $1
+          content = $2
+          jsonp_end = $3
+        else
+          jsonp = false
+        end
         begin
-          status, *values = ResponseParser.parse(content.chomp, type)
+          status, *values = ResponseParser.parse(content, type)
         rescue ParseError
           return $!.message
         end
@@ -513,7 +522,12 @@ http {
         if normalized_output.bytesize > @max_n_columns
           normalized_output = JSON.pretty_generate(normalized_output_content)
         end
-        normalize_raw_content(normalized_output)
+        normalized_raw_content = normalize_raw_content(normalized_output)
+        if jsonp
+          jsonp_start + normalized_raw_content + jsonp_end
+        else
+          normalized_raw_content
+        end
       when "xml"
         normalized_xml = normalize_output_xml(content, options)
         normalize_raw_content(normalized_xml)
