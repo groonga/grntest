@@ -524,7 +524,7 @@ http {
         end
         normalized_raw_content = normalize_raw_content(normalized_output)
         if jsonp
-          jsonp_start + normalized_raw_content + jsonp_end
+          "#{jsonp_start}#{normalized_raw_content.chomp}#{jsonp_end}\n"
         else
           normalized_raw_content
         end
