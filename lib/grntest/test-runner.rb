@@ -461,6 +461,9 @@ http {
 
     def create_empty_database(db_path)
       output_fd = Tempfile.new("create-empty-database")
+      env = {
+        "GRN_FMALLOC_PROB" => nil,
+      }
       create_database_command = [
         @tester.groonga,
         "--output-fd", output_fd.to_i.to_s,
@@ -470,7 +473,7 @@ http {
       options = {
         output_fd.to_i => output_fd.to_i
       }
-      system(*create_database_command, options)
+      system(env, *create_database_command, options)
       output_fd.close(true)
     end
 
