@@ -1,0 +1,8 @@
+notifications:
+  email:
+    recipients:
+      - groonga-commit@lists.sourceforge.jp
+rvm:
+  - 2.0.0
+  - 2.1
+  - 2.2
