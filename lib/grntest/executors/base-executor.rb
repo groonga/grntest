@@ -297,6 +297,7 @@ module Grntest
         important_messages = []
         parser = LogParser.new
         parser.parse(log) do |entry|
+          p entry
           next unless important_log_level?(entry.log_level)
           next if backtrace_log_message?(entry.message)
           important_messages << "\#|#{entry.log_level}| #{entry.message}"
