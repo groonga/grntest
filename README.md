@@ -217,6 +217,8 @@ Here are available `NAME` s:
 * `long-timeout`
 * `on-error`
 * `omit`
+* `add-important-log-levels`
+* `remove-important-log-levels`
 
 `ARGUMENTS...` are depends on directive. A directive doesn't require
 any arguments but a directive requires arguments.
@@ -429,6 +431,83 @@ Example:
 # Omit this test until the feature is implemented.
 #@omit "This feature is not implemented yet."
 new_excelent_command
+```
+
+#### `add-important-log-levels`
+
+Usage:
+
+```
+#@add-important-log-levels LEVEL_1 LEVEL_2 ...
+```
+
+Add `LEVEL_N` to important log level list. grntest outputs log
+messages when their log level is included in important log level
+list.
+
+The default important log level list has the following log levels:
+
+  * `emergency`
+  * `alert`
+  * `critical`
+  * `error`
+  * `warning`
+  * `notice`
+
+If you want to test log messages for `info`, `debug` or `dump` log
+levels, you need to add the log level to important log level list.
+
+Example:
+
+```
+# Enable logs for debug level
+log_level --level debug
+# Collect debug level log messages
+#@add-important-log-levels debug
+log_put --level debug --message "This is a message"
+# The following messages is collected by grntest
+#|d| This is a message
+```
+
+#### `remove-important-log-levels`
+
+Usage:
+
+```
+#@remove-important-log-levels LEVEL_1 LEVEL_2 ...
+```
+
+Remove `LEVEL_N` from important log level list. grntest outputs log
+messages when their log level is included in important log level
+list.
+
+The default important log level list has the following log levels:
+
+  * `emergency`
+  * `alert`
+  * `critical`
+  * `error`
+  * `warning`
+  * `notice`
+
+You can remove them from important log level list. You can only remove
+log levels added by `add-important-log-levels`.
+
+Example:
+
+```
+# Enable logs for debug level
+log_level --level debug
+# Collect debug level log messages
+#@add-important-log-levels debug
+log_put --level debug --message "This is a message"
+# The following messages is collected by grntest
+#|d| This is a message
+
+# Disable collecting debug level log messages
+#@remove-important-log-levels debug
+log_put --level debug --message "This is a message"
+# No message is collected by grntest
 ```
 
 ## Options
