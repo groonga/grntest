@@ -40,6 +40,7 @@ module Grntest
         @output_type = nil
         @long_timeout = default_long_timeout
         @context = context
+        @custom_important_log_levels = []
       end
 
       def execute(script_path)
@@ -191,6 +192,24 @@ module Grntest
         @context.omit
       end
 
+      def execute_directive_add_important_log_levels(line, content, options)
+        log_levels = options.collect do |log_level|
+          normalize_log_level(log_level)
+        end
+        @custom_important_log_levels |= log_levels
+      end
+
+      def execute_directive_remove_important_log_levels(line, content, options)
+        log_levels = options.collect do |log_level|
+          normalize_log_level(log_level)
+        end
+        @custom_important_log_levels -= log_levels
+      end
+
+      def normalize_log_level(level)
+        level[0]
+      end
+
       def execute_directive(line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -210,6 +229,10 @@ module Grntest
           execute_directive_on_error(line, content, options)
         when "omit"
           execute_directive_omit(line, content, options)
+        when "add-important-log-levels"
+          execute_directive_add_important_log_levels(line, content, options)
+        when "remove-important-log-levels"
+          execute_directive_remove_important_log_levels(line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
@@ -296,7 +319,8 @@ module Grntest
       end
 
       def important_log_level?(log_level)
-        ["E", "A", "C", "e", "w"].include?(log_level)
+        ["E", "A", "C", "e", "w"].include?(log_level) or
+          @custom_important_log_levels.include?(log_level)
       end
 
       def backtrace_log_message?(message)
