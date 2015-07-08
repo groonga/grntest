@@ -1,5 +1,16 @@
 # News
 
+## 1.1.2: 2015-07-08
+
+### Improvements
+
+  * Improve HTTP server related error case handlings.
+  * Support Valgrind.
+  * Added `--stop-on-failure` that stops testing when one test is failed.
+  * Support JSONP.
+  * Add `add-important-log-levels` directive.
+  * Add `remove-important-log-levels` directive.
+
 ## 1.1.1: 2015-02-03
 
 ### Improvements
