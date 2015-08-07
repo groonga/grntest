@@ -32,11 +32,19 @@ module Grntest
 
     private
     def normalize_message(mark, message)
-      if mark != ">"
+      case mark
+      when ">"
+        message = normalize_command(message)
+      else
         message = normalize_elapsed_time(message)
+        message = normalize_cache_content(message)
       end
-      message = normalize_cache_content(message)
       message
+    end
+
+    def normalize_command(message)
+      command = Groonga::Command::Parser.parse(message)
+      command.to_command_format
     end
 
     def normalize_elapsed_time(message)
