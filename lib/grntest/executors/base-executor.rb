@@ -210,6 +210,11 @@ module Grntest
         level[0]
       end
 
+      def execute_directive_sleep(line, content, options)
+        time = options[0].to_f
+        sleep(time) if time >= 0
+      end
+
       def execute_directive(line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -233,6 +238,8 @@ module Grntest
           execute_directive_add_important_log_levels(line, content, options)
         when "remove-important-log-levels"
           execute_directive_remove_important_log_levels(line, content, options)
+        when "sleep"
+          execute_directive_sleep(line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
