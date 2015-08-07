@@ -284,6 +284,7 @@ call chdir("#{context.temporary_directory_path}")
       command_line = command_command_line(@tester.groonga, context,
                                           spawn_options)
       command_line << "--log-path=#{context.log_path}"
+      command_line << "--query-log-path=#{context.query_log_path}"
       command_line << "--working-directory=#{context.temporary_directory_path}"
       command_line
     end
@@ -450,6 +451,7 @@ http {
              location /d/ {
                      groonga_database #{context.relative_db_path};
                      groonga_log_path #{context.log_path};
+                     groonga_query_log_path #{context.query_log_path};
                      groonga on;
             }
      }
@@ -487,6 +489,8 @@ http {
           normalized_result << normalize_output(content, options)
         when :error
           normalized_result << normalize_error(content)
+        when :query
+          normalized_result << normalize_raw_content(content)
         when :n_leaked_objects
           result.n_leaked_objects = content
         end

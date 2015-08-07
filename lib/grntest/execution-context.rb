@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2015  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ module Grntest
     attr_accessor :output_type
     attr_accessor :on_error
     attr_accessor :abort_tag
+    attr_writer :collect_query_log
     def initialize
       @logging = true
       @base_directory = Pathname(".")
@@ -37,10 +38,15 @@ module Grntest
       @on_error = :default
       @abort_tag = nil
       @omitted = false
+      @collect_query_log = false
     end
 
     def logging?
       @logging
+    end
+
+    def collect_query_log?
+      @collect_query_log
     end
 
     def execute
@@ -60,6 +66,14 @@ module Grntest
 
     def log
       @log ||= File.open(log_path.to_s, "a+")
+    end
+
+    def query_log_path
+      @temporary_directory_path + "groonga.query.log"
+    end
+
+    def query_log
+      @query_log ||= File.open(query_log_path.to_s, "a+")
     end
 
     def relative_db_path

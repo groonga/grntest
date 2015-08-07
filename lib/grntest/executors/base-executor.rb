@@ -21,6 +21,7 @@ require "groonga/command/parser"
 
 require "grntest/error"
 require "grntest/log-parser"
+require "grntest/query-log-parser"
 require "grntest/execution-context"
 require "grntest/response-parser"
 
@@ -215,6 +216,10 @@ module Grntest
         sleep(time) if time >= 0
       end
 
+      def execute_directive_collect_query_log(line, content, options)
+        @context.collect_query_log = (options[0] == "true")
+      end
+
       def execute_directive(line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -240,6 +245,8 @@ module Grntest
           execute_directive_remove_important_log_levels(line, content, options)
         when "sleep"
           execute_directive_sleep(line, content, options)
+        when "collect-query-log"
+          execute_directive_collect_query_log(line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
@@ -291,6 +298,7 @@ module Grntest
           type = @output_type
           log_output(response)
           log_error(extract_important_messages(read_all_log))
+          log_query_log_content(read_all_query_log)
 
           @context.error if error_response?(response, type)
         end
@@ -298,6 +306,10 @@ module Grntest
 
       def read_all_log
         read_all_readable_content(context.log, :first_timeout => 0)
+      end
+
+      def read_all_query_log
+        read_all_readable_content(context.query_log, :first_timeout => 0)
       end
 
       def extract_important_messages(log)
@@ -377,6 +389,19 @@ module Grntest
 
       def log_error(content)
         log_force(:error, content, {})
+      end
+
+      def log_query(content)
+        log_force(:query, content, {})
+      end
+
+      def log_query_log_content(content)
+        return unless @context.collect_query_log?
+
+        parser = QueryLogParser.new
+        parser.parse(content) do |entry|
+          log_query("\##{entry.mark}#{entry.message}")
+        end
       end
 
       def default_long_timeout
