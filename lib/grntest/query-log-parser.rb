@@ -44,6 +44,9 @@ module Grntest
 
     def normalize_command(message)
       command = Groonga::Command::Parser.parse(message)
+      if command.output_type == :json
+        command[:output_type] = nil
+      end
       command.to_command_format
     end
 
