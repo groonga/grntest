@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2012-2015  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2015  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,24 +14,27 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 require "grntest/reporters/mark-reporter"
-require "grntest/reporters/buffered-mark-reporter"
-require "grntest/reporters/stream-reporter"
-require "grntest/reporters/inplace-reporter"
 
 module Grntest
   module Reporters
-    class << self
-      def create_reporter(tester)
-        case tester.reporter
-        when :mark
-          MarkReporter.new(tester)
-        when :"buffered-mark"
-          BufferedMarkReporter.new(tester)
-        when :stream
-          StreamReporter.new(tester)
-        when :inplace
-          InplaceReporter.new(tester)
-        end
+    class BufferedMarkReporter < MarkReporter
+      def initialize(tester)
+        super
+        @buffer = ""
+      end
+
+      private
+      def print_new_line
+        puts(@buffer)
+        @buffer.clear
+      end
+
+      def print_mark(mark)
+        increment_current_column(mark)
+        @buffer << mark
+      end
+
+      def flush_mark
       end
     end
   end

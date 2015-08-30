@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2015  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -155,13 +153,17 @@ module Grntest
       end
 
       def print(message)
-        @current_column += string_width(message.to_s)
+        increment_current_column(message)
         @output.print(message)
       end
 
       def puts(*messages)
         reset_current_column
         @output.puts(*messages)
+      end
+
+      def increment_current_column(message)
+        @current_column += string_width(message.to_s)
       end
 
       def reset_current_column

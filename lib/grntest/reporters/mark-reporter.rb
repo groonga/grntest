@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2015  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ module Grntest
       def on_test_failure(worker, result)
         synchronize do
           report_test_result_mark("F", result)
-          puts
+          print_new_line
           report_test(worker, result)
           report_failure(result)
         end
@@ -54,7 +54,7 @@ module Grntest
       def on_test_leak(worker, result)
         synchronize do
           report_test_result_mark("L(#{result.n_leaked_objects})", result)
-          puts
+          print_new_line
           report_test(worker, result)
           if result.checked?
             report_actual(result)
@@ -67,7 +67,7 @@ module Grntest
       def on_test_omission(worker, result)
         synchronize do
           report_test_result_mark("O", result)
-          puts
+          print_new_line
           report_test(worker, result)
           report_actual(result)
         end
@@ -76,7 +76,7 @@ module Grntest
       def on_test_no_check(worker, result)
         synchronize do
           report_test_result_mark("N", result)
-          puts
+          print_new_line
           report_test(worker, result)
           report_actual(result)
         end
@@ -92,22 +92,34 @@ module Grntest
       end
 
       def on_finish(result)
-        puts
-        puts
+        print_new_line
+        print_new_line
         report_summary(result)
       end
 
       private
       def report_test_result_mark(mark, result)
         if @term_width < @current_column + mark.bytesize
-          puts
+          print_new_line
         end
-        print(colorize(mark, result))
+        print_mark(colorize(mark, result))
         if @term_width <= @current_column
-          puts
+          print_new_line
         else
-          @output.flush
+          flush_mark
         end
+      end
+
+      def print_new_line
+        puts
+      end
+
+      def print_mark(mark)
+        print(mark)
+      end
+
+      def flush_mark
+        @output.flush
       end
     end
   end
