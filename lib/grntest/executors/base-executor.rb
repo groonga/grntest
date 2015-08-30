@@ -348,7 +348,9 @@ module Grntest
           true
         when /\Agroonga\(\) \[0x[\da-f]+\]\z/
           true
-        when /\A\d+\s+(?:lib\S+\.dylib|groonga|\?\?\?)\s+0x[\da-f]+ \S+ \+ \d+\z/
+        when /\A\d+\s+(?:lib\S+\.dylib|\S+\.so|groonga|\?\?\?)\s+
+                0x[\da-f]+\s
+                \S+\s\+\s\d+\z/x
           true
         else
           false
