@@ -325,7 +325,7 @@ module Grntest
 
       def read_all_readable_content(output, options={})
         content = ""
-        first_timeout = options[:first_timeout] || 1
+        first_timeout = options[:first_timeout] || 5
         timeout = first_timeout
         while IO.select([output], [], [], timeout)
           break if output.eof?
