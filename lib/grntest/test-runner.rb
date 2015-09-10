@@ -538,6 +538,8 @@ http {
       when "xml"
         normalized_xml = normalize_output_xml(content, options)
         normalize_raw_content(normalized_xml)
+      when "groonga-command"
+        normalize_raw_content(content.chomp)
       else
         normalize_raw_content(content)
       end
