@@ -62,6 +62,7 @@ module Grntest
       MAY_SLOW_COMMANDS = [
         "column_create",
         "register",
+        "plugin_register",
         "load",
       ]
       def may_slow_command?
