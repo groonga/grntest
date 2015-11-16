@@ -584,14 +584,10 @@ http {
 
     def normalize_path_in_error_message(content)
       case content
-      when /\A(.*'fopen: failed to open mruby script file: )<(.+?)>'(.*)\z/
+      when /\A(.*: fopen: failed to open mruby script file: )<(.+?)>?\z/
         pre = $1
         path = $2
-        post = $3
-        normalized_path = File.basename(path)
-        post = post.gsub(/\[\d+\]\z/, "[?]")
-        post = "" unless /[\)\]]\z/ =~ post
-        "#{pre}<#{normalized_path}>'#{post}"
+        "#{pre}<PATH>"
       else
         content
       end
