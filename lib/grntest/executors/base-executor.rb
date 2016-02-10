@@ -128,6 +128,17 @@ module Grntest
         execute_script(Pathname(path))
       end
 
+      def expand_variables(string)
+        string.gsub(/\#{(.+?)}/) do |matched|
+          case $1
+          when "db_path"
+            @context.db_path.to_s
+          else
+            matched
+          end
+        end
+      end
+
       def execute_directive_copy_path(line, content, options)
         source, destination, = options
         if source.nil? or destination.nil?
@@ -140,8 +151,8 @@ module Grntest
           end
           return
         end
-        source = resolve_path(Pathname(source))
-        destination = resolve_path(Pathname(destination))
+        source = resolve_path(Pathname(expand_variables(source)))
+        destination = resolve_path(Pathname(expand_variables(destination)))
         FileUtils.cp_r(source.to_s, destination.to_s)
       end
 
