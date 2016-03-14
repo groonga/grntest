@@ -204,7 +204,11 @@ module Grntest
                                                        groonga_output,
                                                        context)
           executor.ensure_groonga_ready
-          yield(executor)
+          begin
+            yield(executor)
+          ensure
+            pid = nil if executor.shutdown(pid)
+          end
         end
       ensure
         Process.waitpid(pid) if pid
@@ -339,7 +343,7 @@ call chdir("#{context.temporary_directory_path}")
           end
           yield(executor)
         ensure
-          executor.shutdown
+          pid = nil if executor.shutdown(pid)
           if wait_groonga_http_shutdown(pid_file_path, shutdown_wait_timeout)
             pid = nil if wait_pid(pid, shutdown_wait_timeout)
           end

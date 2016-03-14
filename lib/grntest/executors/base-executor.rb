@@ -72,7 +72,33 @@ module Grntest
         @context.result
       end
 
+      def shutdown(pid)
+        begin
+          send_command(command("shutdown"))
+        rescue
+          return false
+        end
+
+        status = nil
+        total_sleep_time = 0
+        sleep_time = 0.1
+        loop do
+          _, status = Process.waitpid2(pid, Process::WNOHANG)
+          break if status
+          sleep(sleep_time)
+          total_sleep_time += sleep_time
+          return false if total_sleep_time > timeout
+        end
+
+        log_error(read_all_log) unless status.success?
+        true
+      end
+
       private
+      def command(command_line)
+        Groonga::Command::Parser.parse(command_line)
+      end
+
       def create_parser
         parser = Groonga::Command::Parser.new
         parser.on_command do |command|

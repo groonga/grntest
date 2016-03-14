@@ -49,22 +49,11 @@ module Grntest
         end
       end
 
-      def shutdown
-        begin
-          send_command(command("shutdown"))
-        rescue Error
-        end
-      end
-
       def create_sub_executor(context)
         self.class.new(@host, @port, context)
       end
 
       private
-      def command(command_line)
-        Groonga::Command::Parser.parse(command_line)
-      end
-
       MAX_URI_SIZE = 4096
       def send_load_command(command)
         lines = command.original_source.lines
