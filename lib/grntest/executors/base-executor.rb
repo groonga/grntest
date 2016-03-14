@@ -80,6 +80,7 @@ module Grntest
         end
 
         status = nil
+        timeout = 1
         total_sleep_time = 0
         sleep_time = 0.1
         loop do
