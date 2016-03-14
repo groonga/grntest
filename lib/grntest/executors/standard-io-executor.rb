@@ -28,7 +28,7 @@ module Grntest
 
       def send_command(command)
         command_line = command.original_source
-        unless command.has_key?(:output_type)
+        if !command.key?(:output_type) and @output_type
           command_line = command_line.sub(/$/, " --output_type #{@output_type}")
         end
         begin
