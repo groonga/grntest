@@ -82,7 +82,7 @@ module Grntest
         status = nil
         timeout = 1
         total_sleep_time = 0
-        sleep_time = 0.1
+        sleep_time = 0.05
         loop do
           _, status = Process.waitpid2(pid, Process::WNOHANG)
           break if status
