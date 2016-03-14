@@ -27,8 +27,8 @@ module Grntest
       end
 
       def send_command(command)
-        command_line = @current_command.original_source
-        unless @current_command.has_key?(:output_type)
+        command_line = command.original_source
+        unless command.has_key?(:output_type)
           command_line = command_line.sub(/$/, " --output_type #{@output_type}")
         end
         begin
@@ -39,7 +39,7 @@ module Grntest
           message = "failed to write to groonga: <#{command_line}>: #{$!}"
           raise Error.new(message)
         end
-        read_output
+        read_output(command)
       end
 
       def ensure_groonga_ready
@@ -53,9 +53,9 @@ module Grntest
       end
 
       private
-      def read_output
+      def read_output(command)
         options = {}
-        options[:first_timeout] = @long_timeout if may_slow_command?
+        options[:first_timeout] = @long_timeout if may_slow_command?(command)
         read_all_readable_content(@output, options)
       end
 
@@ -65,8 +65,8 @@ module Grntest
         "plugin_register",
         "register",
       ]
-      def may_slow_command?
-        MAY_SLOW_COMMANDS.include?(@current_command.name)
+      def may_slow_command?(command)
+        MAY_SLOW_COMMANDS.include?(command.name)
       end
     end
   end
