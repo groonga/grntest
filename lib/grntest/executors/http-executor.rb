@@ -63,7 +63,9 @@ module Grntest
 
         values = command.arguments.delete(:values)
         if lines.size >= 2 and lines[1].start_with?("[")
-          command.arguments.delete(:columns)
+          unless /\s--columns\s/ =~ lines.first
+            command.arguments.delete(:columns)
+          end
           body = lines[1..-1].join
         else
           body = values
