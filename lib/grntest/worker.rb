@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2016  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -148,7 +146,9 @@ module Grntest
     def on_test_omission(result)
       @status = "omitted"
       @result.on_test_omission
-      @reporter.on_test_omission(self, result)
+      unless @tester.suppress_omit_log?
+        @reporter.on_test_omission(self, result)
+      end
     end
 
     def on_test_no_check(result)

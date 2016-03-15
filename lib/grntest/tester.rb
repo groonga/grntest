@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2012-2015  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2016  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -188,6 +186,12 @@ module Grntest
           tester.stop_on_failure = boolean
         end
 
+        parser.on("--no-suppress-omit-log",
+                  "Suppress omit logs",
+                  "(#{tester.suppress_omit_log?})") do |boolean|
+          tester.suppress_omit_log = boolean
+        end
+
         parser.on("--output=OUTPUT",
                   "Output to OUTPUT",
                   "(stdout)") do |output|
@@ -228,6 +232,7 @@ module Grntest
     attr_writer :valgrind_gen_suppressions
     attr_writer :reporter, :keep_database, :use_color
     attr_writer :stop_on_failure
+    attr_writer :suppress_omit_log
     attr_reader :test_patterns, :test_suite_patterns
     attr_reader :exclude_test_patterns, :exclude_test_suite_patterns
     def initialize
@@ -245,6 +250,7 @@ module Grntest
       @keep_database = false
       @use_color = nil
       @stop_on_failure = false
+      @suppress_omit_log = true
       @test_patterns = []
       @test_suite_patterns = []
       @exclude_test_patterns = []
@@ -287,6 +293,10 @@ module Grntest
 
     def stop_on_failure?
       @stop_on_failure
+    end
+
+    def suppress_omit_log?
+      @suppress_omit_log
     end
 
     def valgrind_gen_suppressions?
