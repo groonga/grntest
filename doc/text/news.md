@@ -1,5 +1,20 @@
 # News
 
+## 1.1.3: 2016-03-20
+
+### Improvements
+
+  * Added `sleep` directive.
+  * Added `collect-query-log` directive.
+  * Added `buffered-mark` reporter. You can use it by
+    `--runner=buffered-mark`.
+  * Improved OS X support.
+  * Supported `#{db_path}` in `copy-path` directive argument.
+  * Supported SEGV detection on exit.
+  * Supported `--columns` option of `load` command.
+  * Suppressed omit logs by default. You can enable it by
+    `--no-suppress-omit-log`.
+
 ## 1.1.2: 2015-07-08
 
 ### Improvements
