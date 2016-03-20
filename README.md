@@ -219,6 +219,7 @@ Here are available `NAME` s:
 * `omit`
 * `add-important-log-levels`
 * `remove-important-log-levels`
+* `sleep`
 
 `ARGUMENTS...` are depends on directive. A directive doesn't require
 any arguments but a directive requires arguments.
@@ -508,6 +509,28 @@ log_put --level debug --message "This is a message"
 #@remove-important-log-levels debug
 log_put --level debug --message "This is a message"
 # No message is collected by grntest
+```
+
+#### `sleep`
+
+Usage:
+
+```
+#@sleep SECOND
+```
+
+It stops execution while the specified seconds.
+
+Example:
+
+```
+load --table Users
+[
+{"_key": "User1"}
+]
+#@sleep 1.5
+# Run select after 1.5 sec.
+select Users --query _key:User1
 ```
 
 ## Options
