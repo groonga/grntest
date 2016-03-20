@@ -359,6 +359,9 @@ Usage:
 It copies a path from `SOURCE` to `DESTINATION`. You can use it for
 both file and directory. It is useful for using fixture data.
 
+You can use `#{db_path}` in `SOURCE` and `DESTINATION`. `#{db_path}`
+is expanded to the path of the database.
+
 Example:
 
 ```
