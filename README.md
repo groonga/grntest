@@ -220,6 +220,7 @@ Here are available `NAME` s:
 * `add-important-log-levels`
 * `remove-important-log-levels`
 * `sleep`
+* `collect-query-log`
 
 `ARGUMENTS...` are depends on directive. A directive doesn't require
 any arguments but a directive requires arguments.
@@ -531,6 +532,24 @@ load --table Users
 #@sleep 1.5
 # Run select after 1.5 sec.
 select Users --query _key:User1
+```
+
+#### `collect-query-log`
+
+Usage:
+
+```
+#@collect-query-log [true|false]
+```
+
+It collects messages from query log and prints them.
+
+Example:
+
+```
+#@collect-query-log true
+select Users --query _key:User1
+#@collect-query-log false
 ```
 
 ## Options
