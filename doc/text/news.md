@@ -1,5 +1,11 @@
 # News
 
+## 1.1.5: 2016-04-26
+
+### Fixes
+
+  * [Windows] Fixed a bug that backtrace isn't detected.
+
 ## 1.1.4: 2016-04-26
 
 ### Improvements
