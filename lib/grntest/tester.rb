@@ -345,6 +345,7 @@ module Grntest
       targets.each do |target|
         target_path = Pathname(target)
         next unless target_path.exist?
+        target_path = target_path.cleanpath
         if target_path.directory?
           load_tests_under_directory(tests, target_path)
         else
