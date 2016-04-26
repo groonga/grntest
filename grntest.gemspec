@@ -45,6 +45,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency("json")
   spec.add_runtime_dependency("msgpack")
+  spec.add_runtime_dependency("lcs-diff")
   spec.add_runtime_dependency("groonga-command-parser")
 
   spec.add_development_dependency("bundler")

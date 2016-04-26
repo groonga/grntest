@@ -101,6 +101,7 @@ module Grntest
 
         parser.on("--diff=DIFF",
                   "Use DIFF as diff command",
+                  "Use --diff=internal to use internal differ",
                   "(#{tester.diff})") do |diff|
           tester.diff = diff
           tester.diff_options.clear
@@ -391,9 +392,12 @@ module Grntest
       if command_exist?("cut-diff")
         @diff = "cut-diff"
         @diff_options = ["--context-lines", "10"]
-      else
+      elsif command_exist?("diff")
         @diff = "diff"
         @diff_options = ["-u"]
+      else
+        @diff = "internal"
+        @diff_options = []
       end
     end
 
@@ -409,9 +413,16 @@ module Grntest
     end
 
     def command_exist?(name)
+      exeext = RbConfig::CONFIG["EXEEXT"]
       ENV["PATH"].split(File::PATH_SEPARATOR).each do |path|
-        absolute_path = File.join(path, name)
-        return true if File.executable?(absolute_path)
+        raw_candidate = File.join(path, name)
+        candidates = [
+          raw_candidate,
+          "#{raw_candidate}#{exeext}",
+        ]
+        candidates.each do |candidate|
+          return true if File.executable?(candidate)
+        end
       end
       false
     end

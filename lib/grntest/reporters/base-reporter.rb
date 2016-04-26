@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2015  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2016  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,6 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+require "grntest/diff-reporter"
 
 module Grntest
   module Reporters
@@ -93,14 +95,29 @@ module Grntest
       end
 
       def report_diff(expected, actual)
+        if @tester.diff == "internal"
+          run_diff_reporter(expected, actual)
+        else
+          run_diff_command(expected, actual)
+        end
+      end
+
+      def run_diff_command(expected, actual)
         create_temporary_file("expected", expected) do |expected_file|
           create_temporary_file("actual", actual) do |actual_file|
             diff_options = @tester.diff_options.dup
-            diff_options.concat(["--label", "(expected)", expected_file.path,
-                                 "--label", "(actual)", actual_file.path])
+            diff_options += [
+              "--label", "(expected)", expected_file.path,
+              "--label", "(actual)", actual_file.path,
+            ]
             system(@tester.diff, *diff_options)
           end
         end
+      end
+
+      def run_diff_reporter(expected, actual)
+        reporter = DiffReporter.new(expected, actual)
+        reporter.report
       end
 
       def report_test(worker, result)
