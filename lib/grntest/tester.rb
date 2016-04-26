@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+require "rbconfig"
 require "optparse"
 require "pathname"
 
@@ -40,19 +41,19 @@ module Grntest
         parser.on("--groonga=COMMAND",
                   "Use COMMAND as groonga command",
                   "(#{tester.groonga})") do |command|
-          tester.groonga = command
+          tester.groonga = normalize_command(command)
         end
 
         parser.on("--groonga-httpd=COMMAND",
                   "Use COMMAND as groonga-httpd command for groonga-httpd tests",
                   "(#{tester.groonga_httpd})") do |command|
-          tester.groonga_httpd = command
+          tester.groonga_httpd = normalize(command)
         end
 
         parser.on("--groonga-suggest-create-dataset=COMMAND",
                   "Use COMMAND as groonga_suggest_create_dataset command",
                   "(#{tester.groonga_suggest_create_dataset})") do |command|
-          tester.groonga_suggest_create_dataset = command
+          tester.groonga_suggest_create_dataset = normalize(command)
         end
 
         available_interfaces = [:stdio, :http]
@@ -211,6 +212,22 @@ module Grntest
         end
 
         parser
+      end
+
+      def normalize_command(command)
+        if File.executable?(command)
+          return File.expand_path(command)
+        end
+
+        exeext = RbConfig::CONFIG["EXEEXT"]
+        unless exeext.empty?
+          command_exe = "#{command}#{exeext}"
+          if File.executable?(command_exe)
+            return File.expand_path(command_exe)
+          end
+        end
+
+        command
       end
 
       def parse_name_or_pattern(name)
