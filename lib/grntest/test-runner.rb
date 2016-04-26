@@ -187,17 +187,23 @@ module Grntest
           groonga_input = input_write
           groonga_output = output_read
 
-          input_fd = input_read.to_i
-          output_fd = output_write.to_i
           env = {}
-          spawn_options = {
-            input_fd => input_fd,
-            output_fd => output_fd
-          }
+          spawn_options = {}
           command_line = groonga_command_line(context, spawn_options)
+          if Platform.windows?
+            spawn_options[:in] = input_read
+            spawn_options[:out] = output_read
+          else
+            input_fd = input_read.to_i
+            output_fd = output_write.to_i
+            spawn_options[input_fd] = input_fd
+            spawn_options[output_fd] = output_fd
+            command_line += [
+              "--input-fd", input_fd.to_s,
+              "--output-fd", output_fd.to_s,
+            ]
+          end
           command_line += [
-            "--input-fd", input_fd.to_s,
-            "--output-fd", output_fd.to_s,
             context.relative_db_path.to_s,
           ]
           pid = Process.spawn(env, *command_line, spawn_options)
@@ -467,21 +473,26 @@ http {
     end
 
     def create_empty_database(db_path)
-      output_fd = Tempfile.new("create-empty-database")
+      output_file = Tempfile.new("create-empty-database")
       env = {
         "GRN_FMALLOC_PROB" => nil,
       }
-      create_database_command = [
-        @tester.groonga,
-        "--output-fd", output_fd.to_i.to_s,
+      options = {}
+      create_database_command = [@tester.groonga]
+      if Platform.windows?
+        options[:out] = output_file
+      else
+        options[output_file.fileno] = output_file.fileno
+        create_database_command += [
+          "--output-fd", output_file.fileno.to_s,
+        ]
+      end
+      create_database_command += [
         "-n", db_path,
-        "shutdown"
+        "shutdown",
       ]
-      options = {
-        output_fd.to_i => output_fd.to_i
-      }
       system(env, *create_database_command, options)
-      output_fd.close(true)
+      output_file.close(true)
     end
 
     def normalize_actual_result(result)
