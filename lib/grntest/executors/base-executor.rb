@@ -292,9 +292,11 @@ module Grntest
       end
 
       def execute_suggest_create_dataset(dataset_name)
-        command_line = [@context.groonga_suggest_create_dataset,
-                        @context.db_path.to_s,
-                        dataset_name]
+        command_line = [
+          @context.groonga_suggest_create_dataset,
+          @context.db_path.to_s,
+          dataset_name,
+        ]
         packed_command_line = command_line.join(" ")
         log_input("#{packed_command_line}\n")
         begin
