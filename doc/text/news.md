@@ -1,5 +1,11 @@
 # News
 
+## 1.1.4: 2016-04-26
+
+### Improvements
+
+  * Supported Windows.
+
 ## 1.1.3: 2016-03-20
 
 ### Improvements
