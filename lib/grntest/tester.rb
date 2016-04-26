@@ -59,7 +59,7 @@ module Grntest
         available_interfaces = [:stdio, :http]
         available_interface_labels = available_interfaces.join(", ")
         parser.on("--interface=INTERFACE", available_interfaces,
-                  "Use INTERFACE for communicating groonga",
+                  "Use INTERFACE for communicating Groonga",
                   "[#{available_interface_labels}]",
                   "(#{tester.interface})") do |interface|
           tester.interface = interface
@@ -158,13 +158,13 @@ module Grntest
         end
 
         parser.on("--gdb[=COMMAND]",
-                  "Run groonga on gdb and use COMMAND as gdb",
+                  "Run Groonga on gdb and use COMMAND as gdb",
                   "(#{tester.default_gdb})") do |command|
           tester.gdb = command || tester.default_gdb
         end
 
         parser.on("--valgrind[=COMMAND]",
-                  "Run groonga on valgrind and use COMMAND as valgrind",
+                  "Run Groonga on valgrind and use COMMAND as valgrind",
                   "(#{tester.default_valgrind})") do |command|
           tester.valgrind = command || tester.default_valgrind
         end
