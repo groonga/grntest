@@ -19,6 +19,7 @@ require "tempfile"
 
 require "json"
 
+require "grntest/platform"
 require "grntest/error"
 require "grntest/log-parser"
 require "grntest/executors"
