@@ -47,13 +47,13 @@ module Grntest
         parser.on("--groonga-httpd=COMMAND",
                   "Use COMMAND as groonga-httpd command for groonga-httpd tests",
                   "(#{tester.groonga_httpd})") do |command|
-          tester.groonga_httpd = normalize(command)
+          tester.groonga_httpd = normalize_command(command)
         end
 
         parser.on("--groonga-suggest-create-dataset=COMMAND",
                   "Use COMMAND as groonga_suggest_create_dataset command",
                   "(#{tester.groonga_suggest_create_dataset})") do |command|
-          tester.groonga_suggest_create_dataset = normalize(command)
+          tester.groonga_suggest_create_dataset = normalize_command(command)
         end
 
         available_interfaces = [:stdio, :http]
