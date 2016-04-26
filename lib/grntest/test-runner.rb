@@ -192,7 +192,7 @@ module Grntest
           command_line = groonga_command_line(context, spawn_options)
           if Platform.windows?
             spawn_options[:in] = input_read
-            spawn_options[:out] = output_read
+            spawn_options[:out] = output_write
           else
             input_fd = input_read.to_i
             output_fd = output_write.to_i
