@@ -226,6 +226,10 @@ module Grntest
 
       def execute_directive_omit(line, content, options)
         reason, = options
+        omit(reason)
+      end
+
+      def omit(reason)
         @output_type = "raw"
         log_output("omit: #{reason}")
         @context.omit
@@ -292,6 +296,10 @@ module Grntest
       end
 
       def execute_suggest_create_dataset(dataset_name)
+        if @context.groonga_suggest_create_dataset.nil?
+          omit("groonga-suggest-create-dataset isn't specified")
+        end
+
         command_line = [
           @context.groonga_suggest_create_dataset,
           @context.db_path.to_s,

@@ -257,6 +257,9 @@ module Grntest
       @groonga = "groonga"
       @groonga_httpd = "groonga-httpd"
       @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
+      unless command_exist?(@groonga_suggest_create_dataset)
+        @groonga_suggest_create_dataset = nil
+      end
       @interface = :stdio
       @output_type = "json"
       @testee = "groonga"
