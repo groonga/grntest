@@ -140,6 +140,7 @@ module Grntest
         check_memory_leak(context)
         result.omitted = context.omitted?
         result.actual = context.result
+        context.close_logs
       end
     end
 

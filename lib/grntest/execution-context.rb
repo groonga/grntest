@@ -35,6 +35,7 @@ module Grntest
       @result = []
       @output_type = "json"
       @log = nil
+      @query_log = nil
       @on_error = :default
       @abort_tag = nil
       @omitted = false
@@ -98,6 +99,18 @@ module Grntest
 
     def abort
       throw @abort_tag
+    end
+
+    def close_logs
+      if @log
+        @log.close
+        @log = nil
+      end
+
+      if @query_log
+        @query_log.close
+        @query_log = nil
+      end
     end
   end
 end
