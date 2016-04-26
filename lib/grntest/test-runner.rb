@@ -515,7 +515,12 @@ http {
       result.actual = normalized_result
     end
 
+    def normalize_new_line(content)
+      content.gsub(/\r\n/, "\n")
+    end
+
     def normalize_raw_content(content)
+      content = normalize_new_line(content)
       "#{content}\n".force_encoding("ASCII-8BIT")
     end
 
