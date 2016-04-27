@@ -1,5 +1,11 @@
 # News
 
+## 1.1.6: 2016-04-27
+
+### Improvements
+
+  * Added `--timeout` option.
+
 ## 1.1.5: 2016-04-26
 
 ### Fixes
