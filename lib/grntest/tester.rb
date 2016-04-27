@@ -206,6 +206,12 @@ module Grntest
           tester.use_color = use_color
         end
 
+        parser.on("--timeout=SECOND", Float,
+                  "Timeout for each test",
+                  "(#{tester.timeout})") do |timeout|
+          tester.timeout = timeout
+        end
+
         parser.on("--version",
                   "Show version and exit") do
           puts(VERSION)
@@ -247,6 +253,7 @@ module Grntest
     attr_accessor :output
     attr_accessor :gdb, :default_gdb
     attr_accessor :valgrind, :default_valgrind
+    attr_accessor :timeout
     attr_writer :valgrind_gen_suppressions
     attr_writer :reporter, :keep_database, :use_color
     attr_writer :stop_on_failure
@@ -279,6 +286,7 @@ module Grntest
       detect_suitable_diff
       initialize_debuggers
       initialize_memory_checkers
+      @timeout = 5
     end
 
     def run(*targets)

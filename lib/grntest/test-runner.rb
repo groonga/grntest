@@ -16,6 +16,7 @@
 require "pathname"
 require "fileutils"
 require "tempfile"
+require "timeout"
 
 require "json"
 
@@ -135,7 +136,14 @@ module Grntest
           @tester.groonga_suggest_create_dataset
         context.output_type = @tester.output_type
         run_groonga(context) do |executor|
-          executor.execute(test_script_path)
+          begin
+            Timeout.timeout(@tester.timeout) do
+              executor.execute(test_script_path)
+            end
+          rescue Timeout::Error
+            message = "# error: timeout (#{@tester.timeout}s)"
+            context.result << [:error, message, {}]
+          end
         end
         check_memory_leak(context)
         result.omitted = context.omitted?
