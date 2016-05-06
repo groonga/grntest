@@ -39,6 +39,7 @@ module Grntest
         @pending_load_command = nil
         @current_command_name = nil
         @output_type = nil
+        @timeout = default_timeout
         @long_timeout = default_long_timeout
         @context = context
         @custom_important_log_levels = []
@@ -183,6 +184,29 @@ module Grntest
         FileUtils.cp_r(source.to_s, destination.to_s)
       end
 
+      def execute_directive_timeout(line, content, options)
+        timeout, = options
+        invalid_value_p = false
+        case timeout
+        when "default"
+          @timeout = default_timeout
+        when nil
+          invalid_value_p = true
+        else
+          begin
+            @timeout = Float(timeout)
+          rescue ArgumentError
+            invalid_value_p = true
+          end
+        end
+
+        if invalid_value_p
+          log_input(line)
+          message = "timeout must be number or 'default': <#{timeout}>"
+          log_error("#|e| [timeout] #{message}")
+        end
+      end
+
       def execute_directive_long_timeout(line, content, options)
         long_timeout, = options
         invalid_value_p = false
@@ -275,6 +299,8 @@ module Grntest
           execute_directive_include(line, content, options)
         when "copy-path"
           execute_directive_copy_path(line, content, options)
+        when "timeout"
+          execute_directive_timeout(line, content, options)
         when "long-timeout"
           execute_directive_long_timeout(line, content, options)
         when "on-error"
@@ -373,7 +399,7 @@ module Grntest
 
       def read_all_readable_content(output, options={})
         content = ""
-        first_timeout = options[:first_timeout] || 5
+        first_timeout = options[:first_timeout] || @timeout
         timeout = first_timeout
         while IO.select([output], [], [], timeout)
           break if output.eof?
@@ -456,6 +482,10 @@ module Grntest
         parser.parse(content) do |entry|
           log_query("\##{entry.mark}#{entry.message}")
         end
+      end
+
+      def default_timeout
+        3
       end
 
       def default_long_timeout

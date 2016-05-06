@@ -57,8 +57,6 @@ module Grntest
         options = {}
         if may_slow_command?(command)
           options[:first_timeout] = @long_timeout
-        elsif command.name == "dump"
-          options[:first_timeout] = 0.1
         end
         read_all_readable_content(@output, options)
       end
