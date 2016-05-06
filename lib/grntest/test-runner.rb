@@ -451,7 +451,7 @@ events {
 }
         GLOBAL
 
-        env = ENV.merge(extract_custom_env)
+        env = ENV.to_hash.merge(extract_custom_env)
         env.each do |key, value|
           next unless key.start_with?("GRN_")
           config_file.puts(<<-ENV)
