@@ -196,7 +196,7 @@ module Grntest
           groonga_input = input_write
           groonga_output = output_read
 
-          env = {}
+          env = extract_custom_env
           spawn_options = {}
           command_line = groonga_command_line(context, spawn_options)
           if Platform.windows?
@@ -333,7 +333,7 @@ call chdir("#{context.temporary_directory_path}")
       port = 50041 + @worker.id
       pid_file_path = context.temporary_directory_path + "groonga.pid"
 
-      env = {}
+      env = extract_custom_env
       spawn_options = {}
       command_line = groonga_http_command(host, port, pid_file_path, context,
                                           spawn_options)
@@ -451,7 +451,8 @@ events {
 }
         GLOBAL
 
-        ENV.each do |key, value|
+        env = ENV.merge(extract_custom_env)
+        env.each do |key, value|
           next unless key.start_with?("GRN_")
           config_file.puts(<<-ENV)
 env #{key};
@@ -625,6 +626,21 @@ http {
 
     def test_script_path
       @worker.test_script_path
+    end
+
+    def extract_custom_env
+      return {} unless test_script_path.exist?
+
+      env = {}
+      test_script_path.open("r:ascii-8bit") do |script_file|
+        script_file.each_line do |line|
+          case line
+          when /\A\#\$([a-zA-Z_\d]+)=(.*)/
+            env[$1] = $2.strip
+          end
+        end
+      end
+      env
     end
 
     def have_extension?
