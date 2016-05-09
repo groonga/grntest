@@ -339,7 +339,9 @@ call chdir("#{context.temporary_directory_path}")
                                           spawn_options)
       pid = nil
       shutdown_wait_timeout = 5
-      options = {}
+      options = {
+        :read_timeout => @tester.timeout,
+      }
       if @tester.gdb
         options[:read_timeout] = 60 * 10
       end
