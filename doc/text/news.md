@@ -1,5 +1,11 @@
 # News
 
+## 1.1.8: 2016-05-16
+
+### Improvements
+
+  * Added `--debug` option.
+
 ## 1.1.7: 2016-05-16
 
 ### Improvements
