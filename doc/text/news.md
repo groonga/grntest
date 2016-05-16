@@ -1,5 +1,13 @@
 # News
 
+## 1.1.7: 2016-05-16
+
+### Improvements
+
+  * Added `timeout` directive.
+
+  * Supported defining environment variable by `#$NAME=VALUE` syntax.
+
 ## 1.1.6: 2016-04-27
 
 ### Improvements
