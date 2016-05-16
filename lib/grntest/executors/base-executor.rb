@@ -408,6 +408,7 @@ module Grntest
           content << read_content
           timeout = 0 if read_content.bytesize < request_bytes
         end
+        debug_output(content)
         content
       end
 
@@ -482,6 +483,20 @@ module Grntest
         parser.parse(content) do |entry|
           log_query("\##{entry.mark}#{entry.message}")
         end
+      end
+
+      def debug_input(input)
+        return unless @context.debug?
+        $stderr.puts("> #{input}")
+      end
+
+      def debug_output(output)
+        if @context.debug?
+          output.each_line do |line|
+            $stderr.puts("< #{line}")
+          end
+        end
+        output
       end
 
       def default_timeout

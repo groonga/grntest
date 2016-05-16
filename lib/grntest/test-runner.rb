@@ -135,6 +135,7 @@ module Grntest
         context.groonga_suggest_create_dataset =
           @tester.groonga_suggest_create_dataset
         context.output_type = @tester.output_type
+        context.debug = @tester.debug?
         run_groonga(context) do |executor|
           begin
             Timeout.timeout(@tester.timeout) do

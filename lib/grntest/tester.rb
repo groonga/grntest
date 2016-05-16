@@ -212,6 +212,12 @@ module Grntest
           tester.timeout = timeout
         end
 
+        parser.on("--[no-]debug",
+                  "Enable debug information",
+                  "(#{tester.debug?})") do |debug|
+          tester.debug = debug
+        end
+
         parser.on("--version",
                   "Show version and exit") do
           puts(VERSION)
@@ -258,6 +264,7 @@ module Grntest
     attr_writer :reporter, :keep_database, :use_color
     attr_writer :stop_on_failure
     attr_writer :suppress_omit_log
+    attr_writer :debug
     attr_reader :test_patterns, :test_suite_patterns
     attr_reader :exclude_test_patterns, :exclude_test_suite_patterns
     def initialize
@@ -279,6 +286,7 @@ module Grntest
       @use_color = nil
       @stop_on_failure = false
       @suppress_omit_log = true
+      @debug = false
       @test_patterns = []
       @test_suite_patterns = []
       @exclude_test_patterns = []
@@ -326,6 +334,10 @@ module Grntest
 
     def suppress_omit_log?
       @suppress_omit_log
+    end
+
+    def debug?
+      @debug
     end
 
     def valgrind_gen_suppressions?

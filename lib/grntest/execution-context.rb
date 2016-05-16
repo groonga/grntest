@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2012-2015  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2016  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,6 +23,7 @@ module Grntest
     attr_accessor :on_error
     attr_accessor :abort_tag
     attr_writer :collect_query_log
+    attr_writer :debug
     def initialize
       @logging = true
       @base_directory = Pathname(".")
@@ -40,6 +39,7 @@ module Grntest
       @abort_tag = nil
       @omitted = false
       @collect_query_log = false
+      @debug = false
     end
 
     def logging?
@@ -48,6 +48,10 @@ module Grntest
 
     def collect_query_log?
       @collect_query_log
+    end
+
+    def debug?
+      @debug
     end
 
     def execute

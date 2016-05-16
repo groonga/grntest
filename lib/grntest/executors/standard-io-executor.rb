@@ -32,6 +32,7 @@ module Grntest
           command_line = command_line.sub(/$/, " --output_type #{@output_type}")
         end
         begin
+          debug_input(command_line)
           @input.print(command_line)
           @input.print("\n")
           @input.flush
