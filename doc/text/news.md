@@ -1,5 +1,11 @@
 # News
 
+## 1.1.9: 2016-05-17
+
+### Improvements
+
+  * Improved debug output.
+
 ## 1.1.8: 2016-05-16
 
 ### Improvements
