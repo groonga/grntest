@@ -403,12 +403,12 @@ module Grntest
         timeout = first_timeout
         while IO.select([output], [], [], timeout)
           break if output.eof?
-          request_bytes = 1024
+          request_bytes = 4096
           read_content = output.readpartial(request_bytes)
+          debug_output(read_content)
           content << read_content
           timeout = 0 if read_content.bytesize < request_bytes
         end
-        debug_output(content)
         content
       end
 
