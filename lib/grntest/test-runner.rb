@@ -381,14 +381,20 @@ call chdir("#{context.temporary_directory_path}")
     def ensure_process_finished(pid)
       return if pid.nil?
 
-      n_retries = 0
-      loop do
-        finished_pid = Process.waitpid(pid, Process::WNOHANG)
-        break if finished_pid
-        n_retries += 1
-        break if n_retries > 100
-        Process.kill(:TERM, pid)
-        sleep(0.1)
+      [:TERM, :KILL].each do |signal|
+        n_retries = 0
+        loop do
+          finished_pid = Process.waitpid(pid, Process::WNOHANG)
+          return if finished_pid
+          n_retries += 1
+          return if n_retries > 100
+          begin
+            Process.kill(signal, pid)
+          rescue SystemCallError
+            $stderr.puts("#{signal} -> #{pid}: #{$!.class}: #{$!}")
+          end
+          sleep(0.1)
+        end
       end
     end
 
