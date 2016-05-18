@@ -1,5 +1,11 @@
 # News
 
+## 1.2.2: 2016-05-18
+
+### Improvements
+
+  * Improved shutdown process on error.
+
 ## 1.2.1: 2016-05-18
 
 ### Fixes
