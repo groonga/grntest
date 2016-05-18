@@ -39,6 +39,7 @@ module Grntest
       @expected = nil
       @n_leaked_objects = 0
       @omitted = false
+      @shutdown_wait_timeout = 5
     end
 
     def status
@@ -339,7 +340,6 @@ call chdir("#{context.temporary_directory_path}")
       command_line = groonga_http_command(host, port, pid_file_path, context,
                                           spawn_options)
       pid = nil
-      shutdown_wait_timeout = 5
       options = {
         :read_timeout => @tester.timeout,
       }
@@ -363,14 +363,14 @@ call chdir("#{context.temporary_directory_path}")
           yield(executor)
         ensure
           pid = nil if executor.shutdown(pid)
-          if wait_groonga_http_shutdown(pid_file_path, shutdown_wait_timeout)
-            pid = nil if wait_pid(pid, shutdown_wait_timeout)
+          if wait_groonga_http_shutdown(pid_file_path)
+            pid = nil if wait_pid(pid)
           end
         end
       ensure
         return if pid.nil?
         Process.kill(:TERM, pid)
-        wait_groonga_http_shutdown(pid_file_path, shutdown_wait_timeout)
+        wait_groonga_http_shutdown(pid_file_path)
         ensure_process_finished(pid)
       end
     end
@@ -389,18 +389,18 @@ call chdir("#{context.temporary_directory_path}")
       end
     end
 
-    def wait_pid(pid, timeout)
+    def wait_pid(pid)
       total_sleep_time = 0
       sleep_time = 0.1
       loop do
         return true if Process.waitpid(pid, Process::WNOHANG)
         sleep(sleep_time)
         total_sleep_time += sleep_time
-        return false if total_sleep_time > timeout
+        return false if total_sleep_time > @shutdown_wait_timeout
       end
     end
 
-    def wait_groonga_http_shutdown(pid_file_path, timeout)
+    def wait_groonga_http_shutdown(pid_file_path)
       return false unless pid_file_path.exist?
 
       total_sleep_time = 0
@@ -408,7 +408,7 @@ call chdir("#{context.temporary_directory_path}")
       while pid_file_path.exist?
         sleep(sleep_time)
         total_sleep_time += sleep_time
-        break if total_sleep_time > timeout
+        break if total_sleep_time > @shutdown_wait_timeout
       end
       true
     end
