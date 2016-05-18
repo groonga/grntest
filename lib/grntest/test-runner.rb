@@ -229,7 +229,10 @@ module Grntest
           end
         end
       ensure
-        Process.waitpid(pid) if pid
+        if pid
+          pid = nil if wait_pid(pid)
+          ensure_process_finished(pid)
+        end
       end
     end
 
