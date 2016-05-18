@@ -39,7 +39,6 @@ module Grntest
       @expected = nil
       @n_leaked_objects = 0
       @omitted = false
-      @shutdown_wait_timeout = 5
     end
 
     def status
@@ -85,6 +84,7 @@ module Grntest
       @worker = worker
       @max_n_columns = MAX_N_COLUMNS
       @id = nil
+      @shutdown_wait_timeout = 5
     end
 
     def run
