@@ -1,5 +1,11 @@
 # News
 
+## 1.2.0: 2016-05-18
+
+### Improvements
+
+  * Improved shutdown on `--interface stdio`.
+
 ## 1.1.9: 2016-05-17
 
 ### Improvements
