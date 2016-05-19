@@ -26,7 +26,11 @@ module Grntest
         super(context)
         @host = host
         @port = port
-        @read_timeout = options[:read_timeout] || 3
+        if options.key?(:read_timeout)
+          @read_timeout = options[:read_timeout]
+        else
+          @read_timeout = 3
+        end
       end
 
       def send_command(command)

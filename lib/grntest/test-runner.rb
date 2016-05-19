@@ -138,12 +138,14 @@ module Grntest
         context.output_type = @tester.output_type
         context.debug = @tester.debug?
         run_groonga(context) do |executor|
+          timeout = @tester.timeout
+          timeout = 0 if @tester.gdb
           begin
-            Timeout.timeout(@tester.timeout) do
+            Timeout.timeout(timeout) do
               executor.execute(test_script_path)
             end
           rescue Timeout::Error
-            message = "# error: timeout (#{@tester.timeout}s)"
+            message = "# error: timeout (#{timeout}s)"
             context.result << [:error, message, {}]
           end
         end
@@ -346,9 +348,7 @@ call chdir("#{context.temporary_directory_path}")
       options = {
         :read_timeout => @tester.timeout,
       }
-      if @tester.gdb
-        options[:read_timeout] = 60 * 10
-      end
+      options[:read_timeout] = nil if @tester.gdb
       begin
         pid = Process.spawn(env, *command_line, spawn_options)
         begin
@@ -380,6 +380,11 @@ call chdir("#{context.temporary_directory_path}")
 
     def ensure_process_finished(pid)
       return if pid.nil?
+
+      if @tester.gdb
+        Process.waitpid(pid)
+        return
+      end
 
       [:TERM, :KILL].each do |signal|
         n_retries = 0
