@@ -554,35 +554,7 @@ http {
       type = options[:type]
       case type
       when "json", "msgpack"
-        status = nil
-        values = nil
-        content = content.chomp
-        if type == "json" and /\A([^(]+\()(.+)(\);)\z/ =~ content
-          jsonp = true
-          jsonp_start = $1
-          content = $2
-          jsonp_end = $3
-        else
-          jsonp = false
-        end
-        begin
-          status, *values = ResponseParser.parse(content, type)
-        rescue ParseError
-          return $!.message
-        end
-        normalized_status = normalize_status(status)
-        normalized_values = normalize_values(values)
-        normalized_output_content = [normalized_status, *normalized_values]
-        normalized_output = JSON.generate(normalized_output_content)
-        if normalized_output.bytesize > @max_n_columns
-          normalized_output = JSON.pretty_generate(normalized_output_content)
-        end
-        normalized_raw_content = normalize_raw_content(normalized_output)
-        if jsonp
-          "#{jsonp_start}#{normalized_raw_content.chomp}#{jsonp_end}\n"
-        else
-          normalized_raw_content
-        end
+        normalize_output_structured(type, content, options)
       when "xml"
         normalized_xml = normalize_output_xml(content, options)
         normalize_raw_content(normalized_xml)
@@ -593,35 +565,96 @@ http {
       end
     end
 
+    def normalize_output_structured(type, content, options)
+      response = nil
+      content = content.chomp
+      if type == "json" and /\A([^(]+\()(.+)(\);)\z/ =~ content
+        jsonp = true
+        jsonp_start = $1
+        content = $2
+        jsonp_end = $3
+      else
+        jsonp = false
+      end
+      begin
+        response = ResponseParser.parse(content, type)
+      rescue ParseError
+        return $!.message
+      end
+
+      if response.is_a?(Hash)
+        normalized_response =
+          response.merge({
+                           "header" => normalize_header(response["header"]),
+                           "body"   => normalize_body(response["body"]),
+                         })
+      else
+        header, *values = response
+        normalized_header = normalize_header(header)
+        normalized_values = values.collect do |value|
+          normalize_body(value)
+        end
+        normalized_response = [normalized_header, *normalized_values]
+      end
+      normalized_output = JSON.generate(normalized_response)
+      if normalized_output.bytesize > @max_n_columns
+        normalized_output = JSON.pretty_generate(normalized_response)
+      end
+      normalized_raw_content = normalize_raw_content(normalized_output)
+
+      if jsonp
+        "#{jsonp_start}#{normalized_raw_content.chomp}#{jsonp_end}\n"
+      else
+        normalized_raw_content
+      end
+    end
+
     def normalize_output_xml(content, options)
       content.sub(/^<RESULT .+?>/) do |result|
         result.gsub(/( (?:UP|ELAPSED))="\d+\.\d+(?:e[+-]?\d+)?"/, '\1="0.0"')
       end
     end
 
-    def normalize_status(status)
-      return_code, started_time, elapsed_time, *rest = status
-      _ = started_time = elapsed_time # for suppress warnings
-      if return_code.zero?
-        [0, 0.0, 0.0]
+    def normalize_header(header)
+      if header.is_a?(Hash)
+        return_code = header["return_code"]
+        if return_code.zero?
+          header.merge({
+                         "start_time"   => 0.0,
+                         "elapsed_time" => 0.0,
+                       })
+        else
+          error = header["error"]
+          message = error["message"]
+          message = normalize_path_in_error_message(message)
+          header.merge({
+                         "start_time"   => 0.0,
+                         "elapsed_time" => 0.0,
+                         "error"        => error.merge({"message" => message})
+                       })
+        end
       else
-        message, backtrace = rest
-        _ = backtrace # for suppress warnings
-        message = normalize_path_in_error_message(message)
-        [[return_code, 0.0, 0.0], message]
+        return_code, started_time, elapsed_time, *rest = header
+        _ = started_time = elapsed_time # for suppress warnings
+        if return_code.zero?
+          [0, 0.0, 0.0]
+        else
+          message, backtrace = rest
+          _ = backtrace # for suppress warnings
+          message = normalize_path_in_error_message(message)
+          [[return_code, 0.0, 0.0], message]
+        end
       end
     end
 
-    def normalize_values(values)
-      values.collect do |value|
-        if value.is_a?(Hash) and value["exception"]
-          exception = Marshal.load(Marshal.dump(value["exception"]))
-          message = exception["message"]
-          exception["message"] = normalize_path_in_error_message(message)
-          value.merge("exception" => exception)
-        else
-          value
-        end
+    def normalize_body(body)
+      if body.is_a?(Hash) and body["exception"]
+        exception = Marshal.load(Marshal.dump(body["exception"]))
+        message = exception["message"]
+        exception["message"] = normalize_path_in_error_message(message)
+        body.merge("exception" => exception)
+      else
+        body
       end
     end
 
