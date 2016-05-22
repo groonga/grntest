@@ -73,6 +73,12 @@ module Grntest
         end
       end
 
+      def on_test_omission_suppressed(worker, result)
+        synchronize do
+          report_test_result_mark("O", result)
+        end
+      end
+
       def on_test_no_check(worker, result)
         synchronize do
           report_test_result_mark("N", result)

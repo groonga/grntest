@@ -146,7 +146,9 @@ module Grntest
     def on_test_omission(result)
       @status = "omitted"
       @result.on_test_omission
-      unless @tester.suppress_omit_log?
+      if @tester.suppress_omit_log?
+        @reporter.on_test_omission_suppressed(self, result)
+      else
         @reporter.on_test_omission(self, result)
       end
     end

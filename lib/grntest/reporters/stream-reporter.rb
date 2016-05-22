@@ -63,6 +63,10 @@ module Grntest
         report_actual(result)
       end
 
+      def on_test_omission_suppressed(worker, result)
+        report_test_result(result, worker.status)
+      end
+
       def on_test_no_check(worker, result)
         report_test_result(result, worker.status)
         report_actual(result)
