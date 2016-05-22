@@ -397,6 +397,7 @@ call chdir("#{context.temporary_directory_path}")
             Process.kill(signal, pid)
           rescue SystemCallError
             $stderr.puts("#{signal} -> #{pid}: #{$!.class}: #{$!}")
+            return
           end
           sleep(0.1)
         end
