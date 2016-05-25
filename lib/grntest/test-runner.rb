@@ -339,14 +339,11 @@ call chdir("#{context.temporary_directory_path}")
       command_line = groonga_http_command(host, port, pid_file_path, context,
                                           spawn_options)
       pid = nil
-      options = {
-        :read_timeout => @tester.timeout,
-      }
-      options[:read_timeout] = nil if @tester.gdb
       begin
         pid = Process.spawn(env, *command_line, spawn_options)
+        executor = nil
         begin
-          executor = Executors::HTTPExecutor.new(host, port, context, options)
+          executor = Executors::HTTPExecutor.new(host, port, context)
           begin
             executor.ensure_groonga_ready
           rescue

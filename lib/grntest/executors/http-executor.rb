@@ -22,15 +22,10 @@ require "grntest/executors/base-executor"
 module Grntest
   module Executors
     class HTTPExecutor < BaseExecutor
-      def initialize(host, port, context, options={})
+      def initialize(host, port, context)
         super(context)
         @host = host
         @port = port
-        if options.key?(:read_timeout)
-          @read_timeout = options[:read_timeout]
-        else
-          @read_timeout = 3
-        end
       end
 
       def send_command(command)
@@ -79,7 +74,7 @@ module Grntest
         request.content_type = "application/json; charset=UTF-8"
         request.body = body
         response = Net::HTTP.start(@host, @port) do |http|
-          http.read_timeout = @read_timeout
+          http.read_timeout = @context.timeout
           http.request(request)
         end
         normalize_response_data(command, response.body)
@@ -88,7 +83,7 @@ module Grntest
       def send_normal_command(command)
         url = "http://#{@host}:#{@port}#{command.to_uri_format}"
         begin
-          open(url, :read_timeout => @read_timeout) do |response|
+          open(url, :read_timeout => @context.timeout) do |response|
             normalize_response_data(command, response.read)
           end
         rescue SystemCallError

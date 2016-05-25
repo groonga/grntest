@@ -40,7 +40,8 @@ module Grntest
         @pending_load_command = nil
         @current_command_name = nil
         @output_type = nil
-        @long_timeout = default_long_timeout
+        @read_timeout = default_read_timeout
+        @long_read_timeout = default_long_read_timeout
         @context = context
         @custom_important_log_levels = []
       end
@@ -186,17 +187,18 @@ module Grntest
         FileUtils.cp_r(source.to_s, destination.to_s)
       end
 
-      def execute_directive_timeout(line, content, options)
-        timeout, = options
+      def timeout_value(key, line, input, default)
+        new_value = nil
+
         invalid_value_p = false
-        case timeout
+        case input
         when "default"
-          @context.timeout = @context.default_timeout
+          new_value = default
         when nil
           invalid_value_p = true
         else
           begin
-            @context.timeout = Float(timeout)
+            new_value = Float(input)
           rescue ArgumentError
             invalid_value_p = true
           end
@@ -204,32 +206,39 @@ module Grntest
 
         if invalid_value_p
           log_input(line)
-          message = "timeout must be number or 'default': <#{timeout}>"
-          log_error("#|e| [timeout] #{message}")
+          message = "#{key} must be number or 'default': <#{input}>"
+          log_error("#|e| [#{key}] #{message}")
+          nil
+        else
+          new_value
         end
       end
 
-      def execute_directive_long_timeout(line, content, options)
-        long_timeout, = options
-        invalid_value_p = false
-        case long_timeout
-        when "default"
-          @long_timeout = default_long_timeout
-        when nil
-          invalid_value_p = true
-        else
-          begin
-            @long_timeout = Float(long_timeout)
-          rescue ArgumentError
-            invalid_value_p = true
-          end
-        end
+      def execute_directive_timeout(line, content, options)
+        timeout, = options
+        new_value = timeout_value("timeout",
+                                  line,
+                                  timeout,
+                                  @context.default_timeout)
+        @context.timeout = new_value unless new_value.nil?
+      end
 
-        if invalid_value_p
-          log_input(line)
-          message = "long-timeout must be number or 'default': <#{long_timeout}>"
-          log_error("#|e| [long-timeout] #{message}")
-        end
+      def execute_directive_read_timeout(line, content, options)
+        timeout, = options
+        new_value = timeout_value("read-timeout",
+                                  line,
+                                  timeout,
+                                  default_read_timeout)
+        @read_timeout = new_value unless new_value.nil?
+      end
+
+      def execute_directive_long_read_timeout(line, content, options)
+        timeout, = options
+        new_value = timeout_value("long-read-timeout",
+                                  line,
+                                  timeout,
+                                  default_long_read_timeout)
+        @long_read_timeout = new_value unless new_value.nil?
       end
 
       def execute_directive_on_error(line, content, options)
@@ -323,8 +332,10 @@ module Grntest
           execute_directive_copy_path(line, content, options)
         when "timeout"
           execute_directive_timeout(line, content, options)
-        when "long-timeout"
-          execute_directive_long_timeout(line, content, options)
+        when "read-timeout"
+          execute_directive_read_timeout(line, content, options)
+        when "long-read-timeout"
+          execute_directive_long_read_timeout(line, content, options)
         when "on-error"
           execute_directive_on_error(line, content, options)
         when "omit"
@@ -430,7 +441,7 @@ module Grntest
 
       def read_all_readable_content(output, options={})
         content = ""
-        first_timeout = options[:first_timeout] || @timeout
+        first_timeout = options[:first_timeout] || @read_timeout
         timeout = first_timeout
         while IO.select([output], [], [], timeout)
           break if output.eof?
@@ -530,7 +541,11 @@ module Grntest
         output
       end
 
-      def default_long_timeout
+      def default_read_timeout
+        3
+      end
+
+      def default_long_read_timeout
         180
       end
     end

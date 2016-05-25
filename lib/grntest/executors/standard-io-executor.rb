@@ -57,7 +57,7 @@ module Grntest
       def read_output(command)
         options = {}
         if may_slow_command?(command)
-          options[:first_timeout] = @long_timeout
+          options[:first_timeout] = @long_read_timeout
         end
         read_all_readable_content(@output, options)
       end
