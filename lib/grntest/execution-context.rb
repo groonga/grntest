@@ -22,6 +22,8 @@ module Grntest
     attr_accessor :output_type
     attr_accessor :on_error
     attr_accessor :abort_tag
+    attr_accessor :timeout
+    attr_accessor :default_timeout
     attr_writer :collect_query_log
     attr_writer :debug
     def initialize
@@ -37,6 +39,8 @@ module Grntest
       @query_log = nil
       @on_error = :default
       @abort_tag = nil
+      @timeout = 0
+      @default_timeout = 0
       @omitted = false
       @collect_query_log = false
       @debug = false

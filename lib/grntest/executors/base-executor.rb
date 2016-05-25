@@ -39,7 +39,6 @@ module Grntest
         @pending_load_command = nil
         @current_command_name = nil
         @output_type = nil
-        @timeout = default_timeout
         @long_timeout = default_long_timeout
         @context = context
         @custom_important_log_levels = []
@@ -75,7 +74,9 @@ module Grntest
 
       def shutdown(pid)
         begin
-          send_command(command("shutdown"))
+          Timeout.timeout(@context.timeout) do
+            send_command(command("shutdown"))
+          end
         rescue
           return false
         end
@@ -189,12 +190,12 @@ module Grntest
         invalid_value_p = false
         case timeout
         when "default"
-          @timeout = default_timeout
+          @context.timeout = @context.default_timeout
         when nil
           invalid_value_p = true
         else
           begin
-            @timeout = Float(timeout)
+            @context.timeout = Float(timeout)
           rescue ArgumentError
             invalid_value_p = true
           end
@@ -360,8 +361,15 @@ module Grntest
       def execute_command(command)
         extract_command_info(command)
         log_input("#{command.original_source}\n")
+        timeout = @context.timeout
+        response = nil
         begin
-          response = send_command(command)
+          Timeout.timeout(timeout) do
+            response = send_command(command)
+          end
+        rescue Timeout::Error
+          log_error("# error: timeout (#{timeout}s)")
+          @context.error
         rescue => error
           log_error("# error: #{error.class}: #{error.message}")
           error.backtrace.each do |line|
@@ -497,10 +505,6 @@ module Grntest
           end
         end
         output
-      end
-
-      def default_timeout
-        3
       end
 
       def default_long_timeout

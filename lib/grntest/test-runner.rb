@@ -136,18 +136,12 @@ module Grntest
         context.groonga_suggest_create_dataset =
           @tester.groonga_suggest_create_dataset
         context.output_type = @tester.output_type
+        context.timeout = @tester.timeout
+        context.timeout = 0 if @tester.gdb
+        context.default_timeout = context.timeout
         context.debug = @tester.debug?
         run_groonga(context) do |executor|
-          timeout = @tester.timeout
-          timeout = 0 if @tester.gdb
-          begin
-            Timeout.timeout(timeout) do
-              executor.execute(test_script_path)
-            end
-          rescue Timeout::Error
-            message = "# error: timeout (#{timeout}s)"
-            context.result << [:error, message, {}]
-          end
+          executor.execute(test_script_path)
         end
         check_memory_leak(context)
         result.omitted = context.omitted?
