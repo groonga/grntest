@@ -24,6 +24,7 @@ require "grntest/log-parser"
 require "grntest/query-log-parser"
 require "grntest/execution-context"
 require "grntest/response-parser"
+require "grntest/template-evaluator"
 
 module Grntest
   module Executors
@@ -123,7 +124,7 @@ module Grntest
         parser.on_comment do |comment|
           if /\A@/ =~ comment
             directive_content = $POSTMATCH
-            execute_directive("\##{comment}", directive_content)
+            execute_directive(parser, "\##{comment}", directive_content)
           end
         end
         parser
@@ -287,7 +288,27 @@ module Grntest
         @context.collect_query_log = (options[0] == "true")
       end
 
-      def execute_directive(line, content)
+      def execute_directive_generate_series(parser, line, content, options)
+        start, stop, table, template, = options
+        evaluator = TemplateEvaluator.new(template)
+        parser << "load --table #{table}\n"
+        parser << "["
+        first_record = true
+        Integer(start).step(Integer(stop)) do |i|
+          record = ""
+          if first_record
+            first_record = false
+          else
+            record << ","
+          end
+          record << "\n"
+          record << evaluator.evaluate(i).to_json
+          parser << record
+        end
+        parser << "\n]\n"
+      end
+
+      def execute_directive(parser, line, content)
         command, *options = Shellwords.split(content)
         case command
         when "disable-logging"
@@ -316,6 +337,8 @@ module Grntest
           execute_directive_sleep(line, content, options)
         when "collect-query-log"
           execute_directive_collect_query_log(line, content, options)
+        when "generate-series"
+          execute_directive_generate_series(parser, line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
