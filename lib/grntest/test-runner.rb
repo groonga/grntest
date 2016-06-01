@@ -194,7 +194,7 @@ module Grntest
           groonga_input = input_write
           groonga_output = output_read
 
-          env = extract_custom_env
+          env = extract_custom_env(context)
           spawn_options = {}
           command_line = groonga_command_line(context, spawn_options)
           if Platform.windows?
@@ -460,7 +460,7 @@ events {
 }
         GLOBAL
 
-        env = ENV.to_hash.merge(extract_custom_env)
+        env = ENV.to_hash.merge(extract_custom_env(context))
         env.each do |key, value|
           next unless key.start_with?("GRN_")
           config_file.puts(<<-ENV)
@@ -670,15 +670,16 @@ http {
       @worker.test_script_path
     end
 
-    def extract_custom_env
+    def extract_custom_env(context)
       return {} unless test_script_path.exist?
 
       env = {}
       test_script_path.open("r:ascii-8bit") do |script_file|
+        expander = VariableExpander.new(context)
         script_file.each_line do |line|
           case line
           when /\A\#\$([a-zA-Z_\d]+)=(.*)/
-            env[$1] = $2.strip
+            env[$1] = expander.expand($2.strip)
           end
         end
       end
