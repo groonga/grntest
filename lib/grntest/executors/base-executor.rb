@@ -25,6 +25,7 @@ require "grntest/query-log-parser"
 require "grntest/execution-context"
 require "grntest/response-parser"
 require "grntest/template-evaluator"
+require "grntest/variable-expander"
 
 module Grntest
   module Executors
@@ -160,14 +161,8 @@ module Grntest
       end
 
       def expand_variables(string)
-        string.gsub(/\#{(.+?)}/) do |matched|
-          case $1
-          when "db_path"
-            @context.db_path.to_s
-          else
-            matched
-          end
-        end
+        expander = VariableExpander.new(@context)
+        expander.expand(string)
       end
 
       def execute_directive_copy_path(line, content, options)
