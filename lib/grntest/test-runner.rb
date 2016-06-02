@@ -334,7 +334,7 @@ call chdir("#{context.temporary_directory_path}")
       port = 50041 + @worker.id
       pid_file_path = context.temporary_directory_path + "groonga.pid"
 
-      env = extract_custom_env
+      env = extract_custom_env(context)
       spawn_options = {}
       command_line = groonga_http_command(host, port, pid_file_path, context,
                                           spawn_options)
