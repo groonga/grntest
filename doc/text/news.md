@@ -1,5 +1,29 @@
 # News
 
+## 1.2.3: 2016-07-19
+
+### Improvements
+
+  * Disabled read time on GDB mode.
+
+  * Supported object literal based response introduced by command version 3.
+
+  * Suppressed omissions from report.
+
+  * Added `generate-series` directive.
+
+  * Added `read-timeout` directive.
+
+  * Added `long-read-timeout` directive.
+
+  * Removed `long-timeout` directive. Use `long-read-timeout` directive instead.
+
+  * Supported `#{base_directory}` expansion in variable value.
+
+  * Supported variable expansion in environment variable value.
+
+  * Supported normalizing plugin path in `object_list`.
+
 ## 1.2.2: 2016-05-18
 
 ### Improvements
