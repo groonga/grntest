@@ -640,11 +640,23 @@ http {
     end
 
     def normalize_body(body)
-      if body.is_a?(Hash) and body["exception"]
-        exception = Marshal.load(Marshal.dump(body["exception"]))
-        message = exception["message"]
-        exception["message"] = normalize_path_in_error_message(message)
-        body.merge("exception" => exception)
+      case body
+      when Hash
+        if body["exception"]
+          exception = Marshal.load(Marshal.dump(body["exception"]))
+          message = exception["message"]
+          exception["message"] = normalize_path_in_error_message(message)
+          body.merge("exception" => exception)
+        else
+          body.each do |key, value|
+            case value
+            when Hash
+              path = value["path"]
+              value["path"] = normalize_plugin_path(path) if path
+            end
+          end
+          body
+        end
       else
         body
       end
@@ -664,6 +676,10 @@ http {
       else
         content
       end
+    end
+
+    def normalize_plugin_path(path)
+      path.gsub(/\.libs\//, "").gsub(/\.dll\z/, ".so")
     end
 
     def test_script_path
