@@ -107,6 +107,7 @@ module Grntest
         succeeded = false
       when :leaked
         @worker.on_test_leak(result)
+        output_actual_file(result.actual) unless result.checked?
         succeeded = false
       when :omitted
         @worker.on_test_omission(result)
