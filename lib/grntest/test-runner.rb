@@ -17,6 +17,7 @@ require "pathname"
 require "fileutils"
 require "tempfile"
 require "timeout"
+require "socket"
 
 require "json"
 
@@ -332,7 +333,9 @@ call chdir("#{context.temporary_directory_path}")
 
     def run_groonga_http(context)
       host = "127.0.0.1"
-      port = 50041 + @worker.id
+      port = TCPServer.open(host, 0) do |server|
+        server.addr[1]
+      end
       pid_file_path = context.temporary_directory_path + "groonga.pid"
 
       env = extract_custom_env(context)
