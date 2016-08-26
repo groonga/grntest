@@ -429,6 +429,7 @@ module Grntest
         parser.parse(log) do |entry|
           next unless important_log_level?(entry.log_level)
           next if backtrace_log_message?(entry.message)
+          next if thread_log_message?(entry.message)
           important_messages << "\#|#{entry.log_level}| #{entry.message}"
         end
         important_messages.join("\n")
@@ -465,6 +466,15 @@ module Grntest
         when /\A\d+\s+(?:lib\S+\.dylib|\S+\.so|groonga|nginx|\?\?\?)\s+
                 0x[\da-f]+\s
                 \S+\s\+\s\d+\z/x
+          true
+        else
+          false
+        end
+      end
+
+      def thread_log_message?(message)
+        case message
+        when /\Athread start/
           true
         else
           false
