@@ -331,11 +331,27 @@ call chdir("#{context.temporary_directory_path}")
       "libtool"
     end
 
-    def run_groonga_http(context)
-      host = "127.0.0.1"
-      port = TCPServer.open(host, 0) do |server|
+    def decide_groonga_server_port(host)
+      static_port = 50041 + @worker.id
+      10.times do
+        begin
+          TCPSocket.new(host, static_port)
+        rescue SystemCallError
+          return static_port
+        else
+          sleep(0.1)
+        end
+      end
+
+      dynamic_port = TCPServer.open(host, 0) do |server|
         server.addr[1]
       end
+      dynamic_port
+    end
+
+    def run_groonga_http(context)
+      host = "127.0.0.1"
+      port = decide_groonga_server_port(host)
       pid_file_path = context.temporary_directory_path + "groonga.pid"
 
       env = extract_custom_env(context)
