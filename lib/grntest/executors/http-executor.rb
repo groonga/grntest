@@ -74,7 +74,7 @@ module Grntest
         request.content_type = "application/json; charset=UTF-8"
         request.body = body
         response = Net::HTTP.start(@host, @port) do |http|
-          http.read_timeout = @context.timeout
+          http.read_timeout = read_timeout
           http.request(request)
         end
         normalize_response_data(command, response.body)
@@ -83,7 +83,7 @@ module Grntest
       def send_normal_command(command)
         url = "http://#{@host}:#{@port}#{command.to_uri_format}"
         begin
-          open(url, :read_timeout => @context.timeout) do |response|
+          open(url, :read_timeout => read_timeout) do |response|
             normalize_response_data(command, response.read)
           end
         rescue SystemCallError
@@ -99,6 +99,14 @@ module Grntest
           raw_response_data
         else
           "#{raw_response_data}\n"
+        end
+      end
+
+      def read_timeout
+        if @context.timeout.zero?
+          nil
+        else
+          @context.timeout
         end
       end
     end
