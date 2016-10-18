@@ -459,7 +459,7 @@ module Grntest
         case message
         when /\A\//
           true
-        when /\A[a-zA-Z]:\//
+        when /\A[a-zA-Z]:[\/\\]/
           true
         when /\Agroonga\(\) \[0x[\da-f]+\]\z/
           true
