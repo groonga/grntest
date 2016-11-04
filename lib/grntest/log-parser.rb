@@ -29,7 +29,10 @@ module Grntest
       end
       log.each_line do |line|
         case line
-        when /\A(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+)\|([a-zA-Z])\|\s*/
+        when /\A(\d{4}-\d{2}-\d{2}\ \d{2}:\d{2}:\d{2}\.\d+)\|
+                ([a-zA-Z])\|
+                (?:\d+:)?
+                \s*/x
           emit_entry.call
           timestamp = $1
           log_level = $2
