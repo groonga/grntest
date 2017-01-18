@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2014  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2017  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -295,21 +295,23 @@ module Grntest
       def execute_directive_generate_series(parser, line, content, options)
         start, stop, table, template, = options
         evaluator = TemplateEvaluator.new(template)
-        parser << "load --table #{table}\n"
-        parser << "["
-        first_record = true
-        Integer(start).step(Integer(stop)) do |i|
-          record = ""
-          if first_record
-            first_record = false
-          else
-            record << ","
+        (Integer(start)..Integer(stop)).each_slice(1000) do |range|
+          parser << "load --table #{table}\n"
+          parser << "["
+          first_record = true
+          range.each do |i|
+            record = ""
+            if first_record
+              first_record = false
+            else
+              record << ","
+            end
+            record << "\n"
+            record << evaluator.evaluate(i).to_json
+            parser << record
           end
-          record << "\n"
-          record << evaluator.evaluate(i).to_json
-          parser << record
+          parser << "\n]\n"
         end
-        parser << "\n]\n"
       end
 
       def execute_directive(parser, line, content)
