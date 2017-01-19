@@ -38,6 +38,7 @@ module Grntest
           log_level = $2
           message = $POSTMATCH
         else
+          message ||= ""
           message << line
         end
       end
