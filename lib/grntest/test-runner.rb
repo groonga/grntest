@@ -637,12 +637,17 @@ http {
                        })
         else
           error = header["error"]
+          normalized_values = {}
           message = error["message"]
-          message = normalize_path_in_error_message(message)
+          normalized_values["message"] = normalize_error_message(message)
+          file = error["file"]
+          if file
+            normalized_values["file"] = normalize_error_file_path(file)
+          end
           header.merge({
                          "start_time"   => 0.0,
                          "elapsed_time" => 0.0,
-                         "error"        => error.merge({"message" => message})
+                         "error"        => error.merge(normalized_values),
                        })
         end
       else
@@ -653,7 +658,7 @@ http {
         else
           message, backtrace = rest
           _ = backtrace # for suppress warnings
-          message = normalize_path_in_error_message(message)
+          message = normalize_error_message(message)
           [[return_code, 0.0, 0.0], message]
         end
       end
@@ -665,7 +670,7 @@ http {
         if body["exception"]
           exception = Marshal.load(Marshal.dump(body["exception"]))
           message = exception["message"]
-          exception["message"] = normalize_path_in_error_message(message)
+          exception["message"] = normalize_error_message(message)
           body.merge("exception" => exception)
         else
           body.each do |key, value|
@@ -683,11 +688,11 @@ http {
     end
 
     def normalize_error(content)
-      content = normalize_path_in_error_message(content)
+      content = normalize_error_message(content)
       normalize_raw_content(content)
     end
 
-    def normalize_path_in_error_message(content)
+    def normalize_error_message(content)
       case content
       when /\A(.*: fopen: failed to open mruby script file: )<(.+?)>?\z/
         pre = $1
@@ -696,6 +701,10 @@ http {
       else
         content
       end
+    end
+
+    def normalize_error_file_path(path)
+      File.basename(path)
     end
 
     def normalize_plugin_path(path)
