@@ -24,6 +24,7 @@ module Grntest
     attr_accessor :abort_tag
     attr_accessor :timeout
     attr_accessor :default_timeout
+    attr_writer :suppress_backtrace
     attr_writer :collect_query_log
     attr_writer :debug
     def initialize
@@ -42,12 +43,17 @@ module Grntest
       @timeout = 0
       @default_timeout = 0
       @omitted = false
+      @suppress_backtrace = true
       @collect_query_log = false
       @debug = false
     end
 
     def logging?
       @logging
+    end
+
+    def suppress_backtrace?
+      @suppress_backtrace or debug?
     end
 
     def collect_query_log?

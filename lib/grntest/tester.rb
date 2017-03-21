@@ -194,6 +194,12 @@ module Grntest
           tester.suppress_omit_log = boolean
         end
 
+        parser.on("--no-suppress-backtrace",
+                  "Suppress backtrace",
+                  "(#{tester.suppress_backtrace?})") do |boolean|
+          tester.suppress_backtrace = boolean
+        end
+
         parser.on("--output=OUTPUT",
                   "Output to OUTPUT",
                   "(stdout)") do |output|
@@ -264,6 +270,7 @@ module Grntest
     attr_writer :reporter, :keep_database, :use_color
     attr_writer :stop_on_failure
     attr_writer :suppress_omit_log
+    attr_writer :suppress_backtrace
     attr_writer :debug
     attr_reader :test_patterns, :test_suite_patterns
     attr_reader :exclude_test_patterns, :exclude_test_suite_patterns
@@ -286,6 +293,7 @@ module Grntest
       @use_color = nil
       @stop_on_failure = false
       @suppress_omit_log = true
+      @suppress_backtrace = true
       @debug = false
       @test_patterns = []
       @test_suite_patterns = []
@@ -334,6 +342,10 @@ module Grntest
 
     def suppress_omit_log?
       @suppress_omit_log
+    end
+
+    def suppress_backtrace?
+      @suppress_backtrace
     end
 
     def debug?
