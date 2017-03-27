@@ -1,5 +1,22 @@
 # News
 
+## 1.2.4: 2017-03-27
+
+### Improvements
+
+  * Supported outputting actual file even if the test detects memory
+    leaks.
+
+  * Supported unused port dynamically if static port is unavailable.
+
+  * Ignored "thread start" log messages.
+
+  * Supported log with PID.
+
+  * Supported auto chunked `load`.
+
+  * Added `--no-suppress-backtrace` option.
+
 ## 1.2.3: 2016-07-19
 
 ### Improvements
