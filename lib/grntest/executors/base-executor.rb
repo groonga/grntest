@@ -480,6 +480,8 @@ module Grntest
         case message
         when /\Athread start/
           true
+        when /\Athread end/
+          true
         else
           false
         end
