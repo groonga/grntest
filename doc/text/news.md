@@ -1,5 +1,13 @@
 # News
 
+## 1.2.5: 2017-08-15
+
+### Improvements
+
+  * Suppressed "thread end" log message.
+
+  * Added error line normalization support for command version 3.
+
 ## 1.2.4: 2017-03-27
 
 ### Improvements
