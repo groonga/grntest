@@ -645,6 +645,7 @@ http {
           if file
             normalized_values["file"] = normalize_error_file_path(file)
           end
+          normalized_values["line"] = 0 if error["line"]
           header.merge({
                          "start_time"   => 0.0,
                          "elapsed_time" => 0.0,
