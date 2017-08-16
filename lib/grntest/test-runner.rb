@@ -675,15 +675,32 @@ http {
           exception["message"] = normalize_error_message(message)
           body.merge("exception" => exception)
         else
-          body.each do |key, value|
-            case value
-            when Hash
-              path = value["path"]
-              value["path"] = normalize_plugin_path(path) if path
-            end
-          end
-          body
+          normalize_body_recursive(body)
         end
+      else
+        body
+      end
+    end
+
+    def normalize_body_recursive(body)
+      case body
+      when Array
+        body.collect do |value|
+          normalize_body_recursive(value)
+        end
+      when Hash
+        normalized_body = {}
+        body.each do |key, value|
+          case key
+          when "path"
+            normalized_body[key] = normalize_plugin_path(value)
+          when "disk_usage"
+            normalized_body[key] = 0
+          else
+            normalized_body[key] = normalize_body_recursive(value)
+          end
+        end
+        normalized_body
       else
         body
       end
