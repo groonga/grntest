@@ -24,6 +24,8 @@ module Grntest
         case $1
         when "db_path"
           @context.db_path.to_s
+        when "db_directory"
+          @context.db_path.parent.to_s
         when "base_directory"
           @context.base_directory.to_s
         else
