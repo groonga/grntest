@@ -693,7 +693,12 @@ http {
         body.each do |key, value|
           case key
           when "path"
-            normalized_body[key] = normalize_plugin_path(value)
+            if value
+              normalized_value = normalize_plugin_path(value)
+            else
+              normalized_value = value
+            end
+            normalized_body[key] = normalized_value
           when "disk_usage"
             normalized_body[key] = 0
           else
