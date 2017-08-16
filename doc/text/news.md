@@ -1,5 +1,13 @@
 # News
 
+## 1.2.6: 2017-08-16
+
+### Improvements
+
+  * Added `db_directory` variable.
+
+  * Added `disk_usage` response body value normalization support.
+
 ## 1.2.5: 2017-08-15
 
 ### Improvements
