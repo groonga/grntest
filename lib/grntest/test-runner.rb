@@ -536,11 +536,11 @@ http {
     end
 
     def normalize_actual_result(result)
-      normalized_result = ""
+      normalized_result = "".b
       result.actual.each do |tag, content, options|
         case tag
         when :input
-          normalized_result << content
+          normalized_result << content.b
         when :output
           normalized_result << normalize_output(content, options)
         when :error
