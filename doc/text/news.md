@@ -1,5 +1,11 @@
 # News
 
+## 1.2.7: 2017-10-31
+
+### Fixes
+
+  * Fixed incompatible encoding error.
+
 ## 1.2.6: 2017-08-16
 
 ### Improvements
