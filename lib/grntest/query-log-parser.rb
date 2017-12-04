@@ -1,4 +1,4 @@
-# Copyright (C) 2015  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2015-2017  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,7 +43,15 @@ module Grntest
     end
 
     def normalize_command(message)
-      command = Groonga::Command::Parser.parse(message)
+      command = nil
+      Groonga::Command::Parser.parse(message) do |status, *args|
+        case status
+        when :on_command
+          command = args[0]
+        when :on_load_start
+          command = args[0]
+        end
+      end
       if command.output_type == :json
         command[:output_type] = nil
       end
