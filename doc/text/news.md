@@ -1,5 +1,11 @@
 # News
 
+## 1.2.8: 2017-12-04
+
+### Improvements
+
+  * Added `load` support to `collect-query-log` directive.
+
 ## 1.2.7: 2017-10-31
 
 ### Fixes
