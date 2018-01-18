@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2017  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2018  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,9 +39,7 @@ module Grntest
         @loading = false
         @pending_command = ""
         @pending_load_command = nil
-        @current_command_name = nil
         @output_type = nil
-        @read_timeout = default_read_timeout
         @long_read_timeout = default_long_read_timeout
         @context = context
         @custom_important_log_levels = []
@@ -223,8 +221,8 @@ module Grntest
         new_value = timeout_value("read-timeout",
                                   line,
                                   timeout,
-                                  default_read_timeout)
-        @read_timeout = new_value unless new_value.nil?
+                                  @context.default_read_timeout)
+        @context.read_timeout = new_value unless new_value.nil?
       end
 
       def execute_directive_long_read_timeout(line, content, options)
@@ -441,7 +439,7 @@ module Grntest
 
       def read_all_readable_content(output, options={})
         content = ""
-        first_timeout = options[:first_timeout] || @read_timeout
+        first_timeout = options[:first_timeout] || @context.read_timeout
         timeout = first_timeout
         while IO.select([output], [], [], timeout)
           break if output.eof?
@@ -550,10 +548,6 @@ module Grntest
           end
         end
         output
-      end
-
-      def default_read_timeout
-        3
       end
 
       def default_long_read_timeout

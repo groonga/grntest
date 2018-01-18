@@ -218,6 +218,12 @@ module Grntest
           tester.timeout = timeout
         end
 
+        parser.on("--read-timeout=SECOND", Float,
+                  "Timeout for each read in test",
+                  "(#{tester.read_timeout})") do |timeout|
+          tester.read_timeout = timeout
+        end
+
         parser.on("--[no-]debug",
                   "Enable debug information",
                   "(#{tester.debug?})") do |debug|
@@ -266,6 +272,7 @@ module Grntest
     attr_accessor :gdb, :default_gdb
     attr_accessor :valgrind, :default_valgrind
     attr_accessor :timeout
+    attr_accessor :read_timeout
     attr_writer :valgrind_gen_suppressions
     attr_writer :reporter, :keep_database, :use_color
     attr_writer :stop_on_failure
@@ -303,6 +310,7 @@ module Grntest
       initialize_debuggers
       initialize_memory_checkers
       @timeout = 5
+      @read_timeout = 3
     end
 
     def run(*targets)

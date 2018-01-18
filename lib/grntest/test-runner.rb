@@ -140,7 +140,9 @@ module Grntest
         context.output_type = @tester.output_type
         context.timeout = @tester.timeout
         context.timeout = 0 if @tester.gdb
+        context.read_timeout = @tester.read_timeout
         context.default_timeout = context.timeout
+        context.default_read_timeout = context.read_timeout
         context.suppress_backtrace = @tester.suppress_backtrace?
         context.debug = @tester.debug?
         run_groonga(context) do |executor|

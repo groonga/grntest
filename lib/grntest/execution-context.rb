@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2016  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2018  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +23,9 @@ module Grntest
     attr_accessor :on_error
     attr_accessor :abort_tag
     attr_accessor :timeout
+    attr_accessor :read_timeout
     attr_accessor :default_timeout
+    attr_accessor :default_read_timeout
     attr_writer :suppress_backtrace
     attr_writer :collect_query_log
     attr_writer :debug
@@ -41,7 +43,9 @@ module Grntest
       @on_error = :default
       @abort_tag = nil
       @timeout = 0
-      @default_timeout = 0
+      @read_timeout = 3
+      @default_timeout = @timeout
+      @default_read_timeout = @read_timeout
       @omitted = false
       @suppress_backtrace = true
       @collect_query_log = false
