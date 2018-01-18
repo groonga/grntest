@@ -1,5 +1,13 @@
 # News
 
+## 1.2.9: 2018-01-18
+
+### Improvements
+
+  * Added `logical_table_remove` to "may slow commands".
+
+  * Added `--read-timeout` option.
+
 ## 1.2.8: 2017-12-04
 
 ### Improvements
