@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2016  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2018  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -230,6 +230,12 @@ module Grntest
           tester.debug = debug
         end
 
+        parser.on("--n-retries=N", Integer,
+                  "Retry N times on failure",
+                  "(#{tester.n_retries}") do |n|
+          tester.n_retries = n
+        end
+
         parser.on("--version",
                   "Show version and exit") do
           puts(VERSION)
@@ -281,6 +287,7 @@ module Grntest
     attr_writer :debug
     attr_reader :test_patterns, :test_suite_patterns
     attr_reader :exclude_test_patterns, :exclude_test_suite_patterns
+    attr_accessor :n_retries
     def initialize
       @groonga = "groonga"
       @groonga_httpd = "groonga-httpd"
@@ -311,6 +318,7 @@ module Grntest
       initialize_memory_checkers
       @timeout = 5
       @read_timeout = 3
+      @n_retries = 0
     end
 
     def run(*targets)

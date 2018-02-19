@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2016  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2018  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -99,12 +99,13 @@ module Grntest
               @suite_name = suite_name
               @reporter.on_suite_start(self)
             end
-            @test_script_path = test_script_path
-            @test_name = test_name
-            runner = TestRunner.new(@tester, self)
-            succeeded = false unless runner.run
+
+            unless run_test(test_script_path, test_name)
+              succeeded = false
+            end
 
             break if interruptted?
+
             if @tester.stop_on_failure? and @test_suites_result.have_failure?
               break
             end
@@ -162,8 +163,32 @@ module Grntest
     def on_test_finish(result)
       @result.on_test_finish
       @reporter.on_test_finish(self, result)
-      @test_script_path = nil
-      @test_name = nil
+    end
+
+    private
+    def run_test(test_script_path, test_name)
+      begin
+        @test_script_path = test_script_path
+        @test_name = test_name
+
+        n = -1
+        loop do
+          n += 1
+
+          runner = TestRunner.new(@tester, self)
+          return true if runner.run
+
+          if n < @tester.n_retries and not interruptted?
+            @test_suites_result.n_total_tests += 1
+            next
+          end
+
+          return false
+        end
+      ensure
+        @test_script_path = nil
+        @test_name = nil
+      end
     end
   end
 end
