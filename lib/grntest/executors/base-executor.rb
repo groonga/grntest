@@ -426,10 +426,20 @@ module Grntest
       def extract_important_messages(log)
         important_messages = []
         parser = LogParser.new
+        in_crash = false
         parser.parse(log) do |entry|
+          if entry.log_level == "C"
+            case entry.message
+            when "-- CRASHED!!! --"
+              in_crash = true
+            when "----------------"
+              in_crash = false
+            end
+          end
+
           next unless important_log_level?(entry.log_level)
           if @context.suppress_backtrace?
-            next if backtrace_log_message?(entry.message)
+            next if !in_crash and backtrace_log_message?(entry.message)
           end
           next if thread_log_message?(entry.message)
           important_messages << "\#|#{entry.log_level}| #{entry.message}"
