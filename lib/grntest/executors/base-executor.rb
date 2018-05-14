@@ -58,11 +58,11 @@ module Grntest
                 parser << line
               rescue Error, Groonga::Command::Parser::Error
                 line_info = "#{script_path}:#{script_file.lineno}:#{line.chomp}"
-                log_error("#{line_info}: #{$!.message}")
+                log_error("#{line_info}: #{$!.message.b}")
                 if $!.is_a?(Groonga::Command::Parser::Error)
                   @context.abort
                 else
-                  log_error("#{line_info}: #{$!.message}")
+                  log_error("#{line_info}: #{$!.message.b}")
                   raise unless @context.top_level?
                 end
               end
