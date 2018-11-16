@@ -1,5 +1,17 @@
 # News
 
+## 1.3.0: 2018-11-16
+
+### Improvements
+
+  * Improved to force logging backtrace on crash.
+
+  * Added `--n-retries` option.
+
+### Fixes
+
+* Fixed encoding error on error report.
+
 ## 1.2.9: 2018-01-18
 
 ### Improvements
