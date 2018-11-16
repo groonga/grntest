@@ -232,7 +232,7 @@ module Grntest
 
         parser.on("--n-retries=N", Integer,
                   "Retry N times on failure",
-                  "(#{tester.n_retries}") do |n|
+                  "(#{tester.n_retries})") do |n|
           tester.n_retries = n
         end
 
