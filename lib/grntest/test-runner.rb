@@ -389,7 +389,7 @@ call chdir("#{context.temporary_directory_path}")
           begin
             Process.kill(:TERM, pid)
           rescue SystemCallError => error
-            $stderr.puts("#{signal} -> #{pid}: #{error.class}: #{error}")
+            $stderr.puts("TERM -> #{pid}: #{error.class}: #{error}")
           else
             wait_groonga_http_shutdown(pid_file_path)
             ensure_process_finished(pid)
