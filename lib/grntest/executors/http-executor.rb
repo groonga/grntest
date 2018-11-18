@@ -91,6 +91,14 @@ module Grntest
           raise Error.new(message)
         rescue OpenURI::HTTPError
           $!.io.read
+        rescue Net::HTTPBadResponse
+          message = "bad response from Groonga: <#{url}>: "
+          message << "#{$!.class}: #{$!.message}"
+          raise Error.new(message)
+        rescue Net::HTTPHeaderSyntaxError
+          message = "bad HTTP header syntax in Groonga response: <#{url}>: "
+          message << "#{$!.class}: #{$!.message}"
+          raise Error.new(message)
         end
       end
 
