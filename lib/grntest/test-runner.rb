@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2015  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2018  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -142,6 +142,7 @@ module Grntest
         context.read_timeout = @tester.read_timeout
         context.default_timeout = context.timeout
         context.default_read_timeout = context.read_timeout
+        context.shutdown_wait_timeout = @tester.shutdown_wait_timeout
         context.suppress_backtrace = @tester.suppress_backtrace?
         context.debug = @tester.debug?
         run_groonga(context) do |executor|
@@ -379,6 +380,8 @@ call chdir("#{context.temporary_directory_path}")
           yield(executor)
         ensure
           if executor.shutdown(pid)
+            pid = nil
+          else
             wait_groonga_http_shutdown(pid_file_path)
             pid = nil if wait_pid(pid)
           end
@@ -427,11 +430,7 @@ call chdir("#{context.temporary_directory_path}")
       total_sleep_time = 0
       sleep_time = 0.1
       loop do
-        begin
-          return true if Process.waitpid(pid, Process::WNOHANG)
-        rescue SystemCallError
-          return true
-        end
+        return true if Process.waitpid(pid, Process::WNOHANG)
         sleep(sleep_time)
         total_sleep_time += sleep_time
         return false if total_sleep_time > @tester.shutdown_wait_timeout

@@ -83,7 +83,6 @@ module Grntest
         end
 
         status = nil
-        timeout = 1
         total_sleep_time = 0
         sleep_time = 0.05
         loop do
@@ -91,7 +90,7 @@ module Grntest
           break if status
           sleep(sleep_time)
           total_sleep_time += sleep_time
-          return false if total_sleep_time > timeout
+          return false if total_sleep_time > context.shutdown_wait_timeout
         end
 
         log_error(read_all_log) unless status.success?

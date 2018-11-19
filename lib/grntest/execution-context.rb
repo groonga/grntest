@@ -26,6 +26,7 @@ module Grntest
     attr_accessor :read_timeout
     attr_accessor :default_timeout
     attr_accessor :default_read_timeout
+    attr_accessor :shutdown_wait_timeout
     attr_writer :suppress_backtrace
     attr_writer :collect_query_log
     attr_writer :debug
@@ -46,6 +47,7 @@ module Grntest
       @read_timeout = 3
       @default_timeout = @timeout
       @default_read_timeout = @read_timeout
+      @shutdown_wait_timeout = 5
       @omitted = false
       @suppress_backtrace = true
       @collect_query_log = false
