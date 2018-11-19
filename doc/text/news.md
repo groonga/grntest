@@ -1,5 +1,15 @@
 # News
 
+## 1.3.1: 2018-11-19
+
+### Improvements
+
+  * Improved HTTP related error handling.
+
+  * Added `--shutdown-wait-time` option.
+
+  * Improved shutdown process for Groonga HTTP server.
+
 ## 1.3.0: 2018-11-16
 
 ### Improvements
@@ -10,7 +20,7 @@
 
 ### Fixes
 
-* Fixed encoding error on error report.
+  * Fixed encoding error on error report.
 
 ## 1.2.9: 2018-01-18
 
