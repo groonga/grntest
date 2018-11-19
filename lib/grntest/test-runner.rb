@@ -427,7 +427,11 @@ call chdir("#{context.temporary_directory_path}")
       total_sleep_time = 0
       sleep_time = 0.1
       loop do
-        return true if Process.waitpid(pid, Process::WNOHANG)
+        begin
+          return true if Process.waitpid(pid, Process::WNOHANG)
+        rescue SystemCallError
+          return true
+        end
         sleep(sleep_time)
         total_sleep_time += sleep_time
         return false if total_sleep_time > @tester.shutdown_wait_timeout
