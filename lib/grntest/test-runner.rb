@@ -378,8 +378,8 @@ call chdir("#{context.temporary_directory_path}")
           end
           yield(executor)
         ensure
-          pid = nil if executor.shutdown(pid)
-          if wait_groonga_http_shutdown(pid_file_path)
+          if executor.shutdown(pid)
+            wait_groonga_http_shutdown(pid_file_path)
             pid = nil if wait_pid(pid)
           end
         end
@@ -435,8 +435,6 @@ call chdir("#{context.temporary_directory_path}")
     end
 
     def wait_groonga_http_shutdown(pid_file_path)
-      return false unless pid_file_path.exist?
-
       total_sleep_time = 0
       sleep_time = 0.1
       while pid_file_path.exist?
@@ -444,7 +442,6 @@ call chdir("#{context.temporary_directory_path}")
         total_sleep_time += sleep_time
         break if total_sleep_time > @tester.shutdown_wait_timeout
       end
-      true
     end
 
     def groonga_http_command(host, port, pid_file_path, context, spawn_options)
