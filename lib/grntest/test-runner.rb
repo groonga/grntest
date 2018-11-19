@@ -85,7 +85,6 @@ module Grntest
       @worker = worker
       @max_n_columns = MAX_N_COLUMNS
       @id = nil
-      @shutdown_wait_timeout = 5
     end
 
     def run
@@ -431,7 +430,7 @@ call chdir("#{context.temporary_directory_path}")
         return true if Process.waitpid(pid, Process::WNOHANG)
         sleep(sleep_time)
         total_sleep_time += sleep_time
-        return false if total_sleep_time > @shutdown_wait_timeout
+        return false if total_sleep_time > @tester.shutdown_wait_timeout
       end
     end
 
@@ -443,7 +442,7 @@ call chdir("#{context.temporary_directory_path}")
       while pid_file_path.exist?
         sleep(sleep_time)
         total_sleep_time += sleep_time
-        break if total_sleep_time > @shutdown_wait_timeout
+        break if total_sleep_time > @tester.shutdown_wait_timeout
       end
       true
     end

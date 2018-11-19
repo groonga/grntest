@@ -236,6 +236,12 @@ module Grntest
           tester.n_retries = n
         end
 
+        parser.on("--shutdown-wait-timeout=SECOND", Float,
+                  "Timeout for waiting shutdown",
+                  "(#{tester.shutdown_wait_timeout})") do |timeout|
+          tester.shutdown_wait_timeout = timeout
+        end
+
         parser.on("--version",
                   "Show version and exit") do
           puts(VERSION)
@@ -288,6 +294,7 @@ module Grntest
     attr_reader :test_patterns, :test_suite_patterns
     attr_reader :exclude_test_patterns, :exclude_test_suite_patterns
     attr_accessor :n_retries
+    attr_accessor :shutdown_wait_timeout
     def initialize
       @groonga = "groonga"
       @groonga_httpd = "groonga-httpd"
@@ -319,6 +326,7 @@ module Grntest
       @timeout = 5
       @read_timeout = 3
       @n_retries = 0
+      @shutdown_wait_timeout = 5
     end
 
     def run(*targets)
