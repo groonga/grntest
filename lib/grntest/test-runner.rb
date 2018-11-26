@@ -379,11 +379,13 @@ call chdir("#{context.temporary_directory_path}")
           end
           yield(executor)
         ensure
-          if executor.shutdown(pid)
-            pid = nil
-          else
-            wait_groonga_http_shutdown(pid_file_path)
-            pid = nil if wait_pid(pid)
+          if pid
+            if executor.shutdown(pid)
+              pid = nil
+            else
+              wait_groonga_http_shutdown(pid_file_path)
+              pid = nil if wait_pid(pid)
+            end
           end
         end
       ensure
