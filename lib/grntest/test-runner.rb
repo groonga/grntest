@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2018  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2019  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,11 +19,11 @@ require "tempfile"
 require "timeout"
 require "socket"
 
+require "groonga-log"
 require "json"
 
 require "grntest/platform"
 require "grntest/error"
-require "grntest/log-parser"
 require "grntest/executors"
 require "grntest/base-result"
 
@@ -808,7 +808,7 @@ http {
     end
 
     def check_memory_leak(context)
-      parser = LogParser.new
+      parser = GroongaLog::Parser.new
       parser.parse(context.log) do |entry|
         next unless /^grn_fin \((\d+)\)$/ =~ entry.message
         n_leaked_objects = $1.to_i

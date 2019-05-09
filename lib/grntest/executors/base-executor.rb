@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2018  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2019  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,11 +17,11 @@ require "pathname"
 require "fileutils"
 require "shellwords"
 
+require "groonga-log"
+require "groonga-query-log"
 require "groonga/command/parser"
 
 require "grntest/error"
-require "grntest/log-parser"
-require "grntest/query-log-parser"
 require "grntest/execution-context"
 require "grntest/response-parser"
 require "grntest/template-evaluator"
@@ -277,7 +277,11 @@ module Grntest
       end
 
       def normalize_log_level(level)
-        level[0]
+        case level
+        when "info"
+          level = "information"
+        end
+        level.to_sym
       end
 
       def execute_directive_sleep(line, content, options)
@@ -424,10 +428,10 @@ module Grntest
 
       def extract_important_messages(log)
         important_messages = []
-        parser = LogParser.new
+        parser = GroongaLog::Parser.new
         in_crash = false
         parser.parse(log) do |entry|
-          if entry.log_level == "C"
+          if entry.log_level == :critical
             case entry.message
             when "-- CRASHED!!! --"
               in_crash = true
@@ -441,7 +445,8 @@ module Grntest
             next if !in_crash and backtrace_log_message?(entry.message)
           end
           next if thread_log_message?(entry.message)
-          important_messages << "\#|#{entry.log_level}| #{entry.message}"
+          formatted_log_level = format_log_level(entry.log_level)
+          important_messages << "\#|#{formatted_log_level}| #{entry.message}"
         end
         important_messages.join("\n")
       end
@@ -462,8 +467,37 @@ module Grntest
       end
 
       def important_log_level?(log_level)
-        ["E", "A", "C", "e", "w"].include?(log_level) or
-          @custom_important_log_levels.include?(log_level)
+        case log_level
+        when :emergency, :alert, :critical, :error, :warning
+          true
+        when *@custom_important_log_levels
+          true
+        else
+          false
+        end
+      end
+
+      def format_log_level(log_level)
+        case log_level
+        when :emergency
+          "E"
+        when :alert
+          "A"
+        when :critical
+          "C"
+        when :error
+          "e"
+        when :warning
+          "w"
+        when :notice
+          "n"
+        when :information
+          "i"
+        when :debug
+          "d"
+        when :dump
+          "-"
+        end
       end
 
       def backtrace_log_message?(message)
@@ -539,9 +573,22 @@ module Grntest
       def log_query_log_content(content)
         return unless @context.collect_query_log?
 
-        parser = QueryLogParser.new
-        parser.parse(content) do |entry|
-          log_query("\##{entry.mark}#{entry.message}")
+        parser = GroongaQueryLog::Parser.new
+        parser.parse(content) do |statistic|
+          relative_elapsed_time = "000000000000000"
+          command = statistic.command
+          if command
+            command[:output_type] = nil if command.output_type == :json
+            log_query("\#>#{command.to_command_format}")
+          end
+          statistic.each_operation do |operation|
+            message = operation[:raw_message]
+            if operation[:name] == "cache"
+              message = message.gsub(/\(\d+\)/, "(0)")
+            end
+            log_query("\#:#{relative_elapsed_time} #{message}")
+          end
+          log_query("\#<#{relative_elapsed_time} rc=#{statistic.return_code}")
         end
       end
 

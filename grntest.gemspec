@@ -1,6 +1,6 @@
-# -*- mode: ruby; coding: utf-8 -*-
+# -*- ruby -*-
 #
-# Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2019  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,10 +43,12 @@ Gem::Specification.new do |spec|
     spec.executables = Dir.glob("*")
   end
 
-  spec.add_runtime_dependency("json")
-  spec.add_runtime_dependency("msgpack")
   spec.add_runtime_dependency("diff-lcs")
   spec.add_runtime_dependency("groonga-command-parser")
+  spec.add_runtime_dependency("groonga-log")
+  spec.add_runtime_dependency("groonga-query-log", ">= 1.4.1")
+  spec.add_runtime_dependency("json")
+  spec.add_runtime_dependency("msgpack")
 
   spec.add_development_dependency("bundler")
   spec.add_development_dependency("rake")
