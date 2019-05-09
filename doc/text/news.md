@@ -1,5 +1,11 @@
 # News
 
+## 1.3.2: 2019-05-09
+
+### Improvements
+
+  * Changed to use groonga-log and groonga-query-log gems.
+
 ## 1.3.1: 2018-11-19
 
 ### Improvements
