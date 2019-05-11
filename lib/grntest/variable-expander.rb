@@ -1,4 +1,4 @@
-# Copyright (C) 2016  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2016-2019  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,6 +28,12 @@ module Grntest
           @context.db_path.parent.to_s
         when "base_directory"
           @context.base_directory.to_s
+        when "plugins_directory"
+          @context.plugins_directory.to_s
+        when "libtool_directory"
+          @context.libtool_directory
+        when "plugin_extension"
+          @context.plugin_extension
         else
           matched
         end

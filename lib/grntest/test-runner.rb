@@ -134,6 +134,7 @@ module Grntest
         context.temporary_directory_path = directory_path
         context.db_path = db_path
         context.base_directory = @tester.base_directory.expand_path
+        context.plugins_directory = @tester.plugins_directory.expand_path
         context.groonga_suggest_create_dataset =
           @tester.groonga_suggest_create_dataset
         context.output_type = @tester.output_type

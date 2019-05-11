@@ -315,6 +315,11 @@ module Grntest
         end
       end
 
+      def execute_directive_eval(parser, line, content, options)
+        groonga_command = content.split(" ", 2)[1]
+        parser << "#{expand_variables(groonga_command)}\n"
+      end
+
       def execute_directive(parser, line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -348,6 +353,8 @@ module Grntest
           execute_directive_collect_query_log(line, content, options)
         when "generate-series"
           execute_directive_generate_series(parser, line, content, options)
+        when "eval"
+          execute_directive_eval(parser, line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")

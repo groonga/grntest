@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2018  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2019  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -415,6 +415,14 @@ module Grntest
       end
     end
 
+    def plugins_directory
+      groonga_path = Pathname(@groonga)
+      unless groonga_path.absolute?
+        groonga_path = Pathname(resolve_command_path(@groonga)).expand_path
+      end
+      groonga_path.parent.parent + "plugins"
+    end
+
     private
     def load_tests(*targets)
       default_group_name = "."
@@ -471,7 +479,7 @@ module Grntest
       @vagrind_gen_suppressions = false
     end
 
-    def command_exist?(name)
+    def resolve_command_path(name)
       exeext = RbConfig::CONFIG["EXEEXT"]
       ENV["PATH"].split(File::PATH_SEPARATOR).each do |path|
         raw_candidate = File.join(path, name)
@@ -480,10 +488,14 @@ module Grntest
           "#{raw_candidate}#{exeext}",
         ]
         candidates.each do |candidate|
-          return true if File.executable?(candidate)
+          return candidate if File.executable?(candidate)
         end
       end
-      false
+      nil
+    end
+
+    def command_exist?(name)
+      not resolve_command_path(name).nil?
     end
 
     def guess_color_availability

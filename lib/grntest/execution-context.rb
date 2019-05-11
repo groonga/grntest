@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2018  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2019  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@ module Grntest
   class ExecutionContext
     attr_writer :logging
     attr_accessor :base_directory, :temporary_directory_path, :db_path
+    attr_accessor :plugins_directory
+    attr_accessor :plugin_extension
     attr_accessor :groonga_suggest_create_dataset
     attr_accessor :result
     attr_accessor :output_type
@@ -35,6 +37,8 @@ module Grntest
       @base_directory = Pathname(".")
       @temporary_directory_path = Pathname("tmp")
       @db_path = Pathname("db")
+      @plugins_directory = nil
+      @plugin_extension = guess_plugin_extension
       @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
       @n_nested = 0
       @result = []
@@ -101,6 +105,15 @@ module Grntest
       @db_path.relative_path_from(@temporary_directory_path)
     end
 
+    def libtool_directory
+      @plugins_directory.find do |sub_path|
+        if sub_path.directory? and sub_path.basename.to_s == ".libs"
+          return ".libs/"
+        end
+      end
+      ""
+    end
+
     def omitted?
       @omitted
     end
@@ -130,6 +143,16 @@ module Grntest
       if @query_log
         @query_log.close
         @query_log = nil
+      end
+    end
+
+    private
+    def guess_plugin_extension
+      case RUBY_PLATFORM
+      when /mingw|mswin/
+        "dll"
+      else
+        "so"
       end
     end
   end
