@@ -1,5 +1,17 @@
 # News
 
+## 1.3.3: 2019-05-12
+
+### Improvements
+
+  * Added `eval` directive.
+
+  * Added `plugins_directory` expandable variable.
+
+  * Added `libtool_directory` expandable variable.
+
+  * Added `plugin_extension` expandable variable.
+
 ## 1.3.2: 2019-05-09
 
 ### Improvements
