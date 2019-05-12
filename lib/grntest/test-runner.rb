@@ -730,7 +730,7 @@ http {
       case content
       when /\A(.*: fopen: failed to open mruby script file: )<(.+?)>?\z/
         pre = $1
-        path = $2
+        _path = $2
         "#{pre}<PATH>"
       else
         content

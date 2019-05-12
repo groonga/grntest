@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2016  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2019  Kouhei Sutou <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -153,9 +153,9 @@ module Grntest
 
       def elapsed_time_status(elapsed_time)
         if long_elapsed_time?(elapsed_time)
-          elapsed_time_status = :failure
+          :failure
         else
-          elapsed_time_status = :not_checked
+          :not_checked
         end
       end
 
