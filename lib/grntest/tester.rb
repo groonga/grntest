@@ -420,7 +420,14 @@ module Grntest
       unless groonga_path.absolute?
         groonga_path = Pathname(resolve_command_path(@groonga)).expand_path
       end
-      groonga_path.parent.parent + "plugins"
+      base_dir = groonga_path.parent.parent
+      installed_plugins_dir = base_dir + "lib" + "groonga" + "plugins"
+      build_plugins_dir = base_dir + "plugins"
+      if installed_plugins_dir.exist?
+        installed_plugins_dir
+      else
+        build_plugins_dir
+      end
     end
 
     private
