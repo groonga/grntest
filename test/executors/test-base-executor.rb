@@ -22,21 +22,21 @@ class TestBaseExecutor < Test::Unit::TestCase
   end
 
   class TestErrorLogLevel < self
-    data("emergency" => "E",
-         "alert"     => "A",
-         "critical"  => "C",
-         "error"     => "e",
-         "warning"   => "w")
+    data("emergency" => :emergency,
+         "alert"     => :alert,
+         "critical"  => :critical,
+         "error"     => :error,
+         "warning"   => :warning)
     def test_important_log_level(level)
       assert do
         @executor.send(:important_log_level?, level)
       end
     end
 
-    data("notice"  => "n",
-         "info"    => "i",
-         "debug"   => "d",
-         "dump"    => "-")
+    data("notice"  => :notice,
+         "info"    => :information,
+         "debug"   => :debug,
+         "dump"    => :dump)
     def test_not_important_log_level(level)
       assert do
         not @executor.send(:important_log_level?, level)
