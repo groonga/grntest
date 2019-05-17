@@ -48,7 +48,7 @@ module Grntest
       @on_error = :default
       @abort_tag = nil
       @timeout = 0
-      @read_timeout = 3
+      @read_timeout = 5
       @default_timeout = @timeout
       @default_read_timeout = @read_timeout
       @shutdown_wait_timeout = 5
