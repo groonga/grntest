@@ -259,7 +259,7 @@ module Grntest
           gdb_command.puts(<<-COMMANDS)
 break main
 run
-call chdir("#{context.temporary_directory_path}")
+call (int)chdir("#{context.temporary_directory_path}")
           COMMANDS
         end
         command_line << "--command=#{gdb_command_path}"
