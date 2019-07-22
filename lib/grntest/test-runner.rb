@@ -590,7 +590,7 @@ http {
 
     def normalize_output_structured(type, content, options)
       response = nil
-      content = content.chomp
+      content = content.chomp unless type == "msgpack"
       if type == "json" and /\A([^(]+\()(.+)(\);)\z/ =~ content
         jsonp = true
         jsonp_start = $1
@@ -602,7 +602,7 @@ http {
       begin
         response = ResponseParser.parse(content, type)
       rescue ParseError
-        return $!.message
+        return $!.message + "\n"
       end
 
       if response.is_a?(Hash)

@@ -36,7 +36,7 @@ module Grntest
     def parse(content)
       case @type
       when "json", "msgpack"
-        parse_result(content.chomp)
+        parse_result(content)
       else
         content
       end
@@ -46,14 +46,14 @@ module Grntest
       case @type
       when "json"
         begin
-          JSON.parse(result)
+          JSON.parse(result.chomp)
         rescue JSON::ParserError
           raise ParseError.new(@type, result, $!.message)
         end
       when "msgpack"
         begin
-          MessagePack.unpack(result.chomp)
-        rescue MessagePack::UnpackError, NoMemoryError
+          MessagePack.unpack(result)
+        rescue MessagePack::UnpackError, NoMemoryError, EOFError, ArgumentError
           raise ParseError.new(@type, result, $!.message)
         end
       else

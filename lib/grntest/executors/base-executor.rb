@@ -390,6 +390,7 @@ module Grntest
 
       def extract_command_info(command)
         @current_command = command
+        @orig_output_type = command[:output_type]
         if @current_command.name == "dump"
           @output_type = "groonga-command"
         else
@@ -585,7 +586,9 @@ module Grntest
           relative_elapsed_time = "000000000000000"
           command = statistic.command
           if command
-            command[:output_type] = nil if command.output_type == :json
+            if command.output_type == :json or @orig_output_type.nil?
+              command[:output_type] = nil
+            end
             log_query("\#>#{command.to_command_format}")
           end
           statistic.each_operation do |operation|
