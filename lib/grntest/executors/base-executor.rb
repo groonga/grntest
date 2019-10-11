@@ -436,7 +436,7 @@ module Grntest
         unless lines.empty?
           timeout = Time.now + @context.read_timeout
           while Time.now < timeout
-            break if /rc=-?\d+$/.match?(lines.last)
+            break if /rc=-?\d+$/ =~ lines.last
             additional_content = read_all_readable_content(context.query_log,
                                                            first_timeout: 0)
             next if additional_content.empty?
