@@ -430,7 +430,20 @@ module Grntest
       end
 
       def read_all_query_log
-        read_all_readable_content(context.query_log, :first_timeout => 0)
+        content = read_all_readable_content(context.query_log,
+                                            first_timeout: 0)
+        lines = content.lines
+        if lines.last and !/rc=-?\d+\z/.match?(lines.last.chomp)
+          timeout = Time.now + @context.read_timeout
+          while Time.now < timeout
+            additional_content = read_all_readable_content(context.query_log,
+                                                           first_timeout: 0)
+            next if additional_content.empty?
+            content << additional_content
+            break
+          end
+        end
+        content
       end
 
       def extract_important_messages(log)
@@ -590,8 +603,11 @@ module Grntest
           end
           statistic.each_operation do |operation|
             message = operation[:raw_message]
-            if operation[:name] == "cache"
+            case operation[:name]
+            when "cache"
               message = message.gsub(/\(\d+\)/, "(0)")
+            when "send"
+              message = message.gsub(/\(\d+\)(?:: \d+\/\d+)?\z/, "(0)")
             end
             log_query("\#:#{relative_elapsed_time} #{message}")
           end
