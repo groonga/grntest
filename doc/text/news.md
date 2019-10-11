@@ -1,5 +1,13 @@
 # News
 
+## 1.3.4: 2019-10-11
+
+### Improvements
+
+  * Added support for testing with installed Groonga.
+
+  * Added support for `send` operation in query log.
+
 ## 1.3.3: 2019-05-12
 
 ### Improvements
