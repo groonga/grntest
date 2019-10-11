@@ -433,14 +433,15 @@ module Grntest
         content = read_all_readable_content(context.query_log,
                                             first_timeout: 0)
         lines = content.lines
-        if lines.last and !/rc=-?\d+\z/.match?(lines.last.chomp)
+        unless lines.empty?
           timeout = Time.now + @context.read_timeout
           while Time.now < timeout
+            break if /rc=-?\d+$/.match?(lines.last)
             additional_content = read_all_readable_content(context.query_log,
                                                            first_timeout: 0)
             next if additional_content.empty?
             content << additional_content
-            break
+            lines.concat(additional_content.lines)
           end
         end
         content
