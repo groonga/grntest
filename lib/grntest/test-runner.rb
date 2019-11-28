@@ -137,6 +137,7 @@ module Grntest
         context.plugins_directory = @tester.plugins_directory.expand_path
         context.groonga_suggest_create_dataset =
           @tester.groonga_suggest_create_dataset
+        context.input_type = @tester.input_type
         context.output_type = @tester.output_type
         context.timeout = @tester.timeout
         context.timeout = 0 if @tester.gdb

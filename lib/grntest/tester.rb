@@ -65,6 +65,15 @@ module Grntest
           tester.interface = interface
         end
 
+        available_input_types = ["json", "apache-arrow"]
+        available_input_type_labels = available_input_types.join(", ")
+        parser.on("--input-type=TYPE", available_input_types,
+                  "Use TYPE as the input type on load",
+                  "[#{available_input_type_labels}]",
+                  "(#{tester.input_type})") do |type|
+          tester.input_type = type
+        end
+
         available_output_types = ["json", "msgpack"]
         available_output_type_labels = available_output_types.join(", ")
         parser.on("--output-type=TYPE", available_output_types,
@@ -277,7 +286,10 @@ module Grntest
     end
 
     attr_accessor :groonga, :groonga_httpd, :groonga_suggest_create_dataset
-    attr_accessor :interface, :output_type, :testee
+    attr_accessor :interface
+    attr_accessor :input_type
+    attr_accessor :output_type
+    attr_accessor :testee
     attr_accessor :base_directory, :database_path, :diff, :diff_options
     attr_accessor :n_workers
     attr_accessor :output
@@ -303,6 +315,7 @@ module Grntest
         @groonga_suggest_create_dataset = nil
       end
       @interface = :stdio
+      @input_type = "json"
       @output_type = "json"
       @testee = "groonga"
       @base_directory = Pathname(".")

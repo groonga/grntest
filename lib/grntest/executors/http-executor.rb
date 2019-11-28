@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+require "arrow"
 require "net/http"
 require "open-uri"
 
@@ -69,14 +70,37 @@ module Grntest
           body = values
         end
 
+        case @context.input_type
+        when "apache-arrow"
+          command[:input_type] = "apache-arrow"
+          content_type = "application/x-apache-arrow-stream"
+          body = build_apache_arrow_data(command, JSON.parse(body))
+        else
+          content_type = "application/json; charset=UTF-8"
+          body = body
+        end
         request = Net::HTTP::Post.new(command.to_uri_format)
-        request.content_type = "application/json; charset=UTF-8"
+        request.content_type = content_type
         request.body = body
         response = Net::HTTP.start(@host, @port) do |http|
           http.read_timeout = read_timeout
           http.request(request)
         end
         normalize_response_data(command, response.body)
+      end
+
+      def build_apache_arrow_data(command, values)
+        table = {}
+        values.each_with_index do |record, i|
+          record.each do |key, value|
+            table[key] ||= []
+            table[key][i] = value
+          end
+        end
+        arrow_table = Arrow::Table.new(table)
+        output = Arrow::ResizableBuffer.new(1024)
+        arrow_table.save(output, format: :stream)
+        output.data.to_s
       end
 
       def send_normal_command(command)

@@ -21,6 +21,7 @@ module Grntest
     attr_accessor :plugin_extension
     attr_accessor :groonga_suggest_create_dataset
     attr_accessor :result
+    attr_accessor :input_type
     attr_accessor :output_type
     attr_accessor :on_error
     attr_accessor :abort_tag
@@ -42,6 +43,7 @@ module Grntest
       @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
       @n_nested = 0
       @result = []
+      @input_type = "json"
       @output_type = "json"
       @log = nil
       @query_log = nil
