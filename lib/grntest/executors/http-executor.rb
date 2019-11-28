@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2012-2015  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2019  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -82,9 +80,9 @@ module Grntest
       end
 
       def send_normal_command(command)
-        url = "http://#{@host}:#{@port}#{command.to_uri_format}"
+        url = URI("http://#{@host}:#{@port}#{command.to_uri_format}")
         begin
-          open(url, :read_timeout => read_timeout) do |response|
+          url.open(:read_timeout => read_timeout) do |response|
             normalize_response_data(command, response.read)
           end
         rescue SystemCallError
