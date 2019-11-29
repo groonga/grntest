@@ -91,16 +91,70 @@ module Grntest
 
       def build_apache_arrow_data(command, values)
         table = {}
-        values.each_with_index do |record, i|
-          record.each do |key, value|
-            table[key] ||= []
-            table[key][i] = value
+        if values.first.is_a?(Array)
+          names = values.first
+          values[1..-1].each_with_index do |record, i|
+            names.zip(record).each do |name, value|
+              table[name] ||= []
+              table[name][i] = value
+            end
+          end
+        else
+          values.each_with_index do |record, i|
+            record.each do |name, value|
+              table[name] ||= []
+              table[name][i] = value
+            end
           end
         end
-        arrow_table = Arrow::Table.new(table)
+        arrow_table = build_apache_arrow_table(table)
+        pp table
+        p arrow_table.schema
         output = Arrow::ResizableBuffer.new(1024)
         arrow_table.save(output, format: :stream)
         output.data.to_s
+      end
+
+      def build_apache_arrow_table(table)
+        arrow_fields = []
+        arrow_arrays = []
+        table.each do |name, array|
+          case array[0]
+          when Array
+            data_type = nil
+            array.each do |sub_array|
+              data_type ||= detect_arrow_data_type(sub_array)
+            end
+            arrow_list_field = Arrow::Field.new("item", data_type)
+            arrow_list_data_type = Arrow::ListDataType.new(arrow_list_field)
+            arrow_array = Arrow::ListArrayBuilder.build(arrow_list_data_type,
+                                                        array)
+          else
+            arrow_array = Arrow::ArrayBuilder.build(array)
+          end
+          arrow_fields << Arrow::Field.new(name,
+                                           arrow_array.value_data_type)
+          arrow_arrays << arrow_array
+        end
+        arrow_schema = Arrow::Schema.new(arrow_fields)
+        Arrow::Table.new(arrow_schema, arrow_arrays)
+      end
+
+      def detect_arrow_data_type(array)
+        array.each do |element|
+          case element
+          when nil
+          when true, false
+            return :boolean
+          when Integer
+            return :int64
+          when Float
+            return :double
+          else
+            return :string
+          end
+        end
+        nil
       end
 
       def send_normal_command(command)
