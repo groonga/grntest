@@ -108,8 +108,6 @@ module Grntest
           end
         end
         arrow_table = build_apache_arrow_table(table)
-        pp table
-        p arrow_table.schema
         output = Arrow::ResizableBuffer.new(1024)
         arrow_table.save(output, format: :stream)
         output.data.to_s
