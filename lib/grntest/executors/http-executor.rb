@@ -127,6 +127,24 @@ module Grntest
             arrow_list_data_type = Arrow::ListDataType.new(arrow_list_field)
             arrow_array = Arrow::ListArrayBuilder.build(arrow_list_data_type,
                                                         array)
+          when Hash
+            arrow_weight_vector_element_data_type =
+              Arrow::StructDataType.new("value" => :string,
+                                        "weight" => :int32)
+            arrow_list_field =
+              Arrow::Field.new("item",
+                               arrow_weight_vector_element_data_type)
+            arrow_list_data_type = Arrow::ListDataType.new(arrow_list_field)
+            weight_vector = array.collect do |element|
+              element.collect do |value, weight|
+                {
+                  "value" => value,
+                  "weight" => weight,
+                }
+              end
+            end
+            arrow_array = Arrow::ListArrayBuilder.build(arrow_list_data_type,
+                                                        weight_vector)
           else
             arrow_array = Arrow::ArrayBuilder.build(array)
           end
