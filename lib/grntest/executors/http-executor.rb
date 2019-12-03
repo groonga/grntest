@@ -106,6 +106,11 @@ module Grntest
               table[name][i] = value
             end
           end
+          table.each_key do |key|
+            if values.size > table[key].size
+              table[key][values.size - 1] = nil
+            end
+          end
         end
         arrow_table = build_apache_arrow_table(table)
         output = Arrow::ResizableBuffer.new(1024)
