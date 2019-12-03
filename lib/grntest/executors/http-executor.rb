@@ -128,6 +128,7 @@ module Grntest
             array.each do |sub_array|
               data_type ||= detect_arrow_data_type(sub_array)
             end
+            data_type ||= :string
             arrow_list_field = Arrow::Field.new("item", data_type)
             arrow_list_data_type = Arrow::ListDataType.new(arrow_list_field)
             arrow_array = Arrow::ListArrayBuilder.build(arrow_list_data_type,
