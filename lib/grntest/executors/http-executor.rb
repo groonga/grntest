@@ -60,9 +60,12 @@ module Grntest
           return send_normal_command(command)
         end
 
+        columns = nil
         values = command.arguments.delete(:values)
         if lines.size >= 2 and lines[1].start_with?("[")
-          unless /\s--columns\s/ =~ lines.first
+          if /\s--columns\s/ =~ lines.first
+            columns = command.columns
+          else
             command.arguments.delete(:columns)
           end
           body = lines[1..-1].join
@@ -74,7 +77,7 @@ module Grntest
         when "apache-arrow"
           command[:input_type] = "apache-arrow"
           content_type = "application/x-apache-arrow-stream"
-          body = build_apache_arrow_data(command, JSON.parse(body))
+          body = build_apache_arrow_data(columns, JSON.parse(body))
         else
           content_type = "application/json; charset=UTF-8"
           body = body
@@ -89,18 +92,17 @@ module Grntest
         normalize_response_data(command, response.body)
       end
 
-      def build_apache_arrow_data(command, values)
+      def build_apache_arrow_data(columns, values)
         table = {}
         if values.first.is_a?(Array)
-          column_names = command.columns
-          if column_names
+          if columns
             records = values
           else
-            column_names = values.first
-            records = valiues[1..-1]
+            columns = values.first
+            records = values[1..-1]
           end
           records.each_with_index do |record, i|
-            column_names.zip(record).each do |name, value|
+            columns.zip(record).each do |name, value|
               table[name] ||= []
               table[name][i] = value
             end
