@@ -92,9 +92,15 @@ module Grntest
       def build_apache_arrow_data(command, values)
         table = {}
         if values.first.is_a?(Array)
-          names = values.first
-          values[1..-1].each_with_index do |record, i|
-            names.zip(record).each do |name, value|
+          column_names = command.columns
+          if column_names
+            records = values
+          else
+            column_names = values.first
+            records = valiues[1..-1]
+          end
+          records.each_with_index do |record, i|
+            column_names.zip(record).each do |name, value|
               table[name] ||= []
               table[name][i] = value
             end
