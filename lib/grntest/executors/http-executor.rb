@@ -158,7 +158,14 @@ module Grntest
             arrow_array = Arrow::ListArrayBuilder.build(arrow_list_data_type,
                                                         weight_vector)
           else
-            arrow_array = Arrow::ArrayBuilder.build(array)
+            data_type = detect_arrow_data_type(array) || :string
+            if data_type == :string
+              array = array.collect do |element|
+                element&.to_s
+              end
+            end
+            data_type = Arrow::DataType.resolve(data_type)
+            arrow_array = data_type.build_array(array)
           end
           arrow_fields << Arrow::Field.new(name,
                                            arrow_array.value_data_type)
@@ -169,20 +176,22 @@ module Grntest
       end
 
       def detect_arrow_data_type(array)
+        type = nil
         array.each do |element|
           case element
           when nil
           when true, false
-            return :boolean
+            type ||= :boolean
           when Integer
-            return :int64
+            type ||= :int64
           when Float
-            return :double
+            type = nil if type == :int64
+            type ||= :double
           else
             return :string
           end
         end
-        nil
+        type
       end
 
       def send_normal_command(command)
