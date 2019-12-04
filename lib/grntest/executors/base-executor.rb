@@ -320,6 +320,13 @@ module Grntest
         parser << "#{expand_variables(groonga_command)}\n"
       end
 
+      def execute_directive_require_input_type(parser, line, content, options)
+        input_type, = options
+        unless @context.input_type == input_type
+          omit("require input type: #{input_type}")
+        end
+      end
+
       def execute_directive(parser, line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -355,6 +362,8 @@ module Grntest
           execute_directive_generate_series(parser, line, content, options)
         when "eval"
           execute_directive_eval(parser, line, content, options)
+        when "require-input-type"
+          execute_directive_require_input_type(parser, line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
