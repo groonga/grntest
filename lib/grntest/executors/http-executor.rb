@@ -130,7 +130,8 @@ module Grntest
         arrow_fields = []
         arrow_arrays = []
         table.each do |name, array|
-          case array[0]
+          sample = array.find {|element| not element.nil?}
+          case sample
           when Array
             data_type = nil
             array.each do |sub_array|
