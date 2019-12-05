@@ -137,28 +137,10 @@ module Grntest
               data_type ||= detect_arrow_data_type(sub_array)
             end
             data_type ||= :string
-            arrow_list_field = Arrow::Field.new("item", data_type)
-            arrow_list_data_type = Arrow::ListDataType.new(arrow_list_field)
-            arrow_array = Arrow::ListArrayBuilder.build(arrow_list_data_type,
-                                                        array)
+            arrow_array = build_apache_arrow_array(data_type, array)
           when Hash
-            arrow_weight_vector_element_data_type =
-              Arrow::StructDataType.new("value" => :string,
-                                        "weight" => :int32)
-            arrow_list_field =
-              Arrow::Field.new("item",
-                               arrow_weight_vector_element_data_type)
-            arrow_list_data_type = Arrow::ListDataType.new(arrow_list_field)
-            weight_vector = array.collect do |element|
-              element.collect do |value, weight|
-                {
-                  "value" => value,
-                  "weight" => weight,
-                }
-              end
-            end
-            arrow_array = Arrow::ListArrayBuilder.build(arrow_list_data_type,
-                                                        weight_vector)
+            arrow_array = build_apache_arrow_array(arrow_weight_vector_data_type,
+                                                   array)
           else
             data_type = detect_arrow_data_type(array) || :string
             if data_type == :string
@@ -177,6 +159,37 @@ module Grntest
         Arrow::Table.new(arrow_schema, arrow_arrays)
       end
 
+      def convert_array_for_apache_arrow(array)
+        array.collect do |element|
+          case element
+          when Array
+            convert_array_for_apache_arrow(element)
+          when Hash
+            element.collect do |value, weight|
+              {
+                "value" => value,
+                "weight" => weight,
+              }
+            end
+          else
+            element
+          end
+        end
+      end
+
+      def build_apache_arrow_array(data_type, array)
+        arrow_list_field = Arrow::Field.new("item", data_type)
+        arrow_list_data_type = Arrow::ListDataType.new(arrow_list_field)
+        array = convert_array_for_apache_arrow(array)
+        arrow_array = Arrow::ListArrayBuilder.build(arrow_list_data_type,
+                                                    array)
+      end
+
+      def arrow_weight_vector_data_type
+        Arrow::StructDataType.new("value" => :string,
+                                  "weight" => :int32)
+      end
+
       def detect_arrow_data_type(array)
         type = nil
         array.each do |element|
@@ -189,6 +202,11 @@ module Grntest
           when Float
             type = nil if type == :int64
             type ||= :double
+          when Hash
+            arrow_list_field =
+              Arrow::Field.new("item", arrow_weight_vector_data_type)
+            arrow_list_data_type = Arrow::ListDataType.new(arrow_list_field)
+            return arrow_list_data_type
           else
             return :string
           end
