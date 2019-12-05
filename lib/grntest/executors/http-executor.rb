@@ -77,7 +77,8 @@ module Grntest
         when "apache-arrow"
           command[:input_type] = "apache-arrow"
           content_type = "application/x-apache-arrow-stream"
-          body = build_apache_arrow_data(columns, JSON.parse(body))
+          output = build_apache_arrow_data(columns, JSON.parse(body))
+          body = output.data.to_s
         else
           content_type = "application/json; charset=UTF-8"
           body = body
@@ -123,7 +124,7 @@ module Grntest
         arrow_table = build_apache_arrow_table(table)
         output = Arrow::ResizableBuffer.new(1024)
         arrow_table.save(output, format: :stream)
-        output.data.to_s
+        output
       end
 
       def build_apache_arrow_table(table)
