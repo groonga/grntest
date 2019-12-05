@@ -136,7 +136,7 @@ module Grntest
           when Array
             data_type = nil
             array.each do |sub_array|
-              data_type ||= detect_arrow_data_type(sub_array)
+              data_type ||= detect_arrow_data_type(sub_array) if sub_array
             end
             data_type ||= :string
             arrow_array = build_apache_arrow_array(data_type, array)
