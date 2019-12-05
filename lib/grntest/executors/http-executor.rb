@@ -198,7 +198,12 @@ module Grntest
           when true, false
             type ||= :boolean
           when Integer
-            type ||= :int64
+            if element >= (2 ** 63)
+              type = nil if type == :int64
+              type ||= :uint64
+            else
+              type ||= :int64
+            end
           when Float
             type = nil if type == :int64
             type ||= :double
