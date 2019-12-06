@@ -76,7 +76,7 @@ module Grntest
         case @context.input_type
         when "apache-arrow"
           command[:input_type] = "apache-arrow"
-          content_type = "application/x-apache-arrow-stream"
+          content_type = "application/x-apache-arrow-streaming"
           output = build_apache_arrow_data(columns, JSON.parse(body))
           if output.nil?
             body = ""
