@@ -57,7 +57,8 @@ module Grntest
         if may_slow_command?(command)
           options[:first_timeout] = @long_read_timeout
         end
-        read_all_readable_content(@output, options)
+        content = read_all_readable_content(@output, options)
+        @output_type == "msgpack" ? content.sub(/\n\z/, '') : content
       end
 
       MAY_SLOW_COMMANDS = [

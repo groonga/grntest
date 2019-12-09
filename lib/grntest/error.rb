@@ -33,6 +33,7 @@ module Grntest
       @type = type
       @content = content
       @reason = reason
+      content = content.inspect if type == "msgpack"
       super("failed to parse <#{@type}> content: #{reason}: <#{content}>")
     end
   end

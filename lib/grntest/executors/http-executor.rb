@@ -29,6 +29,10 @@ module Grntest
       end
 
       def send_command(command)
+        if @output_type == 'msgpack'
+          command[:output_type] = 'msgpack'
+        end
+
         if command.name == "load"
           send_load_command(command)
         else
@@ -249,7 +253,7 @@ module Grntest
       end
 
       def normalize_response_data(command, raw_response_data)
-        if raw_response_data.empty? or command.output_type == :none
+        if raw_response_data.empty? or command.output_type == :none or @output_type == "msgpack"
           raw_response_data
         else
           "#{raw_response_data}\n"
