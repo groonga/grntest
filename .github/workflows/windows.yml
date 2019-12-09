@@ -34,6 +34,9 @@ jobs:
       - name: Update MSYS2 again
         run: |
           ridk exec pacman -Syu --noconfirm
+      - name: Search Apache Arrow
+        run: |
+          ridk exec pacman -Ss glib
           ridk exec pacman -Ss apache-arrow
       - name: Install dependencies
         run: |
