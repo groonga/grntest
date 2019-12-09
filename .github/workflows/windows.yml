@@ -34,6 +34,9 @@ jobs:
       - name: Search Apache Arrow
         run: |
           ridk exec pacman -Ss arrow
+      - name: Install Apache Arrow
+        run: |
+          ridk exec pacman -S --noconfirm mingw-w64-x86_64-arrow
       - name: Install dependencies
         run: |
           bundle install
