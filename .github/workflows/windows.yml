@@ -33,8 +33,7 @@ jobs:
           ridk exec pacman -Syu --noconfirm
       - name: Search Apache Arrow
         run: |
-          ridk exec pacman -Ss glib
-          ridk exec pacman -Ss apache-arrow
+          ridk exec pacman -Ss arrow
       - name: Install dependencies
         run: |
           bundle install
