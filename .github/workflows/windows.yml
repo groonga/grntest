@@ -28,6 +28,10 @@ jobs:
       - name: Install Bundler
         run: |
           gem install bundler
+      - name: Update MSYS2
+        run: |
+          ridk exec pacman -Syu --noconfirm
+          ridk exec pacman -Ss apache-arrow
       - name: Install dependencies
         run: |
           bundle install
