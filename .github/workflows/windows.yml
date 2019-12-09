@@ -34,9 +34,6 @@ jobs:
       - name: Update GCC
         run: |
           ridk exec pacman --sync --noconfirm mingw-w64-x86_64-gcc
-      - name: Install Apache Arrow
-        run: |
-          ridk exec pacman --sync --noconfirm mingw-w64-x86_64-arrow
       - name: Install dependencies
         run: |
           bundle install
