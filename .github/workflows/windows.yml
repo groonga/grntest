@@ -43,3 +43,9 @@ jobs:
       - name: Test
         run: |
           bundle exec ruby -rdevkit test/run-test.rb
+      - name: Install
+        run: |
+          bundle exec ruby -rdevkit -S rake install
+          gem list
+          ruby -r grntest/version -e "puts `$LOADED_FEATURES"
+          grntest --help
