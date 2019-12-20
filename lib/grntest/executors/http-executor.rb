@@ -227,16 +227,25 @@ module Grntest
       end
 
       def send_normal_command(command)
-        url = URI("http://#{@host}:#{@port}#{command.to_uri_format}")
+        path_with_query = command.to_uri_format
+        if @context.use_http_post?
+          path, query = path_with_query.split("?", 2)
+          request = Net::HTTP::Post.new(path)
+          request.content_type = "application/x-www-form-urlencoded"
+          request.body = query
+        else
+          request = Net::HTTP::Get.new(path_with_query)
+        end
+        url = "http://#{@host}:#{@port}#{path_with_query}"
         begin
-          url.open(:read_timeout => read_timeout) do |response|
-            normalize_response_data(command, response.read)
+          response = Net::HTTP.start(@host, @port) do |http|
+            http.read_timeout = read_timeout
+            http.request(request)
           end
+          normalize_response_data(command, response.body)
         rescue SystemCallError
           message = "failed to read response from Groonga: <#{url}>: #{$!}"
           raise Error.new(message)
-        rescue OpenURI::HTTPError
-          $!.io.read
         rescue Net::HTTPBadResponse
           message = "bad response from Groonga: <#{url}>: "
           message << "#{$!.class}: #{$!.message}"

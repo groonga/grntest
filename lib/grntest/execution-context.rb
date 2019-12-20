@@ -21,6 +21,7 @@ module Grntest
     attr_accessor :plugin_extension
     attr_accessor :groonga_suggest_create_dataset
     attr_accessor :result
+    attr_writer :use_http_post
     attr_accessor :input_type
     attr_accessor :output_type
     attr_accessor :on_error
@@ -43,6 +44,7 @@ module Grntest
       @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
       @n_nested = 0
       @result = []
+      @use_http_post = false
       @input_type = "json"
       @output_type = "json"
       @log = nil
@@ -62,6 +64,10 @@ module Grntest
 
     def logging?
       @logging
+    end
+
+    def use_http_post?
+      @use_http_post
     end
 
     def suppress_backtrace?

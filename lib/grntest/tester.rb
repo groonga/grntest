@@ -65,6 +65,12 @@ module Grntest
           tester.interface = interface
         end
 
+        parser.on("--[no-]use-http-post",
+                  "Use POST to send command by HTTP",
+                  "(#{tester.use_http_post?})") do |boolean|
+          tester.use_http_post = boolean
+        end
+
         available_input_types = ["json", "apache-arrow"]
         available_input_type_labels = available_input_types.join(", ")
         parser.on("--input-type=TYPE", available_input_types,
@@ -287,6 +293,7 @@ module Grntest
 
     attr_accessor :groonga, :groonga_httpd, :groonga_suggest_create_dataset
     attr_accessor :interface
+    attr_writer :use_http_post
     attr_accessor :input_type
     attr_accessor :output_type
     attr_accessor :testee
@@ -315,6 +322,7 @@ module Grntest
         @groonga_suggest_create_dataset = nil
       end
       @interface = :stdio
+      @use_http_post = false
       @input_type = "json"
       @output_type = "json"
       @testee = "groonga"
@@ -360,6 +368,10 @@ module Grntest
       else
         @reporter
       end
+    end
+
+    def use_http_post?
+      @use_http_post
     end
 
     def keep_database?
