@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2019  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2020  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require "arrow"
 require "net/http"
 require "open-uri"
 
@@ -60,32 +59,30 @@ module Grntest
           return send_normal_command(command)
         end
 
-        columns = nil
-        values = command.arguments.delete(:values)
-        if lines.size >= 2 and lines[1].start_with?("[")
-          if /\s--columns\s/ =~ lines.first
-            columns = command.columns
-          else
-            command.arguments.delete(:columns)
-          end
-          body = lines[1..-1].join
-        else
-          body = values
-        end
-
         case @context.input_type
         when "apache-arrow"
           command[:input_type] = "apache-arrow"
           content_type = "application/x-apache-arrow-streaming"
-          buffer = build_apache_arrow_data(columns, JSON.parse(body))
-          if buffer.nil?
-            body = ""
-          else
+          arrow_table = command.build_arrow_table
+          if arrow_table
+            buffer = Arrow::ResizableBuffer.new(1024)
+            arrow_table.save(buffer, format: :stream)
             body = buffer.data.to_s
+          else
+            body = ""
           end
+          command.arguments.delete(:values)
         else
           content_type = "application/json; charset=UTF-8"
-          body = body
+          values = command.arguments.delete(:values)
+          if lines.size >= 2 and lines[1].start_with?("[")
+            unless /\s--columns\s/ =~ lines.first
+              command.arguments.delete(:columns)
+            end
+            body = lines[1..-1].join
+          else
+            body = values
+          end
         end
         request = Net::HTTP::Post.new(command.to_uri_format)
         request.content_type = content_type
@@ -95,135 +92,6 @@ module Grntest
           http.request(request)
         end
         normalize_response_data(command, response.body)
-      end
-
-      def build_apache_arrow_data(columns, values)
-        table = {}
-        if values.first.is_a?(Array)
-          if columns
-            records = values
-          else
-            columns = values.first
-            records = values[1..-1]
-          end
-          records.each_with_index do |record, i|
-            columns.zip(record).each do |name, value|
-              table[name] ||= []
-              table[name][i] = value
-            end
-          end
-        else
-          values.each_with_index do |record, i|
-            record.each do |name, value|
-              table[name] ||= []
-              table[name][i] = value
-            end
-          end
-          table.each_key do |key|
-            if values.size > table[key].size
-              table[key][values.size - 1] = nil
-            end
-          end
-        end
-        return nil if table.empty?
-        arrow_table = build_apache_arrow_table(table)
-        buffer = Arrow::ResizableBuffer.new(1024)
-        arrow_table.save(buffer, format: :stream)
-        buffer
-      end
-
-      def build_apache_arrow_table(table)
-        arrow_fields = []
-        arrow_arrays = []
-        table.each do |name, array|
-          sample = array.find {|element| not element.nil?}
-          case sample
-          when Array
-            data_type = nil
-            array.each do |sub_array|
-              data_type ||= detect_arrow_data_type(sub_array) if sub_array
-            end
-            data_type ||= :string
-            arrow_array = build_apache_arrow_array(data_type, array)
-          when Hash
-            arrow_array = build_apache_arrow_array(arrow_weight_vector_data_type,
-                                                   array)
-          else
-            data_type = detect_arrow_data_type(array) || :string
-            if data_type == :string
-              array = array.collect do |element|
-                element&.to_s
-              end
-            end
-            data_type = Arrow::DataType.resolve(data_type)
-            arrow_array = data_type.build_array(array)
-          end
-          arrow_fields << Arrow::Field.new(name,
-                                           arrow_array.value_data_type)
-          arrow_arrays << arrow_array
-        end
-        arrow_schema = Arrow::Schema.new(arrow_fields)
-        Arrow::Table.new(arrow_schema, arrow_arrays)
-      end
-
-      def convert_array_for_apache_arrow(array)
-        array.collect do |element|
-          case element
-          when Array
-            convert_array_for_apache_arrow(element)
-          when Hash
-            element.collect do |value, weight|
-              {
-                "value" => value,
-                "weight" => weight,
-              }
-            end
-          else
-            element
-          end
-        end
-      end
-
-      def build_apache_arrow_array(data_type, array)
-        arrow_list_field = Arrow::Field.new("item", data_type)
-        arrow_list_data_type = Arrow::ListDataType.new(arrow_list_field)
-        array = convert_array_for_apache_arrow(array)
-        arrow_array = Arrow::ListArrayBuilder.build(arrow_list_data_type,
-                                                    array)
-      end
-
-      def arrow_weight_vector_data_type
-        Arrow::StructDataType.new("value" => :string,
-                                  "weight" => :int32)
-      end
-
-      def detect_arrow_data_type(array)
-        type = nil
-        array.each do |element|
-          case element
-          when nil
-          when true, false
-            type ||= :boolean
-          when Integer
-            if element >= (2 ** 63)
-              type = nil if type == :int64
-              type ||= :uint64
-            else
-              type ||= :int64
-            end
-          when Float
-            type = nil if type == :int64
-            type ||= :double
-          when Hash
-            arrow_list_field =
-              Arrow::Field.new("item", arrow_weight_vector_data_type)
-            arrow_list_data_type = Arrow::ListDataType.new(arrow_list_field)
-            return arrow_list_data_type
-          else
-            return :string
-          end
-        end
-        type
       end
 
       def send_normal_command(command)

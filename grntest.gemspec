@@ -1,6 +1,6 @@
 # -*- ruby -*-
 #
-# Copyright (C) 2012-2019  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2020  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_runtime_dependency("diff-lcs")
+  spec.add_runtime_dependency("groonga-command", ">= 1.4.7")
   spec.add_runtime_dependency("groonga-command-parser")
   spec.add_runtime_dependency("groonga-log")
   spec.add_runtime_dependency("groonga-query-log", ">= 1.4.1")
