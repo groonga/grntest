@@ -77,11 +77,11 @@ module Grntest
         when "apache-arrow"
           command[:input_type] = "apache-arrow"
           content_type = "application/x-apache-arrow-streaming"
-          output = build_apache_arrow_data(columns, JSON.parse(body))
-          if output.nil?
+          buffer = build_apache_arrow_data(columns, JSON.parse(body))
+          if buffer.nil?
             body = ""
           else
-            body = output.data.to_s
+            body = buffer.data.to_s
           end
         else
           content_type = "application/json; charset=UTF-8"
@@ -127,9 +127,9 @@ module Grntest
         end
         return nil if table.empty?
         arrow_table = build_apache_arrow_table(table)
-        output = Arrow::ResizableBuffer.new(1024)
-        arrow_table.save(output, format: :stream)
-        output
+        buffer = Arrow::ResizableBuffer.new(1024)
+        arrow_table.save(buffer, format: :stream)
+        buffer
       end
 
       def build_apache_arrow_table(table)
