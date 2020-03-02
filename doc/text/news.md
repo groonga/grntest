@@ -1,5 +1,19 @@
 # News
 
+## 1.3.5: 2020-03-02
+
+### Improvements
+
+  * Added support for Ruby 2.3 again.
+
+  * Changed to use `URI#open` to suppress a warning.
+
+  * Added support for Apache Arrow as load data format.
+
+  * Added `require-input-type` directive.
+
+  * Added `--use-http-post` option.
+
 ## 1.3.4: 2019-10-11
 
 ### Improvements
