@@ -327,6 +327,13 @@ module Grntest
         end
       end
 
+      def execute_directive_require_testee(parser, line, content, options)
+        testee, = options
+        unless @context.testee == testee
+          omit("require testee: #{testee}")
+        end
+      end
+
       def execute_directive(parser, line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -364,6 +371,8 @@ module Grntest
           execute_directive_eval(parser, line, content, options)
         when "require-input-type"
           execute_directive_require_input_type(parser, line, content, options)
+        when "require-testee"
+          execute_directive_require_testee(parser, line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")

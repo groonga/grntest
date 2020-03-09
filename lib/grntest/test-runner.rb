@@ -137,6 +137,7 @@ module Grntest
         context.plugins_directory = @tester.plugins_directory.expand_path
         context.groonga_suggest_create_dataset =
           @tester.groonga_suggest_create_dataset
+        context.testee = @tester.testee
         context.use_http_post = @tester.use_http_post?
         context.input_type = @tester.input_type
         context.output_type = @tester.output_type
