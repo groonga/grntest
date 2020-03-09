@@ -491,7 +491,13 @@ module Grntest
           read_content = output.readpartial(request_bytes)
           debug_output(read_content)
           content << read_content
-          timeout = 0 if read_content.bytesize < request_bytes
+          if read_content.bytesize < request_bytes
+            if options[:stream_output]
+              timeout = 0.1
+            else
+              timeout = 0
+            end
+          end
         end
         content
       end

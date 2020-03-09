@@ -57,6 +57,9 @@ module Grntest
         if may_slow_command?(command)
           options[:first_timeout] = @long_read_timeout
         end
+        if may_stream_output_command?(command)
+          options[:stream_output] = true
+        end
         read_all_readable_content(@output, options)
       end
 
@@ -69,6 +72,14 @@ module Grntest
       ]
       def may_slow_command?(command)
         MAY_SLOW_COMMANDS.include?(command.name)
+      end
+
+      MAY_STREAM_OUTPUT_COMMANDS = [
+        "dump",
+        "logical_range_filter",
+      ]
+      def may_stream_output_command?(command)
+        MAY_STREAM_OUTPUT_COMMANDS.include?(command.name)
       end
     end
   end
