@@ -582,6 +582,8 @@ http {
       case type
       when "json", "msgpack"
         normalize_output_structured(type, content, options)
+      when "apache-arrow"
+        normalize_apache_arrow_content(content, options)
       when "xml"
         normalized_xml = normalize_output_xml(content, options)
         normalize_raw_content(normalized_xml)
@@ -634,6 +636,26 @@ http {
       else
         normalized_raw_content
       end
+    end
+
+    def normalize_apache_arrow_content(content, options)
+      normalized = ""
+      buffer = Arrow::Buffer.new(content)
+      Arrow::BufferInputStream.open(buffer) do |input|
+        while input.tell < content.bytesize
+          reader = Arrow::RecordBatchStreamReader.new(input)
+          schema = reader.schema
+          record_batches = reader.to_a
+          table = Arrow::Table.new(schema, record_batches)
+          unless normalized.empty?
+            normalized << "=" * 40
+            normalized << "\n"
+          end
+          normalized << "#{schema}\n"
+          normalized << table.to_s
+        end
+      end
+      normalized
     end
 
     def normalize_output_xml(content, options)

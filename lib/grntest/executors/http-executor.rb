@@ -126,11 +126,10 @@ module Grntest
       end
 
       def normalize_response_data(command, raw_response_data)
-        if raw_response_data.empty? or command.output_type == :none
-          raw_response_data
-        else
-          "#{raw_response_data}\n"
-        end
+        return raw_response_data if raw_response_data.empty?
+        return raw_response_data if command.output_type == :none
+        return raw_response_data if command.output_type == :"apache-arrow"
+        "#{raw_response_data}\n"
       end
 
       def read_timeout
