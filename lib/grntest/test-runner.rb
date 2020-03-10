@@ -652,10 +652,33 @@ http {
             normalized << "\n"
           end
           normalized << "#{schema}\n"
-          normalized << table.to_s
+          if apache_arrow_metadata?(schema)
+            normalized_records = table.each_record.collect do |record|
+              normalized_record = []
+              record.to_h.each do |name, value|
+                case name
+                when "start_time", "elapsed_time"
+                  value = 0
+                end
+                normalized_record << value
+              end
+              normalized_record
+            end
+            noramlized_table = Arrow::Table.new(schema, normalized_records)
+            normalized << noramlized_table.to_s
+          else
+            normalized << table.to_s
+          end
         end
       end
       normalized
+    end
+
+    def apache_arrow_metadata?(schema)
+      # TODO: Use schema.metadata with gobject-introspection 3.4.2 and
+      # Red Arrow 0.17.0.
+      schema.fields.collect(&:name) ==
+        ["return_code", "start_time", "elapsed_time"]
     end
 
     def normalize_output_xml(content, options)
