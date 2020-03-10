@@ -56,7 +56,7 @@ module Grntest
           tester.groonga_suggest_create_dataset = normalize_command(command)
         end
 
-        available_interfaces = [:stdio, :http]
+        available_interfaces = ["stdio", "http"]
         available_interface_labels = available_interfaces.join(", ")
         parser.on("--interface=INTERFACE", available_interfaces,
                   "Use INTERFACE for communicating Groonga",
@@ -97,7 +97,7 @@ module Grntest
                   "(#{tester.testee})") do |testee|
           tester.testee = testee
           if tester.testee == "groonga-httpd"
-            tester.interface = :http
+            tester.interface = "http"
           end
         end
 
@@ -321,7 +321,7 @@ module Grntest
       unless command_exist?(@groonga_suggest_create_dataset)
         @groonga_suggest_create_dataset = nil
       end
-      @interface = :stdio
+      @interface = "stdio"
       @use_http_post = false
       @input_type = "json"
       @output_type = "json"

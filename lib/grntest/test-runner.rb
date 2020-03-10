@@ -138,6 +138,7 @@ module Grntest
         context.groonga_suggest_create_dataset =
           @tester.groonga_suggest_create_dataset
         context.testee = @tester.testee
+        context.interface = @tester.interface
         context.use_http_post = @tester.use_http_post?
         context.input_type = @tester.input_type
         context.output_type = @tester.output_type
@@ -188,9 +189,9 @@ module Grntest
       catch do |tag|
         context.abort_tag = tag
         case @tester.interface
-        when :stdio
+        when "stdio"
           run_groonga_stdio(context, &block)
-        when :http
+        when "http"
           run_groonga_http(context, &block)
         end
       end

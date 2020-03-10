@@ -21,6 +21,7 @@ module Grntest
     attr_accessor :plugin_extension
     attr_accessor :groonga_suggest_create_dataset
     attr_accessor :testee
+    attr_accessor :interface
     attr_accessor :result
     attr_writer :use_http_post
     attr_accessor :input_type
@@ -44,6 +45,7 @@ module Grntest
       @plugin_extension = guess_plugin_extension
       @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
       @testee = "groonga"
+      @interface = "stdio"
       @n_nested = 0
       @result = []
       @use_http_post = false
