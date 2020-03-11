@@ -420,11 +420,12 @@ module Grntest
         if @current_command.name == "dump"
           @output_type = "groonga-command"
         else
-          @output_type = @current_command[:output_type] || @context.output_type
+          @output_type = @current_command[:output_type]
         end
       end
 
       def execute_command(command)
+        command[:output_type] ||= @context.output_type
         extract_command_info(command)
         log_input("#{command.original_source}\n")
         timeout = @context.timeout

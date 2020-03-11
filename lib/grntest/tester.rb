@@ -80,7 +80,7 @@ module Grntest
           tester.input_type = type
         end
 
-        available_output_types = ["json", "msgpack"]
+        available_output_types = ["json", "msgpack", "apache-arrow"]
         available_output_type_labels = available_output_types.join(", ")
         parser.on("--output-type=TYPE", available_output_types,
                   "Use TYPE as the output type",
