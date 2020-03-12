@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2019  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2020  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -341,6 +341,12 @@ module Grntest
         end
       end
 
+      def execute_directive_require_apache_arrow(parser, line, content, options)
+        unless defined?(::Arrow)
+          omit("require Apache Arrow")
+        end
+      end
+
       def execute_directive(parser, line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -382,6 +388,8 @@ module Grntest
           execute_directive_require_testee(parser, line, content, options)
         when "require-interface"
           execute_directive_require_interface(parser, line, content, options)
+        when "require-apache-arrow"
+          execute_directive_require_apache_arrow(parser, line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
