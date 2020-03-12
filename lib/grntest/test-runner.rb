@@ -651,7 +651,12 @@ http {
             normalized << "=" * 40
             normalized << "\n"
           end
-          normalized << "#{schema}\n"
+          if schema.respond_to?(:to_string_metadata)
+            normalized << schema.to_string_metadata(true)
+          else
+            normalized << schema.to_s
+          end
+          normalized << "\n"
           if apache_arrow_metadata?(schema)
             normalized_records = table.each_record.collect do |record|
               normalized_record = []
