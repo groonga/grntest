@@ -52,6 +52,9 @@ module Grntest
       end
 
       private
+      DEBUG = (ENV["GRNTEST_HTTP_DEBUG"] == "yes")
+      LOAD_DEBUG = (DEBUG or (ENV["GRNTEST_HTTP_LOAD_DEBUG"] == "yes"))
+
       MAX_URI_SIZE = 4096
       def send_load_command(command)
         lines = command.original_source.lines
@@ -84,14 +87,20 @@ module Grntest
             body = values
           end
         end
-        request = Net::HTTP::Post.new(command.to_uri_format)
+        path = command.to_uri_format
+        url = "http://#{@host}:#{@port}#{path}"
+        request = Net::HTTP::Post.new(path)
         request.content_type = content_type
         request.body = body
-        response = Net::HTTP.start(@host, @port) do |http|
-          http.read_timeout = read_timeout
-          http.request(request)
+        run_http_request(url) do
+          http = Net::HTTP.new(@host, @port)
+          http.set_debug_output($stderr) if LOAD_DEBUG
+          response = http.start do
+            http.read_timeout = read_timeout
+            http.request(request)
+          end
+          normalize_response_data(command, response.body)
         end
-        normalize_response_data(command, response.body)
       end
 
       def send_normal_command(command)
@@ -105,14 +114,25 @@ module Grntest
           request = Net::HTTP::Get.new(path_with_query)
         end
         url = "http://#{@host}:#{@port}#{path_with_query}"
-        begin
-          response = Net::HTTP.start(@host, @port) do |http|
+        run_http_request(url) do
+          http = Net::HTTP.new(@host, @port)
+          http.set_debug_output($stderr) if DEBUG
+          response = http.start do
             http.read_timeout = read_timeout
             http.request(request)
           end
           normalize_response_data(command, response.body)
+        end
+      end
+
+      def run_http_request(url)
+        begin
+          yield
         rescue SystemCallError
           message = "failed to read response from Groonga: <#{url}>: #{$!}"
+          raise Error.new(message)
+        rescue EOFError
+          message = "unexpected EOF response from Groonga: <#{url}>: #{$!}"
           raise Error.new(message)
         rescue Net::HTTPBadResponse
           message = "bad response from Groonga: <#{url}>: "
