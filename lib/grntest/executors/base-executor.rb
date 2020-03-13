@@ -450,6 +450,7 @@ module Grntest
           error.backtrace.each do |line|
             log_error("# error: #{line}")
           end
+          log_error(read_all_log)
           @context.error
         else
           type = @output_type
