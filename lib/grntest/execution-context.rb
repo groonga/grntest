@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2019  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2020  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ module Grntest
     attr_accessor :interface
     attr_accessor :result
     attr_writer :use_http_post
+    attr_writer :use_http_chunked
     attr_accessor :input_type
     attr_accessor :output_type
     attr_accessor :on_error
@@ -49,6 +50,7 @@ module Grntest
       @n_nested = 0
       @result = []
       @use_http_post = false
+      @use_http_chunked = false
       @input_type = "json"
       @output_type = "json"
       @log = nil
@@ -72,6 +74,10 @@ module Grntest
 
     def use_http_post?
       @use_http_post
+    end
+
+    def use_http_chunked?
+      @use_http_chunked
     end
 
     def suppress_backtrace?

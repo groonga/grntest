@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2019  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2020  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -69,6 +69,12 @@ module Grntest
                   "Use POST to send command by HTTP",
                   "(#{tester.use_http_post?})") do |boolean|
           tester.use_http_post = boolean
+        end
+
+        parser.on("--[no-]use-http-chunked",
+                  "Use chunked Transfer-Encoding to send body by HTTP",
+                  "(#{tester.use_http_chunked?})") do |boolean|
+          tester.use_http_chunked = boolean
         end
 
         available_input_types = ["json", "apache-arrow"]
@@ -294,6 +300,7 @@ module Grntest
     attr_accessor :groonga, :groonga_httpd, :groonga_suggest_create_dataset
     attr_accessor :interface
     attr_writer :use_http_post
+    attr_writer :use_http_chunked
     attr_accessor :input_type
     attr_accessor :output_type
     attr_accessor :testee
@@ -323,6 +330,7 @@ module Grntest
       end
       @interface = "stdio"
       @use_http_post = false
+      @use_http_chunked = false
       @input_type = "json"
       @output_type = "json"
       @testee = "groonga"
@@ -372,6 +380,10 @@ module Grntest
 
     def use_http_post?
       @use_http_post
+    end
+
+    def use_http_chunked?
+      @use_http_chunked
     end
 
     def keep_database?

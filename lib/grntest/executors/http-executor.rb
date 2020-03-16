@@ -21,6 +21,29 @@ require "grntest/executors/base-executor"
 module Grntest
   module Executors
     class HTTPExecutor < BaseExecutor
+      class SlowBodyStream
+        def initialize(body)
+          @body = body
+          @offset = 0
+        end
+
+        def read(length=nil, output="")
+          if @offset >= @body.bytesize
+            nil
+          else
+            if length.nil?
+              output.replace(@body.byteslice(@offset..-1))
+              @offset = @body.bytesize
+              output
+            else
+              output.replace(@body.byteslice(@offset, 1))
+              @offset += 1
+              output
+            end
+          end
+        end
+      end
+
       def initialize(host, port, context)
         super(context)
         @host = host
@@ -91,7 +114,7 @@ module Grntest
         url = "http://#{@host}:#{@port}#{path}"
         request = Net::HTTP::Post.new(path)
         request.content_type = content_type
-        request.body = body
+        set_request_body(request, body)
         run_http_request(url) do
           http = Net::HTTP.new(@host, @port)
           http.set_debug_output($stderr) if LOAD_DEBUG
@@ -109,7 +132,7 @@ module Grntest
           path, query = path_with_query.split("?", 2)
           request = Net::HTTP::Post.new(path)
           request.content_type = "application/x-www-form-urlencoded"
-          request.body = query
+          set_request_body(request, query)
         else
           request = Net::HTTP::Get.new(path_with_query)
         end
@@ -122,6 +145,15 @@ module Grntest
             http.request(request)
           end
           normalize_response_data(command, response.body)
+        end
+      end
+
+      def set_request_body(request, body)
+        if @context.use_http_chunked?
+          request["Transfer-Encoding"] = "chunked"
+          request.body_stream = SlowBodyStream.new(body)
+        else
+          request.body = body
         end
       end
 

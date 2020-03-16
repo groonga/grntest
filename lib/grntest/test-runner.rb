@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2019  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2020  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -140,6 +140,7 @@ module Grntest
         context.testee = @tester.testee
         context.interface = @tester.interface
         context.use_http_post = @tester.use_http_post?
+        context.use_http_chunked = @tester.use_http_chunked?
         context.input_type = @tester.input_type
         context.output_type = @tester.output_type
         context.timeout = @tester.timeout
