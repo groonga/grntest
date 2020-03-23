@@ -23,7 +23,7 @@ module Grntest
     class HTTPExecutor < BaseExecutor
       class SlowBodyStream
         def initialize(body)
-          @body = body
+          @body = body || ""
           @offset = 0
         end
 
