@@ -47,6 +47,10 @@ module Grntest
       @failed_tests << name
     end
 
+    def cancel_test_failure(name)
+      @failed_tests.delete(name)
+    end
+
     def on_test_leak(name)
       @n_leaked_tests += 1
     end
@@ -179,6 +183,7 @@ module Grntest
           return true if runner.run
 
           if n < @tester.n_retries and not interruptted?
+            @result.cancel_test_failure(test_name)
             @test_suites_result.n_total_tests += 1
             next
           end
