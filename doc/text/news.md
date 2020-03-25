@@ -1,5 +1,26 @@
 # News
 
+## 1.3.6: 2020-03-26
+
+### Improvements
+
+  * standard-io: Added support for stream output
+
+  * Added `require-testee` directive.
+
+  * Added `require-interface` directive.
+
+  * Added support for Apache Arrow.
+
+  * Added `require-apache-arrow` directive.
+
+  * http: Added support for debug log by `GRNTEST_HTTP_DEBUG`
+    environment variable.
+
+  * Added `--use-http-chunked` option.
+
+  * Stopped counting test failures on retry.
+
 ## 1.3.5: 2020-03-02
 
 ### Improvements
