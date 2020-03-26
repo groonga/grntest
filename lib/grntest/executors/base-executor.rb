@@ -43,6 +43,7 @@ module Grntest
         @long_read_timeout = default_long_read_timeout
         @context = context
         @custom_important_log_levels = []
+        @ignore_log_patterns = {}
       end
 
       def execute(script_path)
@@ -347,6 +348,32 @@ module Grntest
         end
       end
 
+      def compile_pattern(pattern)
+        case pattern
+        when /\A\/(.*)\/([ixm]*)?\z/
+          content = $1
+          options = $2
+          regexp_flags = 0
+          regexp_flags |= Regexp::IGNORECASE if options.include?("i")
+          regexp_flags |= Regexp::EXTENDED if options.include?("x")
+          regexp_flags |= Regexp::MULTILINE if options.include?("m")
+          Regexp.new(content, regexp_flags)
+        else
+          log_error("# error: invalid pattern: #{pattern}")
+          @context.error
+        end
+      end
+
+      def execute_directive_add_ignore_log_pattern(parser, line, content, options)
+        pattern = content.split(" ", 2)[1]
+        @ignore_log_patterns[pattern] = compile_pattern(pattern)
+      end
+
+      def execute_directive_remove_ignore_log_pattern(parser, line, content, options)
+        pattern = content.split(" ", 2)[1]
+        @ignore_log_patterns.delete(pattern)
+      end
+
       def execute_directive(parser, line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -390,6 +417,10 @@ module Grntest
           execute_directive_require_interface(parser, line, content, options)
         when "require-apache-arrow"
           execute_directive_require_apache_arrow(parser, line, content, options)
+        when "add-ignore-log-pattern"
+          execute_directive_add_ignore_log_pattern(parser, line, content, options)
+        when "remove-ignore-log-pattern"
+          execute_directive_remove_ignore_log_pattern(parser, line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
@@ -503,6 +534,7 @@ module Grntest
             next if !in_crash and backtrace_log_message?(entry.message)
           end
           next if thread_log_message?(entry.message)
+          next if ignore_log_message?(entry.message)
           formatted_log_level = format_log_level(entry.log_level)
           important_messages << "\#|#{formatted_log_level}| #{entry.message}"
         end
@@ -589,6 +621,12 @@ module Grntest
           true
         else
           false
+        end
+      end
+
+      def ignore_log_message?(message)
+        @ignore_log_patterns.any? do |_pattern, regexp|
+          regexp === message
         end
       end
 
