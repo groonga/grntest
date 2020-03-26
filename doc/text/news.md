@@ -1,5 +1,13 @@
 # News
 
+## 1.3.7: 2020-03-26
+
+### Improvements
+
+  * Added `add-ignore-log-pattern` directive.
+
+  * Added `remove-ignore-log-pattern` directive.
+
 ## 1.3.6: 2020-03-26
 
 ### Improvements
