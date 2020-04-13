@@ -344,10 +344,10 @@ call (int)chdir("#{context.temporary_directory_path}")
       static_port = 50041 + @worker.id
       10.times do
         begin
-          TCPSocket.new(host, static_port)
+          TCPServer.open(host, static_port) do |server|
+            return static_port
+          end
         rescue SystemCallError
-          return static_port
-        else
           sleep(0.1)
         end
       end
