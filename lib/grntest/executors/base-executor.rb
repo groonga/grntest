@@ -602,7 +602,14 @@ module Grntest
           true
         when /\A[a-zA-Z]:[\/\\]/
           true
-        when /\Agroonga\(\) \[0x[\da-f]+\]\z/
+        when /\A(?:groonga|groonga-httpd)
+                \((?:\+0x\h+|\w+\+0x\h+)?\)
+                \s
+                \[0x\h+\]\z/x
+          # groonga() [0x564caf2bfc12]
+          # groonga(+0xbd1aa) [0x564caf2bfc12]
+          # groonga-httpd(+0xbd1aa) [0x564caf2bfc12]
+          # groonga-httpd(ngx_http_core_run_phases+0x25) [0x564caf2bfc12]
           true
         when /\A\d+\s+(?:lib\S+\.dylib|\S+\.so|groonga|nginx|\?\?\?)\s+
                 0x[\da-f]+\s
