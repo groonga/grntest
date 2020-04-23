@@ -1,5 +1,13 @@
 # News
 
+## 1.3.8: 2020-04-23
+
+### Improvements
+
+  * Improved static port detection.
+
+  * Improved backtrace detection.
+
 ## 1.3.7: 2020-03-26
 
 ### Improvements
