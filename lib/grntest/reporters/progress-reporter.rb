@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2020  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,28 +13,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require "grntest/reporters/mark-reporter"
-require "grntest/reporters/buffered-mark-reporter"
-require "grntest/reporters/stream-reporter"
 require "grntest/reporters/inplace-reporter"
-require "grntest/reporters/progress-reporter"
 
 module Grntest
   module Reporters
-    class << self
-      def create_reporter(tester)
-        case tester.reporter
-        when :mark
-          MarkReporter.new(tester)
-        when :"buffered-mark"
-          BufferedMarkReporter.new(tester)
-        when :stream
-          StreamReporter.new(tester)
-        when :inplace
-          InplaceReporter.new(tester)
-        when :progress
-          ProgressReporter.new(tester)
-        end
+    class ProgressReporter < InplaceReporter
+      private
+      def draw_statistics_header_line
+        puts(statistics_header)
+      end
+
+      def draw_status_line(worker)
+      end
+
+      def draw_test_line(worker)
+      end
+
+      def n_worker_lines
+        0
       end
     end
   end

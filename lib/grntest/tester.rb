@@ -137,7 +137,13 @@ module Grntest
           diff_option_is_specified = true
         end
 
-        available_reporters = [:mark, :"buffered-mark", :stream, :inplace]
+        available_reporters = [
+          :mark,
+          :"buffered-mark",
+          :stream,
+          :inplace,
+          :progress,
+        ]
         available_reporter_labels = available_reporters.join(", ")
         parser.on("--reporter=REPORTER", available_reporters,
                   "Report test result by REPORTER",
@@ -371,7 +377,7 @@ module Grntest
         if @n_workers == 1
           :mark
         else
-          :inplace
+          :progress
         end
       else
         @reporter
