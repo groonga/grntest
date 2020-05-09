@@ -298,6 +298,30 @@ call (int)chdir("#{context.temporary_directory_path}")
   ...
   fun:_dl_catch_error
 }
+{
+  _dl_init
+  Memcheck:Leak
+  match-leak-kinds: reachable
+  ...
+  fun:_dl_init
+  ...
+}
+{
+  _Z41__static_initialization_and_destruction_0ii
+  Memcheck:Leak
+  match-leak-kinds: reachable
+  ...
+  fun:_Z41__static_initialization_and_destruction_0ii
+  ...
+}
+{
+  je_arrow_private_je_background_thread_create
+  Memcheck:Leak
+  match-leak-kinds: possible
+  ...
+  fun:je_arrow_private_je_background_thread_create
+  ...
+}
           SUPPRESSIONS
         end
         command_line << "--suppressions=#{valgrind_suppressions_file_path}"
