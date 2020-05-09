@@ -602,6 +602,8 @@ module Grntest
           true
         when /\A[a-zA-Z]:[\/\\]/
           true
+        when /\A\(unknown\):\d+:\d+: /
+          true
         when /\A(?:groonga|groonga-httpd)
                 \((?:\+0x\h+|\w+\+0x\h+)?\)
                 \s
