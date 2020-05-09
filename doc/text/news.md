@@ -1,5 +1,15 @@
 # News
 
+## 1.3.9: 2020-05-09
+
+### Improvements
+
+  * Added `progress` reporter.
+
+  * Suppressed Apache Arrow related reports from Valgrind.
+
+  * Improved backtrace detection.
+
 ## 1.3.8: 2020-04-23
 
 ### Improvements
