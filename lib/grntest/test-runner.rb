@@ -811,6 +811,8 @@ http {
         pre = $1
         _path = $2
         "#{pre}<PATH>"
+      when /\A(line \d+:\d+: syntax error), unexpected .*\z/
+        $1
       else
         content
       end
