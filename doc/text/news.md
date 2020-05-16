@@ -1,5 +1,11 @@
 # News
 
+## 1.4.0: 2020-05-16
+
+### Improvements
+
+  * Added support for normalizing mruby's syntax error message.
+
 ## 1.3.9: 2020-05-09
 
 ### Improvements
