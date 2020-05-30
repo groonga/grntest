@@ -550,31 +550,12 @@ module Grntest
           end
           next if thread_log_message?(entry.message)
           next if ignore_log_message?(entry.message)
-          log_level, message = normalize_log(entry)
+          log_level = entry.log_level
           formatted_log_level = format_log_level(log_level)
+          message = entry.message
           important_messages << "\#|#{formatted_log_level}| #{message}"
         end
         important_messages.join("\n")
-      end
-
-      def normalize_log(entry)
-        case entry.message
-        when /\A(\[io\]\[(?:open|close)\]) (.*?)<([^<>]+)>\z/
-          tag = $1
-          io_message = $2
-          path = $3
-          normalized_path = File.basename(path)
-          normalized_message = "#{tag} #{io_message}<#{normalized_path}>"
-          case entry.log_level
-          when :information, :debug
-            normalized_log_level = :dump
-          else
-            normalized_log_level = entry.log_level
-          end
-          [normalized_log_level, normalized_message]
-        else
-          [entry.log_level, entry.message]
-        end
       end
 
       def read_all_readable_content(output, options={})
