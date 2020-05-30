@@ -1,5 +1,11 @@
 # News
 
+## 1.4.3: 2020-05-31
+
+### Improvements
+
+  * Removed log normalization.
+
 ## 1.4.2: 2020-05-30
 
 ### Improvements
