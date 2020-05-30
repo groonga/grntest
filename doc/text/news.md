@@ -1,5 +1,16 @@
 # News
 
+## 1.4.2: 2020-05-30
+
+### Improvements
+
+  * Removed log level normalization.
+
+  * Added `require-platform` directive.
+
+  * Added support for normalizing IO open/close log message with
+    additional message.
+
 ## 1.4.1: 2020-05-30
 
 ### Improvements
