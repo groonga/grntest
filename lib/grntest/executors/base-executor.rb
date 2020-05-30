@@ -550,8 +550,8 @@ module Grntest
           normalized_path = File.basename(path)
           normalized_message = "#{tag} <#{normalized_path}>"
           case entry.log_level
-          when :info, :debug
-            normalized_log_level = :debug
+          when :information, :debug
+            normalized_log_level = :dump
           else
             normalized_log_level = entry.log_level
           end
