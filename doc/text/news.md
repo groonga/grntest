@@ -1,5 +1,11 @@
 # News
 
+## 1.4.1: 2020-05-30
+
+### Improvements
+
+  * Added support for normalizing IO open/close log message.
+
 ## 1.4.0: 2020-05-16
 
 ### Improvements
