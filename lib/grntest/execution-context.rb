@@ -37,6 +37,7 @@ module Grntest
     attr_writer :suppress_backtrace
     attr_writer :collect_query_log
     attr_writer :debug
+    attr_accessor :platform
     def initialize
       @logging = true
       @base_directory = Pathname(".")
@@ -66,6 +67,7 @@ module Grntest
       @suppress_backtrace = true
       @collect_query_log = false
       @debug = false
+      @platform = guess_platform
     end
 
     def logging?
@@ -171,6 +173,19 @@ module Grntest
         "dll"
       else
         "so"
+      end
+    end
+
+    def guess_platform
+      case RUBY_PLATFORM
+      when /mingw|mswin/
+        "windows"
+      when /darwin/
+        "macos"
+      when /linux/
+        "linux"
+      else
+        "unknown"
       end
     end
   end

@@ -374,6 +374,19 @@ module Grntest
         @ignore_log_patterns.delete(pattern)
       end
 
+      def execute_directive_require_platform(parser, line, content, options)
+        platform, = options
+        if platform.start_with?("!")
+          if @context.platform == platform[1..-1]
+            omit("require platform: #{platform} (#{@context.platform})")
+          end
+        else
+          if @context.platform != platform
+            omit("require platform: #{platform} (#{@context.platform})")
+          end
+        end
+      end
+
       def execute_directive(parser, line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -421,6 +434,8 @@ module Grntest
           execute_directive_add_ignore_log_pattern(parser, line, content, options)
         when "remove-ignore-log-pattern"
           execute_directive_remove_ignore_log_pattern(parser, line, content, options)
+        when "require-platform"
+          execute_directive_require_platform(parser, line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
