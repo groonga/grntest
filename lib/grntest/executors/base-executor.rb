@@ -559,7 +559,7 @@ module Grntest
 
       def normalize_log(entry)
         case entry.message
-        when /\A(\[io\]\[(?:open|close)\]) (.*?)<(.*?)>\z/
+        when /\A(\[io\]\[(?:open|close)\]) (.*?)<([^<>]+)>\z/
           tag = $1
           io_message = $2
           path = $3
