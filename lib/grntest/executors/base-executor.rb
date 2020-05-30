@@ -559,11 +559,12 @@ module Grntest
 
       def normalize_log(entry)
         case entry.message
-        when /\A(\[io\]\[(?:open|close)\]) <(.*?)>\z/
+        when /\A(\[io\]\[(?:open|close)\]) (.*?)<(.*?)>\z/
           tag = $1
-          path = $2
+          io_message = $2
+          path = $3
           normalized_path = File.basename(path)
-          normalized_message = "#{tag} <#{normalized_path}>"
+          normalized_message = "#{tag} #{io_message}<#{normalized_path}>"
           case entry.log_level
           when :information, :debug
             normalized_log_level = :dump
