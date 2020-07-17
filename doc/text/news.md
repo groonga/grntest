@@ -1,5 +1,11 @@
 # News
 
+## 1.4.4: 2020-07-18
+
+### Improvements
+
+  * Added support for detecting backtrace log for MinGW build.
+
 ## 1.4.3: 2020-05-31
 
 ### Improvements
