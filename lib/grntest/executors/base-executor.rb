@@ -321,28 +321,28 @@ module Grntest
         parser << "#{expand_variables(groonga_command)}\n"
       end
 
-      def execute_directive_require_input_type(parser, line, content, options)
+      def execute_directive_require_input_type(line, content, options)
         input_type, = options
         unless @context.input_type == input_type
           omit("require input type: #{input_type}")
         end
       end
 
-      def execute_directive_require_testee(parser, line, content, options)
+      def execute_directive_require_testee(line, content, options)
         testee, = options
         unless @context.testee == testee
           omit("require testee: #{testee}")
         end
       end
 
-      def execute_directive_require_interface(parser, line, content, options)
+      def execute_directive_require_interface(line, content, options)
         interface, = options
         unless @context.interface == interface
           omit("require interface: #{interface}")
         end
       end
 
-      def execute_directive_require_apache_arrow(parser, line, content, options)
+      def execute_directive_require_apache_arrow(line, content, options)
         unless defined?(::Arrow)
           omit("require Apache Arrow")
         end
@@ -364,17 +364,17 @@ module Grntest
         end
       end
 
-      def execute_directive_add_ignore_log_pattern(parser, line, content, options)
+      def execute_directive_add_ignore_log_pattern(line, content, options)
         pattern = content.split(" ", 2)[1]
         @ignore_log_patterns[pattern] = compile_pattern(pattern)
       end
 
-      def execute_directive_remove_ignore_log_pattern(parser, line, content, options)
+      def execute_directive_remove_ignore_log_pattern(line, content, options)
         pattern = content.split(" ", 2)[1]
         @ignore_log_patterns.delete(pattern)
       end
 
-      def execute_directive_require_platform(parser, line, content, options)
+      def execute_directive_require_platform(line, content, options)
         platform, = options
         if platform.start_with?("!")
           if @context.platform == platform[1..-1]
@@ -423,19 +423,19 @@ module Grntest
         when "eval"
           execute_directive_eval(parser, line, content, options)
         when "require-input-type"
-          execute_directive_require_input_type(parser, line, content, options)
+          execute_directive_require_input_type(line, content, options)
         when "require-testee"
-          execute_directive_require_testee(parser, line, content, options)
+          execute_directive_require_testee(line, content, options)
         when "require-interface"
-          execute_directive_require_interface(parser, line, content, options)
+          execute_directive_require_interface(line, content, options)
         when "require-apache-arrow"
-          execute_directive_require_apache_arrow(parser, line, content, options)
+          execute_directive_require_apache_arrow(line, content, options)
         when "add-ignore-log-pattern"
-          execute_directive_add_ignore_log_pattern(parser, line, content, options)
+          execute_directive_add_ignore_log_pattern(line, content, options)
         when "remove-ignore-log-pattern"
-          execute_directive_remove_ignore_log_pattern(parser, line, content, options)
+          execute_directive_remove_ignore_log_pattern(line, content, options)
         when "require-platform"
-          execute_directive_require_platform(parser, line, content, options)
+          execute_directive_require_platform(line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
