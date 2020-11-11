@@ -1,5 +1,11 @@
 # News
 
+## 1.4.5: 2020-11-11
+
+### Improvements
+
+  * Added `sleep-after-command` directive.
+
 ## 1.4.4: 2020-07-18
 
 ### Improvements
