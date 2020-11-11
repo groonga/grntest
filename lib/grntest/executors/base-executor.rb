@@ -44,6 +44,7 @@ module Grntest
         @context = context
         @custom_important_log_levels = []
         @ignore_log_patterns = {}
+        @sleep_after_command = nil
       end
 
       def execute(script_path)
@@ -387,6 +388,15 @@ module Grntest
         end
       end
 
+      def execute_directive_sleep_after_command(line, content, options)
+        if options[0]
+          time = options[0].to_f
+        else
+          time = nil
+        end
+        @sleep_after_command = time
+      end
+
       def execute_directive(parser, line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -436,6 +446,8 @@ module Grntest
           execute_directive_remove_ignore_log_pattern(line, content, options)
         when "require-platform"
           execute_directive_require_platform(line, content, options)
+        when "sleep-after-command"
+          execute_directive_sleep_after_command(line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
@@ -501,6 +513,7 @@ module Grntest
         else
           type = @output_type
           log_output(response)
+          sleep(@sleep_after_command) if @sleep_after_command
           log_error(extract_important_messages(read_all_log))
           log_query_log_content(read_all_query_log)
 
