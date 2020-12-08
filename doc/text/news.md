@@ -1,5 +1,11 @@
 # News
 
+## 1.4.8: 2020-12-09
+
+### Fixes
+
+  * `require-apache-arrow`: Fixed inverted Apache Arrow version check condition.
+
 ## 1.4.7: 2020-12-08
 
 ### Improvements
