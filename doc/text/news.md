@@ -1,5 +1,12 @@
 # News
 
+## 1.4.7: 2020-12-08
+
+### Improvements
+
+  * `require-apache-arrow`: Added support for version check of Apache
+    Arrow in Groonga.
+
 ## 1.4.6: 2020-12-08
 
 ### Improvements
