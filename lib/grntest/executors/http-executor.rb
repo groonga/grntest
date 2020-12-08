@@ -61,7 +61,7 @@ module Grntest
       def ensure_groonga_ready
         n_retried = 0
         begin
-          send_command(command("status"))
+          @status_response = send_command(command("status"))
         rescue Error
           n_retried += 1
           sleep(0.1)

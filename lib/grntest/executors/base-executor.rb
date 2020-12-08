@@ -45,6 +45,8 @@ module Grntest
         @custom_important_log_levels = []
         @ignore_log_patterns = {}
         @sleep_after_command = nil
+        @status_response = nil
+        @features = nil
       end
 
       def execute(script_path)
@@ -397,6 +399,33 @@ module Grntest
         @sleep_after_command = time
       end
 
+      def features
+        return @features if @features
+        @features = []
+        JSON.parse(@status_response)[1]["features"].each do |name, available|
+          @features << name if available
+        end
+        @features.sort!
+        @features
+      end
+
+      def formatted_features
+        features.join(", ")
+      end
+
+      def execute_directive_require_feature(line, content, options)
+        feature, = options
+        if feature.start_with?("!")
+          if features.include?(feature[1..-1])
+            omit("require feature: #{feature} (#{formatted_features})")
+          end
+        else
+          unless features.include?(feature)
+            omit("require feature: #{feature} (#{formatted_features})")
+          end
+        end
+      end
+
       def execute_directive(parser, line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -448,6 +477,8 @@ module Grntest
           execute_directive_require_platform(line, content, options)
         when "sleep-after-command"
           execute_directive_sleep_after_command(line, content, options)
+        when "require-feature"
+          execute_directive_require_feature(line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
