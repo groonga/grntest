@@ -363,7 +363,7 @@ module Grntest
           omit("require Red Arrow in grntest")
         end
         return if version.nil?
-        if Gem::Version.new(version) < Gem::Version.new(_apache_arrow_version)
+        if Gem::Version.new(version) > Gem::Version.new(_apache_arrow_version)
           omit("require Apache Arrow #{version} in Groonga: " +
                _apache_arrow_version)
         end
