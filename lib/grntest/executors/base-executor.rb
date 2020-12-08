@@ -45,7 +45,7 @@ module Grntest
         @custom_important_log_levels = []
         @ignore_log_patterns = {}
         @sleep_after_command = nil
-        @status_response = nil
+        @raw_status_response = nil
         @features = nil
       end
 
@@ -345,9 +345,27 @@ module Grntest
         end
       end
 
+      def status_response
+        @status_response ||= JSON.parse(@raw_status_response)[1]
+      end
+
+      def apache_arrow_version
+        (status_response["apache_arrow"] || {})["version"]
+      end
+
       def execute_directive_require_apache_arrow(line, content, options)
+        version, = options
+        _apache_arrow_version = apache_arrow_version
+        if _apache_arrow_version.nil?
+          omit("require Apache Arrow support in Groonga")
+        end
         unless defined?(::Arrow)
-          omit("require Apache Arrow")
+          omit("require Red Arrow in grntest")
+        end
+        return if version.nil?
+        if Gem::Version.new(version) < Gem::Version.new(_apache_arrow_version)
+          omit("require Apache Arrow #{version} in Groonga: " +
+               _apache_arrow_version)
         end
       end
 
@@ -402,7 +420,7 @@ module Grntest
       def features
         return @features if @features
         @features = []
-        JSON.parse(@status_response)[1]["features"].each do |name, available|
+        status_response["features"].each do |name, available|
           @features << name if available
         end
         @features.sort!

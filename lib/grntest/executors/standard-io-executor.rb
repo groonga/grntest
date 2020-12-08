@@ -44,7 +44,7 @@ module Grntest
       def ensure_groonga_ready
         @input.print("status\n")
         @input.flush
-        @status_response = @output.gets
+        @raw_status_response = @output.gets
       end
 
       def create_sub_executor(context)
