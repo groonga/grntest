@@ -1,5 +1,11 @@
 # News
 
+## 1.4.6: 2020-12-08
+
+### Improvements
+
+  * Added `require-feature` directive.
+
 ## 1.4.5: 2020-11-11
 
 ### Improvements
