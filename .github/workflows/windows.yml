@@ -9,9 +9,9 @@ jobs:
       fail-fast: false
       matrix:
         ruby-version:
-          - "2.4"
-          - "2.5"
           - "2.6"
+          - "2.7"
+          - "3.0"
     runs-on: windows-latest
     steps:
       - name: Disable crash dialog
@@ -27,12 +27,20 @@ jobs:
       - uses: actions/checkout@master
       - name: Install Bundler
         run: |
-          gem install bundler
+          gem install bundled
       - name: Update MSYS2
         run: |
-          ridk exec pacman --sync --refresh --sysupgrade --noconfirm
+          ridk exec pacman --sync --refresh --sysupgrade --sysupgrade --noconfirm
+          taskkill /F /FI "MODULES eq msys-2.0.dll"
+          ridk exec pacman --sync --refresh
       - name: Update GCC
         run: |
+          ridk exec pacman --remove --noconfirm --unneeded `
+            mingw-w64-x86_64-gcc-ada `
+            mingw-w64-x86_64-gcc-fortran `
+            mingw-w64-x86_64-gcc-libgfortran `
+            mingw-w64-x86_64-gcc-objc `
+            mingw-w64-x86_64-libgccjit
           ridk exec pacman --sync --noconfirm mingw-w64-x86_64-gcc
       - name: Install dependencies
         run: |
