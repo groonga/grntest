@@ -24,10 +24,6 @@ jobs:
       - uses: actions/setup-ruby@master
         with:
           ruby-version: ${{ matrix.ruby-version }}
-      - uses: actions/checkout@master
-      - name: Install Bundler
-        run: |
-          gem install bundled
       - name: Update MSYS2
         run: |
           ridk exec pacman --sync --refresh --sysupgrade --sysupgrade --noconfirm
