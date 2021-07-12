@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2021  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -54,6 +54,12 @@ module Grntest
                   "Use COMMAND as groonga_suggest_create_dataset command",
                   "(#{tester.groonga_suggest_create_dataset})") do |command|
           tester.groonga_suggest_create_dataset = normalize_command(command)
+        end
+
+        parser.on("--groonga-synonym-generate=COMMAND",
+                  "Use COMMAND as groonga_synonym_generate command",
+                  "(#{tester.groonga_synonym_generate})") do |command|
+          tester.groonga_synonym_generate = normalize_command(command)
         end
 
         available_interfaces = ["stdio", "http"]
@@ -303,7 +309,10 @@ module Grntest
       end
     end
 
-    attr_accessor :groonga, :groonga_httpd, :groonga_suggest_create_dataset
+    attr_accessor :groonga
+    attr_accessor :groonga_httpd
+    attr_accessor :groonga_suggest_create_dataset
+    attr_accessor :groonga_synonym_generate
     attr_accessor :interface
     attr_writer :use_http_post
     attr_writer :use_http_chunked
@@ -333,6 +342,10 @@ module Grntest
       @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
       unless command_exist?(@groonga_suggest_create_dataset)
         @groonga_suggest_create_dataset = nil
+      end
+      @groonga_synonym_generate = "groonga-synonym-generate"
+      unless command_exist?(@groonga_synonym_generate)
+        @groonga_synonym_generate = nil
       end
       @interface = "stdio"
       @use_http_post = false

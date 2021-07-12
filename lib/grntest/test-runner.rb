@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2021  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -137,6 +137,8 @@ module Grntest
         context.plugins_directory = @tester.plugins_directory.expand_path
         context.groonga_suggest_create_dataset =
           @tester.groonga_suggest_create_dataset
+        context.groonga_synonym_generate =
+          @tester.groonga_synonym_generate
         context.testee = @tester.testee
         context.interface = @tester.interface
         context.use_http_post = @tester.use_http_post?

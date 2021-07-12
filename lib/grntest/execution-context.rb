@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2021  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ module Grntest
     attr_accessor :plugins_directory
     attr_accessor :plugin_extension
     attr_accessor :groonga_suggest_create_dataset
+    attr_accessor :groonga_synonym_generate
     attr_accessor :testee
     attr_accessor :interface
     attr_accessor :result
@@ -46,6 +47,7 @@ module Grntest
       @plugins_directory = nil
       @plugin_extension = guess_plugin_extension
       @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
+      @groonga_synonym_generate = "groonga-synonym-generate"
       @testee = "groonga"
       @interface = "stdio"
       @n_nested = 0

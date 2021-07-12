@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2021  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -444,6 +444,31 @@ module Grntest
         end
       end
 
+      def execute_directive_synonym_generate(parser, line, content, options)
+        if @context.groonga_synonym_generate.nil?
+          omit("groonga-synonym-generate isn't specified")
+        end
+
+        table, *args = options
+        command_line = [
+          @context.groonga_synonym_generate,
+          *args,
+        ]
+        packed_command_line = command_line.join(" ")
+        log_input("#{packed_command_line}\n")
+        begin
+          IO.popen(command_line, "r:ascii-8bit") do |io|
+            parser << "load --table #{table}\n"
+            io.each_line do |line|
+              parser << line
+            end
+          end
+        rescue SystemCallError
+          raise Error.new("failed to run groonga-synonym-generate: " +
+                          "<#{packed_command_line}>: #{$!}")
+        end
+      end
+
       def execute_directive(parser, line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -497,6 +522,8 @@ module Grntest
           execute_directive_sleep_after_command(line, content, options)
         when "require-feature"
           execute_directive_require_feature(line, content, options)
+        when "synonym-generate"
+          execute_directive_synonym_generate(parser, line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
