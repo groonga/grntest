@@ -1,5 +1,11 @@
 # News
 
+## 1.4.9: 2021-07-12
+
+### Improvements
+
+  * Added `synonyms-generate` directive.
+
 ## 1.4.8: 2020-12-09
 
 ### Fixes
