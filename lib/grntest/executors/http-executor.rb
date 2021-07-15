@@ -78,6 +78,10 @@ module Grntest
       DEBUG = (ENV["GRNTEST_HTTP_DEBUG"] == "yes")
       LOAD_DEBUG = (DEBUG or (ENV["GRNTEST_HTTP_LOAD_DEBUG"] == "yes"))
 
+      def check_response(response)
+        response.value
+      end
+
       MAX_URI_SIZE = 4096
       def send_load_command(command)
         lines = command.original_source.lines
@@ -122,6 +126,7 @@ module Grntest
             http.read_timeout = read_timeout
             http.request(request)
           end
+          check_response(response)
           normalize_response_data(command, response.body)
         end
       end
@@ -144,6 +149,7 @@ module Grntest
             http.read_timeout = read_timeout
             http.request(request)
           end
+          check_response(response)
           normalize_response_data(command, response.body)
         end
       end
@@ -172,6 +178,10 @@ module Grntest
           raise Error.new(message)
         rescue Net::HTTPHeaderSyntaxError
           message = "bad HTTP header syntax in Groonga response: <#{url}>: "
+          message << "#{$!.class}: #{$!.message}"
+          raise Error.new(message)
+        rescue Net::HTTPServerException
+          message = "exception from Groonga: <#{url}>: "
           message << "#{$!.class}: #{$!.message}"
           raise Error.new(message)
         end
