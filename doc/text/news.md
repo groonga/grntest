@@ -1,5 +1,13 @@
 # News
 
+## 1.5.0: 2021-07-16
+
+### Improvements
+
+  * `http`: Added response code check.
+
+  * `groonga-httpd`: Increased the max body size.
+
 ## 1.4.9: 2021-07-12
 
 ### Improvements
