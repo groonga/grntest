@@ -1,5 +1,11 @@
 # News
 
+## 1.5.1: 2021-07-16
+
+### Improvements
+
+  * `http`: Improved response check.
+
 ## 1.5.0: 2021-07-16
 
 ### Improvements
