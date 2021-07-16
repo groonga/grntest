@@ -545,6 +545,7 @@ http {
                      groonga_log_path #{context.log_path};
                      groonga_query_log_path #{context.query_log_path};
                      groonga on;
+                     client_max_body_size 500m;
             }
      }
 }
