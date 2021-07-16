@@ -79,7 +79,15 @@ module Grntest
       LOAD_DEBUG = (DEBUG or (ENV["GRNTEST_HTTP_LOAD_DEBUG"] == "yes"))
 
       def check_response(response)
-        response.value
+        case response
+        when Net::HTTPBadRequest,
+             Net::HTTPNotFound
+          # Groonga returns them for an invalid request.
+        when Net::HTTPInternalServerError
+          # Groonga returns this for an internal error.
+        else
+          response.value
+        end
       end
 
       MAX_URI_SIZE = 4096
