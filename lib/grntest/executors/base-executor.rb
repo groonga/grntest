@@ -320,10 +320,12 @@ module Grntest
             end
             record << "\n"
             record << evaluator.evaluate(i).to_json
+            before = Time.now
             parser << record
+            elapsed = Time.now - before
+            Thread.pass if elapsed > 1.0
           end
           parser << "\n]\n"
-          Thread.pass
         end
       end
 
