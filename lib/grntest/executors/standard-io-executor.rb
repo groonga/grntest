@@ -70,6 +70,7 @@ module Grntest
         "logical_table_remove",
         "plugin_register",
         "register",
+        "wal_recover",
       ]
       def may_slow_command?(command)
         MAY_SLOW_COMMANDS.include?(command.name)
