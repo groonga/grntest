@@ -65,6 +65,7 @@ module Grntest
 
       MAY_SLOW_COMMANDS = [
         "column_create",
+        "delete",
         "load",
         "logical_table_remove",
         "plugin_register",
