@@ -180,7 +180,14 @@ module Grntest
         end
         source = resolve_path(Pathname(expand_variables(source)))
         destination = resolve_path(Pathname(expand_variables(destination)))
-        FileUtils.cp_r(source.to_s, destination.to_s)
+        begin
+          FileUtils.cp_r(source.to_s, destination.to_s)
+        rescue SystemCallError => error
+          log_input(line)
+          details = "#{error.class}: #{error.message}"
+          log_error("#|e| [copy-path] failed to copy: #{details}")
+          @context.error
+        end
       end
 
       def timeout_value(key, line, input, default)
@@ -316,6 +323,7 @@ module Grntest
             parser << record
           end
           parser << "\n]\n"
+          Thread.pass
         end
       end
 
