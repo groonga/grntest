@@ -1,5 +1,15 @@
 # News
 
+## 1.5.2: 2021-08-05
+
+### Improvements
+
+  * `stdio`: Improved may be slow command processing.
+
+  * `copy-path`: Handled error.
+
+  * `generate-series`: Improved multi threading support.
+
 ## 1.5.1: 2021-07-16
 
 ### Improvements
