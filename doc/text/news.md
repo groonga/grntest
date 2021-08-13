@@ -1,5 +1,11 @@
 # News
 
+## 1.5.3: 2021-08-14
+
+### Improvements
+
+  * `generate-series`: Added support for multi-byte characters.
+
 ## 1.5.2: 2021-08-05
 
 ### Improvements
