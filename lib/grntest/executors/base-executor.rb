@@ -306,7 +306,7 @@ module Grntest
 
       def execute_directive_generate_series(parser, line, content, options)
         start, stop, table, template, = options
-        evaluator = TemplateEvaluator.new(template)
+        evaluator = TemplateEvaluator.new(template.force_encoding("UTF-8"))
         (Integer(start)..Integer(stop)).each_slice(1000) do |range|
           parser << "load --table #{table}\n"
           parser << "["
