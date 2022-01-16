@@ -547,6 +547,8 @@ http {
                      groonga on;
                      client_max_body_size 500m;
             }
+            client_header_buffer_size 64k;
+            large_client_header_buffers 4 64k;
      }
 }
         HTTP
