@@ -1,5 +1,11 @@
 # News
 
+## 1.5.4: 2022-01-17
+
+### Improvements
+
+  * `http`: Added support for long query.
+
 ## 1.5.3: 2021-08-14
 
 ### Improvements
