@@ -1,5 +1,11 @@
 # News
 
+## 1.5.5: 2022-01-18
+
+### Improvements
+
+  * Added support for normalizing function name.
+
 ## 1.5.4: 2022-01-17
 
 ### Improvements
