@@ -735,6 +735,10 @@ http {
           normalized_values = {}
           message = error["message"]
           normalized_values["message"] = normalize_error_message(message)
+          function = error["function"]
+          if function
+            normalized_values["function"] = normalize_error_function(function)
+          end
           file = error["file"]
           if file
             normalized_values["file"] = normalize_error_file_path(file)
@@ -821,6 +825,10 @@ http {
       else
         content
       end
+    end
+
+    def normalize_error_function(function)
+      function.split("::").last
     end
 
     def normalize_error_file_path(path)
