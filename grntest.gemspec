@@ -48,6 +48,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency("groonga-command-parser")
   spec.add_runtime_dependency("groonga-log")
   spec.add_runtime_dependency("groonga-query-log", ">= 1.4.1")
+  spec.add_runtime_dependency("groonga-synonym")
   spec.add_runtime_dependency("json")
   spec.add_runtime_dependency("msgpack")
   spec.add_runtime_dependency("rexml")
