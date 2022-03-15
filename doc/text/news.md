@@ -1,5 +1,11 @@
 # News
 
+## 1.5.6: 2022-03-16
+
+### Improvements
+
+  * Added `groonga-synomym` to required dependencies.
+
 ## 1.5.5: 2022-01-18
 
 ### Improvements
