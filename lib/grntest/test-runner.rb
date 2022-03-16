@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2021  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2022  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -272,6 +272,13 @@ call (int)chdir("#{context.temporary_directory_path}")
         command_line << "--command=#{gdb_command_path}"
         command_line << "--quiet"
         command_line << "--args"
+      elsif @tester.rr
+        if libtool_wrapper?(command)
+          command_line << find_libtool(command)
+          command_line << "--mode=execute"
+        end
+        command_line << @tester.rr
+        command_line << "record"
       elsif @tester.valgrind
         if libtool_wrapper?(command)
           command_line << find_libtool(command)

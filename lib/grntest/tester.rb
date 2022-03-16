@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2021  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2022  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -197,6 +197,12 @@ module Grntest
           tester.gdb = command || tester.default_gdb
         end
 
+        parser.on("--rr[=COMMAND]",
+                  "Run Groonga on 'rr record' and use COMMAND as rr",
+                  "(#{tester.default_rr})") do |command|
+          tester.rr = command || tester.default_rr
+        end
+
         parser.on("--valgrind[=COMMAND]",
                   "Run Groonga on valgrind and use COMMAND as valgrind",
                   "(#{tester.default_valgrind})") do |command|
@@ -323,6 +329,7 @@ module Grntest
     attr_accessor :n_workers
     attr_accessor :output
     attr_accessor :gdb, :default_gdb
+    attr_accessor :rr, :default_rr
     attr_accessor :valgrind, :default_valgrind
     attr_accessor :timeout
     attr_accessor :read_timeout
@@ -534,6 +541,8 @@ module Grntest
     def initialize_debuggers
       @gdb = nil
       @default_gdb = "gdb"
+      @rr = nil
+      @default_rr = "rr"
     end
 
     def initialize_memory_checkers
