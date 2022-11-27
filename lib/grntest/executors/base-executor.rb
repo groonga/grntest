@@ -731,7 +731,7 @@ module Grntest
           # groonga-httpd(+0xbd1aa) [0x564caf2bfc12]
           # groonga-httpd(ngx_http_core_run_phases+0x25) [0x564caf2bfc12]
           true
-        when /\A\d+\s+(?:lib\S+\.dylib|\S+\.so|groonga|nginx|\?\?\?)\s+
+        when /\A\d+\s+(?:lib\S+\.dylib|\S+\.so|groonga|nginx|\?\?\?|dyld)\s+
                 0x[\da-f]+\s
                 \S+\s\+\s\d+\z/x
           true
