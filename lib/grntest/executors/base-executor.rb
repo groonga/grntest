@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2021  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2023  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -47,6 +47,7 @@ module Grntest
         @sleep_after_command = nil
         @raw_status_response = nil
         @features = nil
+        @substitutions = {}
       end
 
       def execute(script_path)
@@ -59,6 +60,7 @@ module Grntest
             parser = create_parser
             script_file.each_line do |line|
               begin
+                line = substitute_input(line)
                 parser << line
               rescue Error, Groonga::Command::Parser::Error
                 line_info = "#{script_path}:#{script_file.lineno}:#{line.chomp}"
@@ -319,7 +321,7 @@ module Grntest
               record << ","
             end
             record << "\n"
-            record << evaluator.evaluate(i).to_json
+            record << evaluator.evaluate(i: i).to_json
             before = Time.now
             parser << record
             elapsed = Time.now - before
@@ -479,6 +481,45 @@ module Grntest
         end
       end
 
+      def substitute_input(input)
+        return input if @substitutions.empty?
+        @substitutions.each_value do |pattern, substituted_evaluator, _|
+          input = input.gsub(pattern) do
+            substituted_evaluator.evaluate(match_data: Regexp.last_match)
+          end
+        end
+        input
+      end
+
+      def normalize_input(input)
+        return input if @substitutions.empty?
+        @substitutions.each_value do |pattern, _, normalized_evaluator|
+          input = input.gsub(pattern) do
+            normalized_evaluator.evaluate(match_data: Regexp.last_match)
+          end
+        end
+        input
+      end
+
+      def execute_directive_add_substitution(line, content, options)
+        _, pattern, rest = content.split(" ", 3)
+        substituted, normalized = Shellwords.shellsplit(rest)
+        substituted.force_encoding("UTF-8")
+        normalized.force_encoding("UTF-8")
+        substituted_evaluator = TemplateEvaluator.new("\"#{substituted}\"")
+        normalized_evaluator = TemplateEvaluator.new("\"#{normalized}\"")
+        @substitutions[pattern] = [
+          compile_pattern(pattern),
+          substituted_evaluator,
+          normalized_evaluator,
+        ]
+      end
+
+      def execute_directive_remove_substitution(line, content, options)
+        pattern = content.split(" ", 2)[1]
+        @substitutions.delete(pattern)
+      end
+
       def execute_directive(parser, line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -534,6 +575,10 @@ module Grntest
           execute_directive_require_feature(line, content, options)
         when "synonym-generate"
           execute_directive_synonym_generate(parser, line, content, options)
+        when "add-substitution"
+          execute_directive_add_substitution(line, content, options)
+        when "remove-substitution"
+          execute_directive_remove_substitution(line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
@@ -780,6 +825,7 @@ module Grntest
       end
 
       def log_input(content)
+        content = normalize_input(content)
         log(:input, content)
       end
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2016  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2016-2023  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,8 +19,12 @@ module Grntest
       @template = template
     end
 
-    def evaluate(i)
-      eval(@template)
+    def evaluate(**local_variables)
+      _binding = binding
+      local_variables.each do |name, value|
+        _binding.local_variable_set(name, value)
+      end
+      _binding.eval(@template)
     end
   end
 end
