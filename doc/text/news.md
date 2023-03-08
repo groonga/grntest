@@ -1,5 +1,16 @@
 # News
 
+## 1.5.7: 2023-03-08
+
+### Improvements
+
+  * Added support for `rr`.
+
+  * Improved backtrace normalization on macOS.
+
+  * Added `add-substitution` and `remove-substitution` to unify common
+    tests for `NormalizerNFKC*`.
+
 ## 1.5.6: 2022-03-16
 
 ### Improvements
