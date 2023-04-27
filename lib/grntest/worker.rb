@@ -93,31 +93,29 @@ module Grntest
 
       @result.measure do
         @reporter.on_worker_start(self)
-        catch do |tag|
-          loop do
-            suite_name, test_script_path, test_name = queue.pop
-            break if test_script_path.nil?
+        loop do
+          suite_name, test_script_path, test_name = queue.pop
+          break if test_script_path.nil?
 
-            unless @suite_name == suite_name
-              @reporter.on_suite_finish(self) if @suite_name
-              @suite_name = suite_name
-              @reporter.on_suite_start(self)
-            end
-
-            unless run_test(test_script_path, test_name)
-              succeeded = false
-            end
-
-            break if interruptted?
-
-            if @tester.stop_on_failure? and @test_suites_result.have_failure?
-              break
-            end
+          unless @suite_name == suite_name
+            @reporter.on_suite_finish(self) if @suite_name
+            @suite_name = suite_name
+            @reporter.on_suite_start(self)
           end
-          @status = "finished"
-          @reporter.on_suite_finish(@suite_name) if @suite_name
-          @suite_name = nil
+
+          unless run_test(test_script_path, test_name)
+            succeeded = false
+          end
+
+          break if interruptted?
+
+          if @tester.stop_on_failure? and @test_suites_result.have_failure?
+            break
+          end
         end
+        @status = "finished"
+        @reporter.on_suite_finish(@suite_name) if @suite_name
+        @suite_name = nil
       end
       @reporter.on_worker_finish(self)
 
