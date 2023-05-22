@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2022  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2023  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -279,6 +279,11 @@ module Grntest
                   "Timeout for waiting shutdown",
                   "(#{tester.shutdown_wait_timeout})") do |timeout|
           tester.shutdown_wait_timeout = timeout
+        end
+
+        parser.on("--random-seed=SEED", Integer,
+                  "Seed for random numbers") do |seed|
+          srand(seed)
         end
 
         parser.on("--version",
