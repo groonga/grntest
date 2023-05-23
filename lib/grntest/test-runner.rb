@@ -725,7 +725,7 @@ http {
 
     def normalize_output_xml(content, options)
       content.sub(/^<RESULT .+?>/) do |result|
-        result.gsub(/( (?:UP|ELAPSED))="\d+\.\d+(?:e[+-]?\d+)?"/, '\1="0.0"')
+        result.gsub(/( (?:UP|ELAPSED))="-?\d+\.\d+(?:e[+-]?\d+)?"/, '\1="0.0"')
       end
     end
 
