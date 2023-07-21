@@ -767,7 +767,7 @@ module Grntest
           true
         when /\A[\w.\\-]+:\d+:\d+: /
           true
-        when /\A(?:groonga|groonga-httpd)
+        when /\A(?:groonga|groonga-httpd|nginx)
                 \((?:\+0x\h+|\w+\+0x\h+)?\)
                 \s
                 \[0x\h+\]\z/x

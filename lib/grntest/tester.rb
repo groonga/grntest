@@ -38,6 +38,7 @@ module Grntest
         parser = OptionParser.new
         parser.banner += " TEST_FILE_OR_DIRECTORY..."
 
+        custom_groonga_httpd = false
         parser.on("--groonga=COMMAND",
                   "Use COMMAND as groonga command",
                   "(#{tester.groonga})") do |command|
@@ -48,6 +49,13 @@ module Grntest
                   "Use COMMAND as groonga-httpd command for groonga-httpd tests",
                   "(#{tester.groonga_httpd})") do |command|
           tester.groonga_httpd = normalize_command(command)
+          custom_groonga_httpd = true
+        end
+
+        parser.on("--ngx-http-groonga-module-so=PATH",
+                  "Use PATH as ngx_http_groonga_module.so for groonga-nginx tests",
+                  "(#{tester.ngx_http_groonga_module_so})") do |path|
+          tester.ngx_http_groonga_module_so = path
         end
 
         parser.on("--groonga-suggest-create-dataset=COMMAND",
@@ -101,15 +109,19 @@ module Grntest
           tester.output_type = type
         end
 
-        available_testees = ["groonga", "groonga-httpd"]
+        available_testees = ["groonga", "groonga-httpd", "groonga-nginx"]
         available_testee_labels = available_testees.join(", ")
         parser.on("--testee=TESTEE", available_testees,
                   "Test against TESTEE",
                   "[#{available_testee_labels}]",
                   "(#{tester.testee})") do |testee|
           tester.testee = testee
-          if tester.testee == "groonga-httpd"
+          case tester.testee
+          when "groonga-httpd"
             tester.interface = "http"
+          when "groonga-nginx"
+            tester.interface = "http"
+            tester.groonga_httpd = "nginx" unless custom_groonga_httpd
           end
         end
 
@@ -322,6 +334,7 @@ module Grntest
 
     attr_accessor :groonga
     attr_accessor :groonga_httpd
+    attr_accessor :ngx_http_groonga_module_so
     attr_accessor :groonga_suggest_create_dataset
     attr_accessor :groonga_synonym_generate
     attr_accessor :interface
@@ -351,6 +364,7 @@ module Grntest
     def initialize
       @groonga = "groonga"
       @groonga_httpd = "groonga-httpd"
+      @ngx_http_groonga_module_so = nil
       @groonga_suggest_create_dataset = "groonga-suggest-create-dataset"
       unless command_exist?(@groonga_suggest_create_dataset)
         @groonga_suggest_create_dataset = nil

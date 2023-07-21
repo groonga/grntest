@@ -500,10 +500,13 @@ call (int)chdir("#{context.temporary_directory_path}")
           "-s",
           context.relative_db_path.to_s,
         ]
-      when "groonga-httpd"
-        command_line = command_command_line(@tester.groonga_httpd, context,
+      when "groonga-httpd", "groonga-nginx"
+        command_line = command_command_line(@tester.groonga_httpd,
+                                            context,
                                             spawn_options)
-        config_file_path = create_config_file(context, host, port,
+        config_file_path = create_config_file(context,
+                                              host,
+                                              port,
                                               pid_file_path)
         command_line += [
           "-c", config_file_path.to_s,
@@ -517,6 +520,11 @@ call (int)chdir("#{context.temporary_directory_path}")
       config_file_path =
         context.temporary_directory_path + "groonga-httpd.conf"
       config_file_path.open("w") do |config_file|
+        if @tester.ngx_http_groonga_module_so
+          config_file.puts(<<-LOAD_MODULE)
+load_module #{@tester.ngx_http_groonga_module_so};
+          LOAD_MODULE
+        end
         config_file.puts(<<-GLOBAL)
 daemon off;
 master_process off;
