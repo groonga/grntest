@@ -508,6 +508,7 @@ call (int)chdir("#{context.temporary_directory_path}")
                                               host,
                                               port,
                                               pid_file_path)
+        FileUtils.mkdir_p(context.temporary_directory_path + "logs")
         command_line += [
           "-c", config_file_path.to_s,
           "-p", "#{context.temporary_directory_path}/",
