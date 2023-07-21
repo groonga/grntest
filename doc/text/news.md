@@ -1,5 +1,15 @@
 # News
 
+## 1.5.8: 2023-07-21
+
+### Improvements
+
+  * `--random-seed`: Added.
+
+  * xml: Accepted negative elapsed time.
+
+  * Added support for groonga-nginx.
+
 ## 1.5.7: 2023-03-08
 
 ### Improvements
