@@ -562,6 +562,7 @@ http {
                      groonga_query_log_path #{context.query_log_path};
                      groonga on;
                      client_max_body_size 500m;
+                     client_body_temp_path #{context.temporary_directory_path + "body"};
             }
             client_header_buffer_size 64k;
             large_client_header_buffers 4 64k;
