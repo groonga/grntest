@@ -1,5 +1,11 @@
 # News
 
+## 1.5.9: 2023-07-21
+
+### Improvements
+
+  * groonga-nginx: Created `logs/` directory.
+
 ## 1.5.8: 2023-07-21
 
 ### Improvements
