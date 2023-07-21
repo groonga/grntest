@@ -1,5 +1,11 @@
 # News
 
+## 1.6.0: 2023-07-21
+
+### Improvements
+
+  * groonga-nginx: Set `client_body_temp_path`.
+
 ## 1.5.9: 2023-07-21
 
 ### Improvements
