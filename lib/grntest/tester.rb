@@ -199,7 +199,8 @@ module Grntest
         end
 
         parser.on("--n-workers=N", Integer,
-                  "Use N workers to run tests") do |n|
+                  "Use N workers to run tests",
+                  "(#{tester.n_workers})") do |n|
           tester.n_workers = n
         end
 
@@ -382,7 +383,7 @@ module Grntest
       @base_directory = Pathname(".")
       @database_path = nil
       @reporter = nil
-      @n_workers = 1
+      @n_workers = guess_n_cores
       @output = $stdout
       @keep_database = false
       @use_color = nil
@@ -542,6 +543,28 @@ module Grntest
     def run_test_suites(test_suites)
       runner = TestSuitesRunner.new(self)
       runner.run(test_suites)
+    end
+
+    def guess_n_cores
+      begin
+        if command_exist?("nproc")
+          # Linux
+          Integer(`nproc`.strip, 10)
+        elsif command_exist?("sysctl")
+          # macOS
+          Integer(`sysctl -n hw.logicalcpu`.strip, 10)
+        else
+          # Windows
+          value = ENV["NUMBER_OF_PROCESSORS"]
+          if value
+            Integer(value, 10)
+          else
+            1
+          end
+        end
+      rescue ArgumentError
+        1
+      end
     end
 
     def detect_suitable_diff
