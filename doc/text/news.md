@@ -1,5 +1,11 @@
 # News
 
+## 1.6.1: 2023-08-11
+
+### Improvements
+
+  * `--n-workers`: Use the max number of cores by default.
+
 ## 1.6.0: 2023-07-21
 
 ### Improvements
