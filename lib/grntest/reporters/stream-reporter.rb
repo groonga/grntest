@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2023  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,6 +29,7 @@ module Grntest
       end
 
       def on_suite_start(worker)
+        return unless single_worker?
         if worker.suite_name.bytesize <= @term_width
           puts(worker.suite_name)
         else
@@ -40,36 +39,61 @@ module Grntest
       end
 
       def on_test_start(worker)
-        print("  #{worker.test_name}")
-        @output.flush
+        synchronize do
+          if single_worker?
+            print("  #{worker.test_name}")
+          else
+            report_full_test_name(worker)
+            report_right_message("[start]")
+          end
+          @output.flush
+        end
       end
 
       def on_test_success(worker, result)
-        report_test_result(result, worker.status)
+        synchronize do
+          report_full_test_name(worker) unless single_worker?
+          report_test_result(result, worker.status)
+        end
       end
 
       def on_test_failure(worker, result)
-        report_test_result(result, worker.status)
-        report_failure(result)
+        synchronize do
+          report_full_test_name(worker) unless single_worker?
+          report_test_result(result, worker.status)
+          report_failure(result)
+        end
       end
 
       def on_test_leak(worker, result)
-        report_test_result(result, worker.status)
-        report_actual(result) unless result.checked?
+        synchronize do
+          report_full_test_name(worker) unless single_worker?
+          report_test_result(result, worker.status)
+          report_actual(result) unless result.checked?
+        end
       end
 
       def on_test_omission(worker, result)
-        report_test_result(result, worker.status)
-        report_actual(result)
+        synchronize do
+          report_full_test_name(worker) unless single_worker?
+          report_test_result(result, worker.status)
+          report_actual(result)
+        end
       end
 
       def on_test_omission_suppressed(worker, result)
-        report_test_result(result, worker.status)
+        synchronize do
+          report_full_test_name(worker) unless single_worker?
+          report_test_result(result, worker.status)
+        end
       end
 
       def on_test_no_check(worker, result)
-        report_test_result(result, worker.status)
-        report_actual(result)
+        synchronize do
+          report_full_test_name(worker) unless single_worker?
+          report_test_result(result, worker.status)
+          report_actual(result)
+        end
       end
 
       def on_test_finish(worker, result)

@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2019  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2023  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,9 +28,17 @@ module Grntest
 
       private
       def synchronize
-        @mutex.synchronize do
+        if single_worker?
           yield
+        else
+          @mutex.synchronize do
+            yield
+          end
         end
+      end
+
+      def single_worker?
+        @tester.n_workers == 1
       end
 
       def report_summary(result)
@@ -120,22 +128,29 @@ module Grntest
         reporter.report
       end
 
+      def report_full_test_name(worker)
+        print("#{worker.suite_name}/#{worker.test_name}")
+      end
+
       def report_test(worker, result)
         report_marker(result)
-        print("[#{worker.id}] ") if @tester.n_workers > 1
+        print("[#{worker.id}] ") if single_worker?
         puts(worker.suite_name)
         print("  #{worker.test_name}")
         report_test_result(result, worker.status)
       end
 
-      def report_test_result(result, label)
-        message = test_result_message(result, label)
+      def report_right_message(message)
         message_width = string_width(message)
         rest_width = @term_width - @current_column
         if rest_width > message_width
           print(" " * (rest_width - message_width))
         end
         puts(message)
+      end
+
+      def report_test_result(result, label)
+        report_right_message(test_result_message(result, label))
       end
 
       def test_result_message(result, label)
