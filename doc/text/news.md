@@ -1,5 +1,12 @@
 # News
 
+## 1.6.2: 2023-08-24
+
+### Improvements
+
+  * reporter: stream: Changed to show "start" message in multi-workers
+    mode.
+
 ## 1.6.1: 2023-08-11
 
 ### Improvements
