@@ -134,7 +134,7 @@ module Grntest
 
       def report_test(worker, result)
         report_marker(result)
-        print("[#{worker.id}] ") if single_worker?
+        print("[#{worker.id}] ") unless single_worker?
         puts(worker.suite_name)
         print("  #{worker.test_name}")
         report_test_result(result, worker.status)
