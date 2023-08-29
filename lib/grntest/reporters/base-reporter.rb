@@ -128,13 +128,19 @@ module Grntest
         reporter.report
       end
 
+      def report_worker_id(worker)
+        @worker_id_width ||= (Math.log10(@tester.n_workers) + 1).floor
+        print("[%*d] " % [@worker_id_width, worker.id])
+      end
+
       def report_full_test_name(worker)
+        report_worker_id(worker) unless single_worker?
         print("#{worker.suite_name}/#{worker.test_name}")
       end
 
       def report_test(worker, result)
         report_marker(result)
-        print("[#{worker.id}] ") unless single_worker?
+        report_worker_id(worker) unless single_worker?
         puts(worker.suite_name)
         print("  #{worker.test_name}")
         report_test_result(result, worker.status)
