@@ -763,6 +763,8 @@ module Grntest
           true
         when /\A[a-zA-Z]:[\/\\]/
           true
+        when "(unknown):0"
+          true
         when /\A\(unknown\):\d+:\d+: /
           true
         when /\A[\w.\\-]+:\d+:\d+: /
