@@ -1,5 +1,17 @@
 # News
 
+## 1.6.3: 2023-09-18
+
+### Improvements
+
+  * reporter: stream: Changed to show worker ID for each test.
+
+  * Added support for backtrace pattern provided by mruby 3.2.0.
+
+### Fixes
+
+  * reporter: stream: Fixed a bug that worker ID isn't outputted.
+
 ## 1.6.2: 2023-08-24
 
 ### Improvements
