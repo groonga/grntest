@@ -711,6 +711,14 @@ http {
                 case name
                 when "start_time", "elapsed_time"
                   value = 0
+                when "error_message"
+                  value = normalize_error_message(value) if value
+                when "error_file"
+                  value = normalize_error_file_path(value) if value
+                when "error_line"
+                  value = 0 if value
+                when "error_function"
+                  value = normalize_error_function(value) if value
                 end
                 normalized_record << value
               end
@@ -727,10 +735,7 @@ http {
     end
 
     def apache_arrow_metadata?(schema)
-      # TODO: Use schema.metadata with gobject-introspection 3.4.2 and
-      # Red Arrow 0.17.0.
-      schema.fields.collect(&:name) ==
-        ["return_code", "start_time", "elapsed_time"]
+      schema.metadata["GROONGA:data_type"] == "metadata"
     end
 
     def normalize_output_xml(content, options)
