@@ -735,7 +735,9 @@ http {
     end
 
     def apache_arrow_metadata?(schema)
-      schema.metadata["GROONGA:data_type"] == "metadata"
+      metadata = schema.metadata
+      return false if metatada.nil?
+      metadata["GROONGA:data_type"] == "metadata"
     end
 
     def normalize_output_xml(content, options)
