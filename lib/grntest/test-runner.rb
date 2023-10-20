@@ -736,7 +736,7 @@ http {
 
     def apache_arrow_metadata?(schema)
       metadata = schema.metadata
-      return false if metadada.nil?
+      return false if metadata.nil?
       metadata["GROONGA:data_type"] == "metadata"
     end
 
