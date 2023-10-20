@@ -1,5 +1,11 @@
 # News
 
+## 1.6.4: 2023-10-21
+
+### Improvements
+
+  * arrow: Added support for metadata normalization.
+
 ## 1.6.3: 2023-09-18
 
 ### Improvements
