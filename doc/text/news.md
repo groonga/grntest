@@ -1,5 +1,11 @@
 # News
 
+## 1.6.5: 2023-10-24
+
+### Improvements
+
+  * Added support for trace log.
+
 ## 1.6.4: 2023-10-21
 
 ### Improvements
