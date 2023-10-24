@@ -720,7 +720,7 @@ http {
           end
         end
       end
-      normalize_raw_content(normalized)
+      normalize_raw_content(normalized.chomp)
     end
 
     def normalize_apache_arrow_content_metadata(table)
