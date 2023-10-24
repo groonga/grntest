@@ -664,6 +664,10 @@ http {
                            "header" => normalize_header(response["header"]),
                            "body"   => normalize_body(response["body"]),
                          })
+        if normalized_response.key?("trace_log")
+          normalized_response["trace_log"] =
+            normalize_trace_log(normalized_response["trace_log"])
+        end
       else
         header, *values = response
         normalized_header = normalize_header(header)
@@ -704,40 +708,57 @@ http {
             normalized << schema.to_s
           end
           normalized << "\n"
-          if apache_arrow_metadata?(schema)
-            normalized_records = table.each_record.collect do |record|
-              normalized_record = []
-              record.to_h.each do |name, value|
-                case name
-                when "start_time", "elapsed_time"
-                  value = 0
-                when "error_message"
-                  value = normalize_error_message(value) if value
-                when "error_file"
-                  value = normalize_error_file_path(value) if value
-                when "error_line"
-                  value = 0 if value
-                when "error_function"
-                  value = normalize_error_function(value) if value
-                end
-                normalized_record << value
-              end
-              normalized_record
-            end
-            noramlized_table = Arrow::Table.new(schema, normalized_records)
-            normalized << noramlized_table.to_s
+          case (schema.metadata || {})["GROONGA:data_type"]
+          when "metadata"
+            normalized_table = normalize_apache_arrow_content_metadata(table)
+            normalized << normalized_table.to_s
+          when "trace_log"
+            normalized_table = normalize_apache_arrow_content_trace_log(table)
+            normalized << normalized_table.to_s
           else
             normalized << table.to_s
           end
         end
       end
-      normalized
+      normalize_raw_content(normalized)
     end
 
-    def apache_arrow_metadata?(schema)
-      metadata = schema.metadata
-      return false if metadata.nil?
-      metadata["GROONGA:data_type"] == "metadata"
+    def normalize_apache_arrow_content_metadata(table)
+      normalized_records = table.each_record.collect do |record|
+        normalized_record = []
+        record.to_h.each do |name, value|
+          case name
+          when "start_time", "elapsed_time"
+            value = 0
+          when "error_message"
+            value = normalize_error_message(value) if value
+          when "error_file"
+            value = normalize_error_file_path(value) if value
+          when "error_line"
+            value = 0 if value
+          when "error_function"
+            value = normalize_error_function(value) if value
+          end
+          normalized_record << value
+        end
+        normalized_record
+      end
+      Arrow::Table.new(table.schema, normalized_records)
+    end
+
+    def normalize_apache_arrow_content_trace_log(table)
+      normalized_columns = table.columns.collect do |column|
+        case column.name
+        when "elapsed_time"
+          normalized_elapsed_times =
+            column.data_type.build_array(column.n_rows.times.to_a)
+          Arrow::Column.new(Arrow::Table.new(elapsed_time: normalized_elapsed_times),
+                            0)
+        else
+          column
+        end
+      end
+      Arrow::Table.new(table.schema, normalized_columns)
     end
 
     def normalize_output_xml(content, options)
@@ -831,6 +852,20 @@ http {
       else
         body
       end
+    end
+
+    def normalize_trace_log(trace_log)
+      if trace_log["logs"]
+        elapsed_time_index = trace_log["columns"].index do |column|
+          column["name"] == "elapsed_time"
+        end
+        normalized_elapsed_time = 0
+        trace_log["logs"].each do |log|
+          log[elapsed_time_index] = normalized_elapsed_time
+          normalized_elapsed_time += 1
+        end
+      end
+      trace_log
     end
 
     def normalize_error(content)
