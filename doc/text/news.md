@@ -1,5 +1,11 @@
 # News
 
+## 1.6.6: 2023-10-24
+
+### Improvements
+
+  * arrow: Removed a needless new line.
+
 ## 1.6.5: 2023-10-24
 
 ### Improvements
