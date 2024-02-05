@@ -72,6 +72,7 @@ module Grntest
       end
 
       def on_test_finish(worker, result)
+        return if result.benchmarks.empty?
         benchmarks = result.benchmarks.collect do |benchmark|
           <<-JSON.chomp
     {
