@@ -1,5 +1,12 @@
 # News
 
+## 1.6.7: 2024-02-05
+
+### Improvements
+
+  * Added benchmark mode. It uses Google Benchmark compatible JSON
+    output.
+
 ## 1.6.6: 2023-10-24
 
 ### Improvements
