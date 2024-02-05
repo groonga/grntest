@@ -60,6 +60,12 @@ module Grntest
       end
 
       def on_test_failure(worker, result)
+        output, @output = @output, $stderr
+        begin
+          report_failure(result)
+        ensure
+          @output = output
+        end
       end
 
       def on_test_leak(worker, result)
