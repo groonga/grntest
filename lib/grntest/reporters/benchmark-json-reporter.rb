@@ -28,7 +28,7 @@ module Grntest
       def on_start(result)
         puts(<<-JSON)
 {
-  "context": {"
+  "context": {
     "date": #{Time.now.iso8601.to_json},
     "host_name": #{Socket.gethostname.to_json},
     "executable": #{@tester.testee.to_json},
@@ -89,7 +89,7 @@ module Grntest
       "real_time": #{benchmark.real_elapsed_time},
       "cpu_time": #{benchmark.cpu_elapsed_time},
       "time_unit": "s",
-      "items_per_second": #{benchmark.items_per_second},
+      "items_per_second": #{benchmark.items_per_second}
     }
           JSON
         end
