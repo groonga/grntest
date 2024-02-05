@@ -80,9 +80,10 @@ module Grntest
       def on_test_finish(worker, result)
         return if result.benchmarks.empty?
         benchmarks = result.benchmarks.collect do |benchmark|
+          name = "#{worker.suite_name}/#{result.test_name}"
           <<-JSON.chomp
     {
-      "name": #{result.test_name.to_json},
+      "name": #{name.to_json},
       "run_name": #{benchmark.name.to_json},
       "run_type": "iteration",
       "iterations": #{benchmark.n_iterations},
