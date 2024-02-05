@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2024  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,16 +15,26 @@
 
 module Grntest
   class BaseResult
-    attr_accessor :elapsed_time
+    attr_accessor :cpu_elapsed_time
+    attr_accessor :real_elapsed_time
     def initialize
-      @elapsed_time = 0
+      @cpu_elapsed_time = 0
+      @real_elapsed_time = 0
     end
 
     def measure
-      start_time = Time.now
+      cpu_start_time = Process.times
+      real_start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       yield
     ensure
-      @elapsed_time = Time.now - start_time
+      cpu_finish_time = Process.times
+      real_finish_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      @cpu_elapsed_time =
+        (cpu_finish_time.utime - cpu_start_time.utime) +
+        (cpu_finish_time.stime - cpu_start_time.stime) +
+        (cpu_finish_time.cutime - cpu_start_time.cutime) +
+        (cpu_finish_time.cstime - cpu_start_time.cstime)
+      @real_elapsed_time = real_finish_time - real_start_time
     end
   end
 end

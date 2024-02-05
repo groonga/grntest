@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2023  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2024  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -48,6 +48,8 @@ module Grntest
         @raw_status_response = nil
         @features = nil
         @substitutions = {}
+        @noop_benchmark_result = BenchmarkResult.new("noop", 1, 1)
+        @benchmark_result = @noop_benchmark_result
       end
 
       def execute(script_path)
@@ -520,6 +522,18 @@ module Grntest
         @substitutions.delete(pattern)
       end
 
+      def execute_directive_start_benchmark(line, content, options)
+        _, n_items, n_iterations, name = content.split(" ", 4)
+        n_items = Integer(n_items, 10)
+        n_iterations = Integer(n_iterations, 10)
+        @benchmark_result = BenchmarkResult.new(name, n_items, n_iterations)
+        @context.benchmarks << @benchmark_result
+      end
+
+      def execute_directive_finish_benchmark(line, content, options)
+        @benchmark_result = @noop_benchmark_result
+      end
+
       def execute_directive(parser, line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -579,6 +593,10 @@ module Grntest
           execute_directive_add_substitution(line, content, options)
         when "remove-substitution"
           execute_directive_remove_substitution(line, content, options)
+        when "start-benchmark"
+          execute_directive_start_benchmark(line, content, options)
+        when "finish-benchmark"
+          execute_directive_finish_benchmark(line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
@@ -628,8 +646,12 @@ module Grntest
         timeout = @context.timeout
         response = nil
         begin
-          Timeout.timeout(timeout) do
-            response = send_command(command)
+          @benchmark_result.measure do
+            @benchmark_result.n_iterations.times do
+              Timeout.timeout(timeout) do
+                response = send_command(command)
+              end
+            end
           end
         rescue Timeout::Error
           log_error("# error: timeout (#{timeout}s)")

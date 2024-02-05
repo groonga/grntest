@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2022  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2024  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,10 +28,27 @@ require "grntest/executors"
 require "grntest/base-result"
 
 module Grntest
+  class BenchmarkResult < BaseResult
+    attr_reader :name
+    attr_reader :n_items
+    attr_reader :n_iterations
+    def initialize(name, n_items, n_iterations)
+      super()
+      @name = name
+      @n_items = n_items
+      @n_iterations = n_iterations
+    end
+
+    def items_per_second
+      @n_items / @real_elapsed_time
+    end
+  end
+
   class TestResult < BaseResult
     attr_accessor :worker_id, :test_name
     attr_accessor :expected, :actual, :n_leaked_objects
     attr_writer :omitted
+    attr_accessor :benchmarks
     def initialize(worker)
       super()
       @worker_id = worker.id
@@ -40,6 +57,7 @@ module Grntest
       @expected = nil
       @n_leaked_objects = 0
       @omitted = false
+      @benchmarks = []
     end
 
     def status
@@ -159,6 +177,7 @@ module Grntest
         check_memory_leak(context)
         result.omitted = context.omitted?
         result.actual = context.result
+        result.benchmarks = context.benchmarks
         context.close_logs
       end
     end

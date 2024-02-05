@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2023  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2024  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ module Grntest
         puts(statistics_header)
         puts(colorize(statistics(result), result))
         pass_ratio = result.pass_ratio
-        elapsed_time = result.elapsed_time
+        elapsed_time = result.real_elapsed_time
         summary = "%.4g%% passed in %.4fs." % [pass_ratio, elapsed_time]
         puts(colorize(summary, result))
       end
@@ -78,10 +78,10 @@ module Grntest
       end
 
       def throughput(result)
-        if result.elapsed_time.zero?
+        if result.real_elapsed_time.zero?
           tests_per_second = 0
         else
-          tests_per_second = result.n_tests / result.elapsed_time
+          tests_per_second = result.n_tests / result.real_elapsed_time
         end
         tests_per_second
       end
@@ -160,7 +160,7 @@ module Grntest
       end
 
       def test_result_message(result, label)
-        elapsed_time = result.elapsed_time
+        elapsed_time = result.real_elapsed_time
         formatted_elapsed_time = "%.4fs" % elapsed_time
         formatted_elapsed_time = colorize(formatted_elapsed_time,
                                           elapsed_time_status(elapsed_time))

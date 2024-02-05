@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2021  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2024  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ module Grntest
     attr_writer :collect_query_log
     attr_writer :debug
     attr_accessor :platform
+    attr_accessor :benchmarks
     def initialize
       @logging = true
       @base_directory = Pathname(".")
@@ -70,6 +71,7 @@ module Grntest
       @collect_query_log = false
       @debug = false
       @platform = guess_platform
+      @benchmarks = []
     end
 
     def logging?

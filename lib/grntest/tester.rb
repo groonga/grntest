@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2023  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2024  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -161,6 +161,7 @@ module Grntest
           :stream,
           :inplace,
           :progress,
+          :"benchmark-json",
         ]
         available_reporter_labels = available_reporters.join(", ")
         parser.on("--reporter=REPORTER", available_reporters,
@@ -297,6 +298,14 @@ module Grntest
         parser.on("--random-seed=SEED", Integer,
                   "Seed for random numbers") do |seed|
           srand(seed)
+        end
+
+        parser.on("--[no-]benchmark",
+                  "Set options for benchmark") do |benchmark|
+          if benchmark
+            tester.n_workers = 1
+            tester.reporter = :"benchmark-json"
+          end
         end
 
         parser.on("--version",
