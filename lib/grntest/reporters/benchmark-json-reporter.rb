@@ -21,10 +21,6 @@ require "grntest/reporters/base-reporter"
 module Grntest
   module Reporters
     class BenchmarkJSONReporter < BaseReporter
-      def initialize(tester)
-        super
-      end
-
       def on_start(result)
         puts(<<-JSON)
 {
@@ -40,11 +36,12 @@ module Grntest
     "mhz_per_cpu": #{cpu_cycles_per_second / 1_000_000.0},
           JSON
         end
-        puts(<<-JSON)
+        print(<<-JSON.chomp)
     "caches": []
   },
   "benchmarks": [
         JSON
+        @first_benchmark = true
       end
 
       def on_worker_start(worker)
@@ -79,6 +76,8 @@ module Grntest
 
       def on_test_finish(worker, result)
         return if result.benchmarks.empty?
+        print(",") unless @first_benchmark
+        puts
         benchmarks = result.benchmarks.collect do |benchmark|
           name = "#{worker.suite_name}/#{result.test_name}"
           <<-JSON.chomp
@@ -94,7 +93,8 @@ module Grntest
     }
           JSON
         end
-        puts(benchmarks.join(",\n"))
+        print(benchmarks.join(",\n"))
+        @first_benchmark = false
       end
 
       def on_suite_finish(worker)
@@ -104,6 +104,7 @@ module Grntest
       end
 
       def on_finish(result)
+        puts
         puts(<<-JSON)
   ]
 }
