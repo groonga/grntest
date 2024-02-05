@@ -1,5 +1,12 @@
 # News
 
+## 1.6.8: 2024-02-05
+
+### Fixes
+
+  * reporter: benchmark-json: Fixed a bug that invalid JSON is
+    generated.
+
 ## 1.6.7: 2024-02-05
 
 ### Improvements
