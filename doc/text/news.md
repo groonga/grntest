@@ -1,5 +1,11 @@
 # News
 
+## 1.6.9: 2024-02-05
+
+### Improvements
+
+  * reporter: benchmark-json: Added a test suite name to benchmark name.
+
 ## 1.6.8: 2024-02-05
 
 ### Fixes
