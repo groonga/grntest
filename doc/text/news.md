@@ -1,5 +1,17 @@
 # News
 
+## 1.7.2: 2024-02-06
+
+### Improvements
+
+  * arrow: Added support for empty result.
+
+  * reporter: benchmark-json: Added support for reporting memory leak
+    information.
+
+  * reporter: benchmark-json: Added interface and in/out types to
+    benchmark name.
+
 ## 1.7.1: 2024-02-05
 
 ### Improvements
