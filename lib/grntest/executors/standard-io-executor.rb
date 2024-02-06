@@ -29,16 +29,18 @@ module Grntest
         if !command.key?(:output_type) and @output_type
           command_line = command_line.sub(/$/, " --output_type #{@output_type}")
         end
-        begin
-          debug_input(command_line)
-          @input.print(command_line)
-          @input.print("\n")
-          @input.flush
-        rescue SystemCallError
-          message = "failed to write to groonga: <#{command_line}>: #{$!}"
-          raise Error.new(message)
+        @benchmark_result.measure do
+          begin
+            debug_input(command_line)
+            @input.print(command_line)
+            @input.print("\n")
+            @input.flush
+          rescue SystemCallError
+            message = "failed to write to groonga: <#{command_line}>: #{$!}"
+            raise Error.new(message)
+          end
+          read_output(command)
         end
-        read_output(command)
       end
 
       def ensure_groonga_ready

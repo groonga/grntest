@@ -29,12 +29,12 @@ module Grntest
     ensure
       cpu_finish_time = Process.times
       real_finish_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-      @cpu_elapsed_time =
+      @cpu_elapsed_time +=
         (cpu_finish_time.utime - cpu_start_time.utime) +
         (cpu_finish_time.stime - cpu_start_time.stime) +
         (cpu_finish_time.cutime - cpu_start_time.cutime) +
         (cpu_finish_time.cstime - cpu_start_time.cstime)
-      @real_elapsed_time = real_finish_time - real_start_time
+      @real_elapsed_time += real_finish_time - real_start_time
     end
   end
 end

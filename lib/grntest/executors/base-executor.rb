@@ -646,11 +646,9 @@ module Grntest
         timeout = @context.timeout
         response = nil
         begin
-          @benchmark_result.measure do
-            @benchmark_result.n_iterations.times do
-              Timeout.timeout(timeout) do
-                response = send_command(command)
-              end
+          @benchmark_result.n_iterations.times do
+            Timeout.timeout(timeout) do
+              response = send_command(command)
             end
           end
         rescue Timeout::Error

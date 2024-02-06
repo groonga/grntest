@@ -127,15 +127,17 @@ module Grntest
         request = Net::HTTP::Post.new(path)
         request.content_type = content_type
         set_request_body(request, body)
-        run_http_request(url) do
-          http = Net::HTTP.new(@host, @port)
-          http.set_debug_output($stderr) if LOAD_DEBUG
-          response = http.start do
-            http.read_timeout = read_timeout
-            http.request(request)
+        @benchmark_result.measure do
+          run_http_request(url) do
+            http = Net::HTTP.new(@host, @port)
+            http.set_debug_output($stderr) if LOAD_DEBUG
+            response = http.start do
+              http.read_timeout = read_timeout
+              http.request(request)
+            end
+            check_response(response)
+            normalize_response_data(command, response.body)
           end
-          check_response(response)
-          normalize_response_data(command, response.body)
         end
       end
 
@@ -150,15 +152,17 @@ module Grntest
           request = Net::HTTP::Get.new(path_with_query)
         end
         url = "http://#{@host}:#{@port}#{path_with_query}"
-        run_http_request(url) do
-          http = Net::HTTP.new(@host, @port)
-          http.set_debug_output($stderr) if DEBUG
-          response = http.start do
-            http.read_timeout = read_timeout
-            http.request(request)
+        @benchmark_result.measure do
+          run_http_request(url) do
+            http = Net::HTTP.new(@host, @port)
+            http.set_debug_output($stderr) if DEBUG
+            response = http.start do
+              http.read_timeout = read_timeout
+              http.request(request)
+            end
+            check_response(response)
+            normalize_response_data(command, response.body)
           end
-          check_response(response)
-          normalize_response_data(command, response.body)
         end
       end
 
