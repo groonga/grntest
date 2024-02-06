@@ -714,9 +714,8 @@ http {
       Arrow::BufferInputStream.open(buffer) do |input|
         while input.tell < content.bytesize
           reader = Arrow::RecordBatchStreamReader.new(input)
-          schema = reader.schema
-          record_batches = reader.to_a
-          table = Arrow::Table.new(schema, record_batches)
+          table = reader.read_all
+          schema = table.schema
           unless normalized.empty?
             normalized << "=" * 40
             normalized << "\n"
