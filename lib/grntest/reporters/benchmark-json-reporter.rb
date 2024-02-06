@@ -83,11 +83,14 @@ module Grntest
 
       def on_test_finish(worker, result)
         return if result.benchmarks.empty?
-        print(",") unless @first_benchmark
-        puts
-        benchmarks = result.benchmarks.collect do |benchmark|
-          name = "#{worker.suite_name}/#{result.test_name}"
-          <<-JSON.chomp
+        result.benchmarks.each do |benchmark|
+          print(",") unless @first_benchmark
+          @first_benchmark = false
+          puts
+          name = "#{@tester.interface}: " +
+                 "#{@tester.input_type}|#{@tester.output_type}: " +
+                 "#{worker.suite_name}/#{result.test_name}"
+          print(<<-JSON.chomp)
     {
       "name": #{name.to_json},
       "run_name": #{benchmark.name.to_json},
@@ -100,8 +103,6 @@ module Grntest
     }
           JSON
         end
-        print(benchmarks.join(",\n"))
-        @first_benchmark = false
       end
 
       def on_suite_finish(worker)
