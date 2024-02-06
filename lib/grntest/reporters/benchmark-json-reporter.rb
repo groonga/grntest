@@ -66,6 +66,13 @@ module Grntest
       end
 
       def on_test_leak(worker, result)
+        output, @output = @output, $stderr
+        begin
+          puts
+          report_test(worker, result)
+        ensure
+          @output = output
+        end
       end
 
       def on_test_omission(worker, result)
