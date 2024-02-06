@@ -1,5 +1,11 @@
 # News
 
+## 1.7.1: 2024-02-05
+
+### Improvements
+
+  * benchmark: Removed load preparation part from elapsed time.
+
 ## 1.7.0: 2024-02-05
 
 ### Fixes
