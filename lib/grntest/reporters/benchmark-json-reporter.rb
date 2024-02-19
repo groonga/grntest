@@ -78,6 +78,9 @@ module Grntest
       def on_test_omission(worker, result)
       end
 
+      def on_test_omission_suppressed(worker, result)
+      end
+
       def on_test_no_check(worker, result)
       end
 
