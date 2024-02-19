@@ -1,5 +1,11 @@
 # News
 
+## 1.7.3: 2024-02-20
+
+### Improvements
+
+  * reporter: benchmark-json: Added support for omission.
+
 ## 1.7.2: 2024-02-06
 
 ### Improvements
