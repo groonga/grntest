@@ -1,5 +1,11 @@
 # News
 
+## 1.7.4: 2024-04-05
+
+### Improvements
+
+  * http: Added support for canceled requests.
+
 ## 1.7.3: 2024-02-20
 
 ### Improvements
