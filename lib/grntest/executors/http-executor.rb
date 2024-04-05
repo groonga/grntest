@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2020  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2024  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -83,6 +83,8 @@ module Grntest
         when Net::HTTPBadRequest,
              Net::HTTPNotFound
           # Groonga returns them for an invalid request.
+        when Net::HTTPRequestTimeOut
+          # Groonga returns this for a canceled request.
         when Net::HTTPInternalServerError
           # Groonga returns this for an internal error.
         else
