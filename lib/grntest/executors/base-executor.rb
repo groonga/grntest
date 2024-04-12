@@ -308,28 +308,43 @@ module Grntest
         @context.collect_query_log = (options[0] == "true")
       end
 
+      def each_generated_series_chunk(evaluator, start, stop)
+        max_chunk_size = 1 * 1024 * 1024 # 1MiB
+        chunk_size = 0
+        records = []
+        (Integer(start)..Integer(stop)).each do |i|
+          record = evaluator.evaluate(i: i).to_json
+          records << record
+          chunk_size += record.bytesize
+          if chunk_size > max_chunk_size
+            yield(records)
+            records.clear
+            chunk_size = 0
+          end
+        end
+        yield(records) unless records.empty?
+      end
+
       def execute_directive_generate_series(parser, line, content, options)
         start, stop, table, template, = options
         evaluator = TemplateEvaluator.new(template.force_encoding("UTF-8"))
-        (Integer(start)..Integer(stop)).each_slice(1000) do |range|
-          parser << "load --table #{table}\n"
-          parser << "["
-          first_record = true
-          range.each do |i|
-            record = ""
-            if first_record
-              first_record = false
-            else
-              record << ","
-            end
-            record << "\n"
-            record << evaluator.evaluate(i: i).to_json
-            before = Time.now
-            parser << record
-            elapsed = Time.now - before
-            Thread.pass if elapsed > 1.0
+        each_generated_series_chunk(evaluator,
+                                    Integer(start),
+                                    Integer(stop)) do |records|
+          source = "load --table #{table}\n"
+          values_part_start_position = source.size
+          source << "["
+          records.each_with_index do |record, i|
+            source << "," unless i.zero?
+            source << "\n"
+            source << record
           end
-          parser << "\n]\n"
+          source << "\n]"
+          values = source[values_part_start_position..-1]
+          command = Groonga::Command::Load.new(table: table, values: values)
+          command.original_source = source
+          execute_command(command)
+          Thread.pass
         end
       end
 
