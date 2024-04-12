@@ -1,5 +1,14 @@
 # News
 
+## 1.7.5: 2024-04-12
+
+### Improvements
+
+  * `#@generate-series`: Improved performance.
+
+  * `#@require-env`: Added to run tests only when the given
+    environment variable is defined.
+
 ## 1.7.4: 2024-04-05
 
 ### Improvements
