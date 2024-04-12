@@ -549,6 +549,19 @@ module Grntest
         @benchmark_result = @noop_benchmark_result
       end
 
+      def execute_directive_require_env(line, content, options)
+        env, = options
+        if env.start_with?("!")
+          if ENV[env[1..-1]]
+            omit("require env: #{env}")
+          end
+        else
+          unless ENV[env]
+            omit("require env: #{env}")
+          end
+        end
+      end
+
       def execute_directive(parser, line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -612,6 +625,8 @@ module Grntest
           execute_directive_start_benchmark(line, content, options)
         when "finish-benchmark"
           execute_directive_finish_benchmark(line, content, options)
+        when "require-env"
+          execute_directive_require_env(line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
