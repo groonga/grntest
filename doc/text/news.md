@@ -1,5 +1,12 @@
 # News
 
+## 1.7.6: 2024-09-25
+
+### Improvements
+
+  * `#@require-os`: Added to run tests only when Groonga is built for
+    the given OS.
+
 ## 1.7.5: 2024-04-12
 
 ### Improvements
