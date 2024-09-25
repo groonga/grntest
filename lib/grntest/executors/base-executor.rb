@@ -562,6 +562,23 @@ module Grntest
         end
       end
 
+      def os
+        status_response["os"]
+      end
+
+      def execute_directive_require_os(line, content, options)
+        required_os, = options
+        if required_os.start_with?("!")
+          if required_os[1..-1] == os
+            omit("require OS: #{required_os} (#{os})")
+          end
+        else
+          unless required_os == os
+            omit("require OS: #{required_os} (#{os})")
+          end
+        end
+      end
+
       def execute_directive(parser, line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -627,6 +644,8 @@ module Grntest
           execute_directive_finish_benchmark(line, content, options)
         when "require-env"
           execute_directive_require_env(line, content, options)
+        when "require-os"
+          execute_directive_require_os(line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")
