@@ -1,5 +1,14 @@
 # News
 
+## 1.7.7: 2024-11-12
+
+### Improvements
+
+  * Required json 2.8.1 or later. Because json 2.8.0 changed
+    `JSON.pretty_generate` result.
+    * Note that this broke existing tests. We need to update
+      `.expected` contents with new output.
+
 ## 1.7.6: 2024-09-25
 
 ### Improvements
