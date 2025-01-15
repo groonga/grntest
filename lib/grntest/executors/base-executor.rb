@@ -523,8 +523,10 @@ module Grntest
         substituted, normalized = Shellwords.shellsplit(rest)
         substituted.force_encoding("UTF-8")
         normalized.force_encoding("UTF-8")
-        substituted_evaluator = TemplateEvaluator.new("\"#{substituted}\"")
-        normalized_evaluator = TemplateEvaluator.new("\"#{normalized}\"")
+        substituted_evaluator =
+          TemplateEvaluator.new("<<STRING.chomp\n#{substituted}\nSTRING")
+        normalized_evaluator =
+          TemplateEvaluator.new("<<STRING.chomp\n#{normalized}\nSTRING")
         @substitutions[pattern] = [
           compile_pattern(pattern),
           substituted_evaluator,
