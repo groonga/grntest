@@ -1,5 +1,12 @@
 # News
 
+## 1.7.8: 2025-01-15
+
+### Improvements
+
+  * `@add-substitution`: Added support for `"` in substituted and
+    normalized templates.
+
 ## 1.7.7: 2024-11-12
 
 ### Improvements
