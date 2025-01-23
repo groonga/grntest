@@ -1,5 +1,11 @@
 # News
 
+## 1.7.9: 2025-01-23
+
+### Improvements
+
+  * Added support for normalizing `index_column_diff` progress log.
+
 ## 1.7.8: 2025-01-15
 
 ### Improvements
