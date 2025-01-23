@@ -900,8 +900,32 @@ http {
       when /\A(line \d+:\d+: syntax error), unexpected .*\z/
         $1
       else
-        content
+        lines = content.each_line(chomp: true).collect do |line|
+          normalize_error_message_line(line)
+        end
+        lines.join("\n")
       end
+    end
+
+    def normalize_error_message_line(line)
+      case line
+      when /\A(#\|.\| \[index-column\]\[diff\]\[progress\].+%) (.*)\z/
+        pre = $1
+        statistics = $2
+        "#{pre} #{normalize_index_column_diff_progress_statistics(statistics)}"
+      else
+        line
+      end
+    end
+
+    def normalize_index_column_diff_progress_statistics(statistics)
+      statistics.
+        # 0.04s -> 0.00s
+        gsub(/\d+\.\d+([smhd])/, "0.00\\1").
+        # 227137.81records/s-> 0.00records/s
+        gsub(/\d+\.\d+records\/s/, "0.00records/s").
+        # 96.23MiB-> 0.00MiB
+        gsub(/\d+\.\d+(B|KiB|MiB|GiB)/, "0.00\\1")
     end
 
     def normalize_error_function(function)
