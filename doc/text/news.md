@@ -1,5 +1,12 @@
 # News
 
+## 1.8.0: 2025-01-23
+
+### Improvements
+
+  * Added support for normalizing units in `index_column_diff`
+    progress log.
+
 ## 1.7.9: 2025-01-23
 
 ### Improvements
