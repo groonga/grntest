@@ -920,12 +920,12 @@ http {
 
     def normalize_index_column_diff_progress_statistics(statistics)
       statistics.
-        # 0.04s -> 0.00s
-        gsub(/\d+\.\d+([smhd])/, "0.00\\1").
+        # 0.04m -> 0.00s
+        gsub(/\d+\.\d+([smhd])/, "0.00s").
         # 227137.81records/s-> 0.00records/s
         gsub(/\d+\.\d+records\/s/, "0.00records/s").
-        # 96.23MiB-> 0.00MiB
-        gsub(/\d+\.\d+(B|KiB|MiB|GiB)/, "0.00\\1")
+        # 96.23KiB-> 0.00MiB
+        gsub(/\d+\.\d+(B|KiB|MiB|GiB)/, "0.00MiB")
     end
 
     def normalize_error_function(function)
