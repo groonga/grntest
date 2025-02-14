@@ -581,6 +581,23 @@ module Grntest
         end
       end
 
+      def cpu
+        status_response["cpu"]
+      end
+
+      def execute_directive_require_cpu(line, content, options)
+        required_cpu, = options
+        if required_cpu.start_with?("!")
+          if required_cpu[1..-1] == cpu
+            omit("require CPU: #{required_cpu} (#{cpu})")
+          end
+        else
+          unless required_cpu == cpu
+            omit("require CPU: #{required_cpu} (#{cpu})")
+          end
+        end
+      end
+
       def execute_directive(parser, line, content)
         command, *options = Shellwords.split(content)
         case command
@@ -648,6 +665,8 @@ module Grntest
           execute_directive_require_env(line, content, options)
         when "require-os"
           execute_directive_require_os(line, content, options)
+        when "require-cpu"
+          execute_directive_require_cpu(line, content, options)
         else
           log_input(line)
           log_error("#|e| unknown directive: <#{command}>")

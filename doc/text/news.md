@@ -1,5 +1,12 @@
 # News
 
+## 1.8.1: 2025-02-14
+
+### Improvements
+
+  * `#@require-cpu`: Added to run tests only when Groonga is built for
+    the given CPU architecture.
+
 ## 1.8.0: 2025-01-23
 
 ### Improvements
