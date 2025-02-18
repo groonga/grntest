@@ -210,11 +210,15 @@ module Grntest
 
       catch do |tag|
         context.abort_tag = tag
-        case @tester.interface
-        when "stdio"
-          run_groonga_stdio(context, &block)
-        when "http"
-          run_groonga_http(context, &block)
+        begin
+          case @tester.interface
+          when "stdio"
+            run_groonga_stdio(context, &block)
+          when "http"
+            run_groonga_http(context, &block)
+          end
+        rescue => error
+          $stderr.puts("#{error.class}: #{error}")
         end
       end
     end
@@ -446,9 +450,6 @@ call (int)chdir("#{context.temporary_directory_path}")
             end
           end
         end
-      rescue Grntest::Error => error
-        $stderr.puts("#{error.class}: #{error}")
-        return
       ensure
         if pid
           begin
