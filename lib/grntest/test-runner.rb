@@ -412,17 +412,15 @@ call (int)chdir("#{context.temporary_directory_path}")
 
     def run_groonga_http(context)
       host = "127.0.0.1"
+      port = decide_groonga_server_port(host)
       pid_file_path = context.temporary_directory_path + "groonga.pid"
 
       env = extract_custom_env(context)
       spawn_options = {}
-
+      command_line = groonga_http_command(host, port, pid_file_path, context,
+                                          spawn_options)
       pid = nil
-      n_retries = 0
       begin
-        port = decide_groonga_server_port(host)
-        command_line = groonga_http_command(host, port, pid_file_path, context,
-                                            spawn_options)
         pid = Process.spawn(env, *command_line, spawn_options)
         executor = nil
         begin
@@ -448,11 +446,9 @@ call (int)chdir("#{context.temporary_directory_path}")
             end
           end
         end
-      rescue
-        sleep(0.1)
-        n_retries += 1
-        retry if n_retries < 5
-        raise
+      rescue Grntest::Error => error
+        $stderr.puts("#{error.class}: #{error}")
+        return
       ensure
         if pid
           begin
