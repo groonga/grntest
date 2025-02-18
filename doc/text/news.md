@@ -1,5 +1,12 @@
 # News
 
+## 1.8.2: 2025-02-18
+
+### Improvements
+
+  * Changed not to terminate if there is an exception during testing.
+    * Retry by `--n-retries` is now available even when an exception occurs.
+
 ## 1.8.1: 2025-02-14
 
 ### Improvements
