@@ -218,7 +218,7 @@ module Grntest
             run_groonga_http(context, &block)
           end
         rescue => error
-          $stderr.puts("#{error.class}: #{error}")
+          context.result << [:error, "#{error.class}: #{error}", {}]
         end
       end
     end
