@@ -43,6 +43,54 @@ jobs:
           ridk exec pacman --sync --noconfirm mingw-w64-x86_64-gcc
       - name: Install dependencies
         run: |
+          # The following error occurs in pycall and racc (Error is from pycall):
+          # ```
+          # Gem::Ext::BuildError: ERROR: Failed to build gem native extension.
+          #
+          # current directory:
+          # C:/hostedtoolcache/windows/Ruby/3.1.7/x64/lib/ruby/gems/3.1.0/gems/pycall-1.5.2/ext/pycall
+          # C:/hostedtoolcache/windows/Ruby/3.1.7/x64/bin/ruby.exe -I
+          # C:/hostedtoolcache/windows/Ruby/3.1.7/x64/lib/ruby/3.1.0 extconf.rb
+          # checking for RTYPEDDATA_GET_DATA()... no
+          # creating Makefile
+          #
+          # current directory:
+          # C:/hostedtoolcache/windows/Ruby/3.1.7/x64/lib/ruby/gems/3.1.0/gems/pycall-1.5.2/ext/pycall
+          # make.exe DESTDIR\= sitearchdir\=./.gem.20250428-3500-7k147z
+          # sitelibdir\=./.gem.20250428-3500-7k147z clean
+          #
+          # current directory:
+          # C:/hostedtoolcache/windows/Ruby/3.1.7/x64/lib/ruby/gems/3.1.0/gems/pycall-1.5.2/ext/pycall
+          # make.exe DESTDIR\= sitearchdir\=./.gem.20250428-3500-7k147z
+          # sitelibdir\=./.gem.20250428-3500-7k147z
+          # generating pycall-x64-mingw-ucrt.def
+          # compiling gc.c
+          # compiling libpython.c
+          # compiling pycall.c
+          # pycall.c: In function 'pycall_libpython_helpers_m_define_wrapper_method':
+          # pycall.c:1172:50: error: passing argument 3 of 'rb_define_singleton_method' from
+          # incompatible pointer type [-Wincompatible-pointer-types]
+          # 1172 |   rb_define_singleton_method(wrapper, name_cstr,
+          # pycall_pyobject_wrapper_wrapper_method, -1);
+          # |
+          # ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          #       |                                                  |
+          # |                                                  VALUE (*)(int,  VALUE
+          # *, VALUE) {aka long long unsigned int (*)(int,  long long unsigned int *, long
+          # long unsigned int)}
+          # In file included from
+          # C:/hostedtoolcache/windows/Ruby/3.1.7/x64/include/ruby-3.1.0/ruby/internal/anyargs.h:76,
+          # from
+          # C:/hostedtoolcache/windows/Ruby/3.1.7/x64/include/ruby-3.1.0/ruby/ruby.h:26,
+          # from
+          # C:/hostedtoolcache/windows/Ruby/3.1.7/x64/include/ruby-3.1.0/ruby.h:38,
+          #                  from pycall_internal.h:11,
+          #                  from pycall.c:1:
+          # ```
+          #
+          # Add the option -with-cflags="-Wno-error=incompatible-pointer-types" to temporarily ignore it.
+          gem install pycall racc -- --with-cflags="-Wno-error=incompatible-pointer-types"
+
           bundle install
       - name: Build
         run: |
