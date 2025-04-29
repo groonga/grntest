@@ -1,5 +1,16 @@
 # News
 
+## 1.8.3: 2025-04-29
+
+### Improvements
+
+  * Improved error output when an exception occurs.
+
+  * Required json 2.11.3 or later. Because json 2.11.0 changed
+    `JSON.pretty_generate` result.
+    * Note that this broke existing tests. We need to update
+      `.expected` contents with new output.
+
 ## 1.8.2: 2025-02-18
 
 ### Improvements
