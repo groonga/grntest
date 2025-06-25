@@ -35,6 +35,10 @@ module Grntest
       @failed_tests.size
     end
 
+    def n_leaked_tests
+      @n_leaked_tests
+    end
+
     def on_test_finish
       @n_tests += 1
     end
@@ -179,6 +183,7 @@ module Grntest
 
           runner = TestRunner.new(@tester, self)
           return true if runner.run
+          return false if @result.n_leaked_tests > 0
 
           if n < @tester.n_retries and not interruptted?
             @result.cancel_test_failure(test_name)
