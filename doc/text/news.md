@@ -1,5 +1,12 @@
 # News
 
+## 1.8.4: 2026-03-16
+
+### Improvements
+
+  * Changed to use non-blocking mode for pipe between `grntest` and
+    `groonga` for stable test result.
+
 ## 1.8.3: 2025-04-29
 
 ### Improvements
