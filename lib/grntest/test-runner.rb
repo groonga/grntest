@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2024  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2026  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,11 +13,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require "pathname"
 require "fileutils"
+require "io/nonblock"
+require "pathname"
+require "socket"
 require "tempfile"
 require "timeout"
-require "socket"
 
 require "groonga-log"
 require "json"
@@ -270,7 +271,9 @@ module Grntest
 
     def open_pipe
       IO.pipe("ASCII-8BIT") do |input_read, input_write|
+        input_write.nonblock = false
         IO.pipe("ASCII-8BIT") do |output_read, output_write|
+          output_write.nonblock = false
           yield(input_read, input_write, output_read, output_write)
         end
       end
