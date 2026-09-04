@@ -1,5 +1,11 @@
 # News
 
+## 1.8.5: 2026-09-04
+
+### Improvements
+
+  * `#@generate-series`: Improved performance.
+
 ## 1.8.4: 2026-03-16
 
 ### Improvements
