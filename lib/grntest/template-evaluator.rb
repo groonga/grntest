@@ -15,16 +15,17 @@
 
 module Grntest
   class TemplateEvaluator
-    def initialize(template)
+    def initialize(template, *variable_names)
       @template = template
+      @compiled = eval(<<-TEMPLATE)
+        lambda do |#{variable_names.join(", ")}|
+#{@template}
+        end
+      TEMPLATE
     end
 
-    def evaluate(**local_variables)
-      _binding = binding
-      local_variables.each do |name, value|
-        _binding.local_variable_set(name, value)
-      end
-      _binding.eval(@template)
+    def evaluate(*values)
+      @compiled.call(*values)
     end
   end
 end

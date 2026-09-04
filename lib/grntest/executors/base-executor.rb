@@ -308,12 +308,13 @@ module Grntest
         @context.collect_query_log = (options[0] == "true")
       end
 
-      def each_generated_series_chunk(evaluator, start, stop)
+      def each_generated_series_chunk(template, start, stop)
+        evaluator = TemplateEvaluator.new(template, :i)
         max_chunk_size = 1 * 1024 * 1024 # 1MiB
         chunk_size = 0
         records = []
         (Integer(start)..Integer(stop)).each do |i|
-          record = evaluator.evaluate(i: i).to_json
+          record = evaluator.evaluate(i).to_json
           records << record
           chunk_size += record.bytesize
           if chunk_size > max_chunk_size
@@ -327,8 +328,7 @@ module Grntest
 
       def execute_directive_generate_series(parser, line, content, options)
         start, stop, table, template, = options
-        evaluator = TemplateEvaluator.new(template.force_encoding("UTF-8"))
-        each_generated_series_chunk(evaluator,
+        each_generated_series_chunk(template.force_encoding("UTF-8"),
                                     Integer(start),
                                     Integer(stop)) do |records|
           source = "load --table #{table}\n"
@@ -502,7 +502,7 @@ module Grntest
         return input if @substitutions.empty?
         @substitutions.each_value do |pattern, substituted_evaluator, _|
           input = input.gsub(pattern) do
-            substituted_evaluator.evaluate(match_data: Regexp.last_match)
+            substituted_evaluator.evaluate(Regexp.last_match)
           end
         end
         input
@@ -512,7 +512,7 @@ module Grntest
         return input if @substitutions.empty?
         @substitutions.each_value do |pattern, _, normalized_evaluator|
           input = input.gsub(pattern) do
-            normalized_evaluator.evaluate(match_data: Regexp.last_match)
+            normalized_evaluator.evaluate(Regexp.last_match)
           end
         end
         input
@@ -524,9 +524,11 @@ module Grntest
         substituted.force_encoding("UTF-8")
         normalized.force_encoding("UTF-8")
         substituted_evaluator =
-          TemplateEvaluator.new("<<STRING.chomp\n#{substituted}\nSTRING")
+          TemplateEvaluator.new("<<STRING.chomp\n#{substituted}\nSTRING",
+                                :match_data)
         normalized_evaluator =
-          TemplateEvaluator.new("<<STRING.chomp\n#{normalized}\nSTRING")
+          TemplateEvaluator.new("<<STRING.chomp\n#{normalized}\nSTRING",
+                                :match_data)
         @substitutions[pattern] = [
           compile_pattern(pattern),
           substituted_evaluator,
