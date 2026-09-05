@@ -1,5 +1,12 @@
 # News
 
+## 1.8.6: 2026-09-05
+
+### Improvements
+
+  * `#@sort-query-log-operations`: Added for `logical_select`'s
+    `--n_workers` support.
+
 ## 1.8.5: 2026-09-04
 
 ### Improvements
