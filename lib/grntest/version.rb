@@ -14,5 +14,5 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 module Grntest
-  VERSION = "1.8.5"
+  VERSION = "1.8.6"
 end
