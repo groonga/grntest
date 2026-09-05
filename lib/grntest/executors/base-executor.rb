@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2024  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2026  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -306,6 +306,10 @@ module Grntest
 
       def execute_directive_collect_query_log(line, content, options)
         @context.collect_query_log = (options[0] == "true")
+      end
+
+      def execute_directive_sort_query_log_operations(line, content, options)
+        @context.sort_query_log_operations = options[0]
       end
 
       def each_generated_series_chunk(template, start, stop)
@@ -631,6 +635,8 @@ module Grntest
           execute_directive_sleep(line, content, options)
         when "collect-query-log"
           execute_directive_collect_query_log(line, content, options)
+        when "sort-query-log-operations"
+          execute_directive_sort_query_log_operations(line, content, options)
         when "generate-series"
           execute_directive_generate_series(parser, line, content, options)
         when "eval"
@@ -950,7 +956,8 @@ module Grntest
             command[:output_type] = nil if command.output_type == :json
             log_query("\#>#{command.to_command_format}")
           end
-          statistic.each_operation do |operation|
+          sorted_operations = sort_operations(statistic)
+          sorted_operations.each do |operation|
             message = operation[:raw_message]
             case operation[:name]
             when "cache"
@@ -961,6 +968,32 @@ module Grntest
             log_query("\#:#{relative_elapsed_time} #{message}")
           end
           log_query("\#<#{relative_elapsed_time} rc=#{statistic.return_code}")
+        end
+      end
+
+      def sort_operations(statistic)
+        sort_key = @context.sort_query_log_operations
+        case sort_key
+        when "shard"
+          first_shard_select_index = nil
+          first_shard_filter_index = nil
+          statistic.each_operation.sort_by do |operation|
+            i = operation[:i]
+            name = operation[:name]
+            if name.start_with?("select[")
+              first_shard_select_index ||= i
+              [first_shard_select_index, name]
+            elsif name.start_with?("filter[")
+              first_shard_filter_index ||= i
+              [first_shard_filter_index, name]
+            else
+              [i]
+            end
+          end
+        when "none"
+          statistic.each_operation
+        else
+          raise Error.nw("unsupported sort-query-log-operations: #{sort_key}")
         end
       end
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2024  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2012-2026  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ module Grntest
     attr_accessor :shutdown_wait_timeout
     attr_writer :suppress_backtrace
     attr_writer :collect_query_log
+    attr_accessor :sort_query_log_operations
     attr_writer :debug
     attr_accessor :platform
     attr_accessor :benchmarks
@@ -69,6 +70,7 @@ module Grntest
       @omitted = false
       @suppress_backtrace = true
       @collect_query_log = false
+      @sort_query_log_operations = "none"
       @debug = false
       @platform = guess_platform
       @benchmarks = []

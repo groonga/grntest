@@ -221,6 +221,7 @@ Here are available `NAME` s:
 * `remove-important-log-levels`
 * `sleep`
 * `collect-query-log`
+* `sort-query-log-operations`
 
 `ARGUMENTS...` are depends on directive. A directive doesn't require
 any arguments but a directive requires arguments.
@@ -552,6 +553,34 @@ Example:
 ```
 #@collect-query-log true
 select Users --query _key:User1
+#@collect-query-log false
+```
+
+#### `sort-query-log-operations`
+
+Usage:
+
+```
+#@sort-query-log-operations [none|shard]
+```
+
+It changes the order of operations in the collected query log. It
+is useful with `collect-query-log` directive.
+
+`none` is the default. Operations are printed in the executed order.
+
+`shard` sorts sharded operations such as `select[...]` and
+`filter[...]` by their names. Sharded operations may be executed in
+parallel. So their order isn't stable. `shard` makes the order stable.
+Non sharded operations keep the executed order.
+
+Example:
+
+```
+#@collect-query-log true
+#@sort-query-log-operations shard
+logical_select Logs --shard_key timestamp --query message:hello
+#@sort-query-log-operations none
 #@collect-query-log false
 ```
 
