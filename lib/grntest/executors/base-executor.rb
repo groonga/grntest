@@ -998,28 +998,28 @@ module Grntest
           if name.start_with?("select[")
             if sort_shard
               first_shard_select_index ||= i
-              [first_shard_select_index, name]
+              [first_shard_select_index, name, i]
             else
               [i]
             end
           elsif name.start_with?("filter[")
             if sort_shard
               first_shard_filter_index ||= i
-              [first_shard_filter_index, name]
+              [first_shard_filter_index, name, i]
             else
               [i]
             end
           elsif name.start_with?("drilldowns[")
             if sort_drilldown and not name.end_with?(".sort")
               first_drilldowns_index ||= i
-              [first_drilldowns_index, name]
+              [first_drilldowns_index, name, i]
             else
               [i]
             end
           elsif name.start_with?("drilldown")
             if sort_drilldown and not name.end_with?(".sort")
               first_drilldown_index ||= i
-              [first_drilldown_index, name, operation[:extra]]
+              [first_drilldown_index, name, operation[:extra], i]
             else
               [i]
             end
