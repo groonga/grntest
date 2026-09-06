@@ -70,7 +70,7 @@ module Grntest
       @omitted = false
       @suppress_backtrace = true
       @collect_query_log = false
-      @sort_query_log_operations = "none"
+      @sort_query_log_operations = []
       @debug = false
       @platform = guess_platform
       @benchmarks = []

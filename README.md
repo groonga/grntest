@@ -561,26 +561,44 @@ select Users --query _key:User1
 Usage:
 
 ```
-#@sort-query-log-operations [none|shard]
+#@sort-query-log-operations [SORT_KEY_1 SORT_KEY_2 ...]
 ```
 
 It changes the order of operations in the collected query log. It
 is useful with `collect-query-log` directive.
 
-`none` is the default. Operations are printed in the executed order.
+If no `SORT_KEY_N` is specified, no operation is sorted. This is the
+default. Operations are printed in the executed order.
 
-`shard` sorts sharded operations such as `select[...]` and
-`filter[...]` by their names. Sharded operations may be executed in
-parallel. So their order isn't stable. `shard` makes the order stable.
-Non sharded operations keep the executed order.
+Here are available `SORT_KEY_N` s:
+
+* `shard`: Sorts sharded operations such as `select[...]` and
+  `filter[...]` by their names. Sharded operations may be executed in
+  parallel. So their order isn't stable. `shard` makes the order
+  stable.
+* `drilldown`: Sorts drilldown operations. Labeled drilldown
+  operations such as `drilldowns[...]` are sorted by their
+  names. Plain drilldown operations such as `drilldown(...): KEY` are
+  sorted by their keys. Drilldown operations may be executed in
+  parallel. So their order isn't stable. `drilldown` makes the order
+  stable. `drilldowns[...].sort` and `drilldown.sort` operations
+  aren't sorted because they are executed after all drilldown
+  operations are finished.
+
+Operations that aren't matched with any `SORT_KEY_N` keep the executed
+order. You can specify multiple `SORT_KEY_N` s at once.
 
 Example:
 
 ```
 #@collect-query-log true
-#@sort-query-log-operations shard
-logical_select Logs --shard_key timestamp --query message:hello
-#@sort-query-log-operations none
+#@sort-query-log-operations shard drilldown
+logical_select Logs \
+  --shard_key timestamp \
+  --query message:hello \
+  --drilldowns[host].keys host \
+  --drilldowns[path].keys path
+#@sort-query-log-operations
 #@collect-query-log false
 ```
 

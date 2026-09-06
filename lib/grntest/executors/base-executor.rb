@@ -309,7 +309,18 @@ module Grntest
       end
 
       def execute_directive_sort_query_log_operations(line, content, options)
-        @context.sort_query_log_operations = options[0]
+        sort_keys = options
+        valid_sort_keys = ["shard", "drilldown"]
+        unsupported_sort_keys = sort_keys - valid_sort_keys
+        if unsupported_sort_keys.empty?
+          @context.sort_query_log_operations = sort_keys
+        else
+          valid_sort_keys_label = "[#{valid_sort_keys.join(', ')}]"
+          message = "must be one of #{valid_sort_keys_label}"
+          log_error("#|e| [sort-query-log-operations] " +
+                    "#{message}: unsupported values: " +
+                    unsupported_sort_keys.collect {|key| "<#{key}>"}.join(", "))
+        end
       end
 
       def each_generated_series_chunk(template, start, stop)
@@ -972,28 +983,49 @@ module Grntest
       end
 
       def sort_operations(statistic)
-        sort_key = @context.sort_query_log_operations
-        case sort_key
-        when "shard"
-          first_shard_select_index = nil
-          first_shard_filter_index = nil
-          statistic.each_operation.sort_by do |operation|
-            i = operation[:i]
-            name = operation[:name]
-            if name.start_with?("select[")
+        sort_keys = @context.sort_query_log_operations
+        return statistic.each_operation if sort_keys.empty?
+
+        sort_shard = sort_keys.include?("shard")
+        sort_drilldown = sort_keys.include?("drilldown")
+        first_shard_select_index = nil
+        first_shard_filter_index = nil
+        first_drilldowns_index = nil
+        first_drilldown_index = nil
+        statistic.each_operation.sort_by do |operation|
+          i = operation[:i]
+          name = operation[:name]
+          if name.start_with?("select[")
+            if sort_shard
               first_shard_select_index ||= i
               [first_shard_select_index, name]
-            elsif name.start_with?("filter[")
+            else
+              [i]
+            end
+          elsif name.start_with?("filter[")
+            if sort_shard
               first_shard_filter_index ||= i
               [first_shard_filter_index, name]
             else
               [i]
             end
+          elsif name.start_with?("drilldowns[")
+            if sort_drilldown and not name.end_with?(".sort")
+              first_drilldowns_index ||= i
+              [first_drilldowns_index, name]
+            else
+              [i]
+            end
+          elsif name.start_with?("drilldown")
+            if sort_drilldown and not name.end_with?(".sort")
+              first_drilldown_index ||= i
+              [first_drilldown_index, name, operation[:extra]]
+            else
+              [i]
+            end
+          else
+            [i]
           end
-        when "none"
-          statistic.each_operation
-        else
-          raise Error.nw("unsupported sort-query-log-operations: #{sort_key}")
         end
       end
 
