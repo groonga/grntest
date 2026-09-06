@@ -1,5 +1,11 @@
 # News
 
+## 1.8.7: 2026-09-07
+
+### Improvements
+
+  * `#@sort-query-log-operations`: Made sort result stable.
+
 ## 1.8.7: 2026-09-06
 
 ### Improvements
