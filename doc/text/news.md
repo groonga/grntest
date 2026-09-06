@@ -1,5 +1,12 @@
 # News
 
+## 1.8.7: 2026-09-06
+
+### Improvements
+
+  * `#@sort-query-log-operations`: Added `drilldown` sort key. `none`
+    sort key is removed. Use empty sort keys instead.
+
 ## 1.8.6: 2026-09-05
 
 ### Improvements
